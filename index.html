@@ -289,7 +289,7 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
 </div>
 
 <script>
-var SCRIPT="https://script.google.com/macros/s/AKfycbw8H9mLYoy6yqFh0fFwuVMm2ovKg2wRH9bSwXI3fXnSTP67PtdZp_icYI9kfuDRgZrmUg/exec";
+var SCRIPT="https://script.google.com/macros/s/AKfycbw35DfkdbG8yKby0xiTehVF89TCdUV7OsSz97R8DEnKvwc3brKgdnwfPc1hOlO-KhKHDQ/exec";
 var PWD_MGR="6789", PWD_ADMIN="5555";
 
 // Role definitions
@@ -519,7 +519,7 @@ tap(document.getElementById('btn-sub'),function(){
   var newOnes=entries.filter(function(e){return e.isNew;}).map(function(e){return e.item+' ('+e.category+')';});
   var fullNotes=notes+(newOnes.length?'\n⭐ New items: '+newOnes.join(', '):'');
   fetch(SCRIPT,{method:'POST',mode:'no-cors',body:JSON.stringify({
-    store:store,category:'Multiple',date:date,
+    store:store,category:'See individual entries',date:date,
     loggedBy:selectedName+' ('+selectedRole+')',
     notes:fullNotes,entries:entries
   })}).then(function(){
