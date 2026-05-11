@@ -24,26 +24,36 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .clbl{font-size:12px;color:#7A7870;min-width:76px}
 select,input[type=date]{flex:1;border:none;background:transparent;color:#1A1916;font-size:14px;font-family:inherit;outline:none;text-align:right;padding:0}
 
-/* Role sections */
-.role-section{margin-bottom:14px}
-.role-label{font-size:11px;font-weight:700;letter-spacing:.06em;padding:4px 10px;border-radius:20px;display:inline-block;margin-bottom:8px}
-.rl-chef{background:#E6F1FB;color:#0C3D6E}
-.rl-mgr{background:#E1F5EE;color:#085041}
-.rl-admin{background:#FAEEDA;color:#4A2906}
+/* Login box */
+.login-box{background:#fff;border-radius:16px;border:1px solid #E2E0D8;padding:24px 20px;margin-bottom:12px;text-align:center}
+.login-box h2{font-size:17px;font-weight:700;margin-bottom:4px}
+.login-box p{font-size:13px;color:#7A7870;margin-bottom:20px}
+.login-field{margin-bottom:12px;text-align:left}
+.login-field label{display:block;font-size:12px;color:#7A7870;margin-bottom:5px;font-weight:500}
+.login-field input{width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:12px 14px;font-size:15px;color:#1A1916;font-family:inherit;outline:none;transition:border-color .15s}
+.login-field input:focus{border-color:#185FA5;background:#fff}
+.login-err{background:#FDECEA;border-radius:8px;padding:8px 12px;font-size:13px;color:#C0392B;margin-bottom:12px;display:none;text-align:left}
 
-/* Name buttons */
-.name-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:4px}
-.name-btn{padding:12px 10px;border-radius:12px;border:1.5px solid #E2E0D8;background:#fff;color:#7A7870;font-size:13px;font-weight:500;text-align:center;cursor:pointer;font-family:inherit;touch-action:manipulation;user-select:none;-webkit-user-select:none;position:relative}
-.name-btn .role-tag{font-size:9px;border-radius:4px;padding:1px 5px;margin-left:3px;vertical-align:middle;font-weight:700}
-.name-btn.on-chef{border-color:#185FA5;background:#E6F1FB;color:#0C3D6E;font-weight:600}
-.name-btn.on-mgr{border-color:#1D9E75;background:#E1F5EE;color:#085041;font-weight:600}
-.name-btn.on-admin{border-color:#854F0B;background:#FAEEDA;color:#4A2906;font-weight:600}
+/* PIN pad */
+.pin-display{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid #E2E0D8;transition:all .15s}
+.pin-dot.filled{background:#185FA5;border-color:#185FA5}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.pin-btn{padding:16px;border-radius:12px;border:1px solid #E2E0D8;background:#fff;font-size:20px;font-weight:500;cursor:pointer;font-family:inherit;color:#1A1916;touch-action:manipulation;user-select:none;-webkit-user-select:none;transition:background .1s}
+.pin-btn:active{background:#E6F1FB}
+.pin-btn.del{font-size:16px;color:#7A7870}
+.pin-btn.empty{border:none;background:transparent;cursor:default}
 
-/* Role badge shown after selection */
-.selected-role{display:none;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-left:6px;vertical-align:middle}
-.sr-chef{background:#E6F1FB;color:#0C3D6E}
-.sr-mgr{background:#E1F5EE;color:#085041}
-.sr-admin{background:#FAEEDA;color:#4A2906}
+/* Role badge */
+.role-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-left:6px;vertical-align:middle}
+.rb-chef{background:#E6F1FB;color:#0C3D6E}
+.rb-mgr{background:#E1F5EE;color:#085041}
+.rb-admin{background:#FAEEDA;color:#4A2906}
+
+/* Who is logged in bar */
+.user-bar{background:#fff;border:1px solid #E2E0D8;border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.user-bar-name{font-size:14px;font-weight:600}
+.user-bar-logout{font-size:12px;color:#C0392B;cursor:pointer;touch-action:manipulation;user-select:none;padding:4px 8px;border-radius:6px;border:1px solid #FDECEA;background:#FDECEA}
 
 /* Category tabs */
 .cat-tabs{display:flex;border-radius:12px;overflow:hidden;border:1px solid #E2E0D8;margin-bottom:12px;background:#fff}
@@ -88,6 +98,7 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
 .btnrow{display:flex;gap:8px}
 .bmain{flex:1;padding:15px;border-radius:12px;border:none;background:#1A1916;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation}
 .bmain.grn{background:#1D9E75}
+.bmain.blue{background:#185FA5}
 .bmain:disabled{opacity:.5}
 .bsec{padding:15px 18px;border-radius:12px;border:1px solid #E2E0D8;background:#fff;color:#1A1916;font-size:15px;cursor:pointer;font-family:inherit;touch-action:manipulation}
 .bsml{padding:10px 16px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation}
@@ -101,7 +112,6 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
 .mfield{margin-bottom:12px}
 .mfield label{display:block;font-size:12px;color:#7A7870;margin-bottom:5px}
 .mfield input[type=text],.mfield input[type=password],.mfield select{width:100%;border:1px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:11px 12px;font-size:14px;color:#1A1916;font-family:inherit;outline:none}
-.mfield input:focus{border-color:#185FA5}
 .merr{font-size:12px;color:#C0392B;margin-top:5px;display:none}
 .unit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .unit-opt{padding:8px 4px;border-radius:8px;border:1px solid #E2E0D8;background:#fff;font-size:12px;text-align:center;cursor:pointer;touch-action:manipulation;user-select:none;font-family:inherit;color:#7A7870}
@@ -137,57 +147,60 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
   <div class="pd" id="p3"></div>
 </div>
 
-<!-- STEP 1 -->
+<!-- STEP 1: Login -->
 <div class="step on" id="s1">
+  <div class="login-box">
+    <h2>Welcome to A2B</h2>
+    <p>Enter your name and PIN to continue</p>
+    <div class="login-field">
+      <label>Your name</label>
+      <input type="text" id="login-name" placeholder="Type your name…" autocomplete="off" autocorrect="off" autocapitalize="words">
+    </div>
+    <div class="login-field">
+      <label>PIN</label>
+      <div class="pin-display" id="pin-display">
+        <div class="pin-dot" id="pd0"></div>
+        <div class="pin-dot" id="pd1"></div>
+        <div class="pin-dot" id="pd2"></div>
+        <div class="pin-dot" id="pd3"></div>
+      </div>
+      <div class="pin-pad" id="pin-pad">
+        <div class="pin-btn" data-n="1">1</div>
+        <div class="pin-btn" data-n="2">2</div>
+        <div class="pin-btn" data-n="3">3</div>
+        <div class="pin-btn" data-n="4">4</div>
+        <div class="pin-btn" data-n="5">5</div>
+        <div class="pin-btn" data-n="6">6</div>
+        <div class="pin-btn" data-n="7">7</div>
+        <div class="pin-btn" data-n="8">8</div>
+        <div class="pin-btn" data-n="9">9</div>
+        <div class="pin-btn empty"></div>
+        <div class="pin-btn" data-n="0">0</div>
+        <div class="pin-btn del" id="pin-del">⌫</div>
+      </div>
+    </div>
+    <div class="login-err" id="login-err">Name or PIN incorrect. Please try again.</div>
+  </div>
   <div class="card">
     <div class="crow"><span class="clbl">Restaurant</span>
       <select id="f-store"><option>Harrisdale A2B</option><option>Yokine A2B</option></select>
     </div>
     <div class="crow"><span class="clbl">Date</span><input type="date" id="f-date"></div>
   </div>
-
-  <div class="role-section">
-    <div><span class="role-label rl-chef">👨‍🍳 Chef</span></div>
-    <div class="name-grid">
-      <div class="name-btn" data-name="Vinodh" data-role="Chef">Vinodh</div>
-      <div class="name-btn" data-name="Michael" data-role="Chef">Michael</div>
-      <div class="name-btn" data-name="Anand" data-role="Chef">Anand</div>
-      <div class="name-btn" data-name="Ramar" data-role="Chef">Ramar</div>
-      <div class="name-btn" data-name="Thaneesh" data-role="Chef">Thaneesh</div>
-      <div class="name-btn" data-name="Sandip" data-role="Chef">Sandip</div>
-      <div class="name-btn" data-name="Monica" data-role="Chef">Monica</div>
-    </div>
-  </div>
-
-  <div class="role-section">
-    <div><span class="role-label rl-mgr">🗂 Manager</span></div>
-    <div class="name-grid">
-      <div class="name-btn" data-name="Suresh" data-role="Manager">Suresh</div>
-      <div class="name-btn" data-name="Kajal" data-role="Manager">Kajal</div>
-      <div class="name-btn" data-name="Fahmida" data-role="Manager">Fahmida</div>
-      <div class="name-btn" data-name="Mamta" data-role="Manager">Mamta</div>
-      <div class="name-btn" data-name="Shaswanth" data-role="Manager">Shaswanth</div>
-    </div>
-  </div>
-
-  <div class="role-section">
-    <div><span class="role-label rl-admin">⭐ Admin</span></div>
-    <div class="name-grid">
-      <div class="name-btn" data-name="Deva" data-role="Admin">Deva</div>
-      <div class="name-btn" data-name="Duwaraka" data-role="Admin">Duwaraka</div>
-    </div>
-  </div>
-
-  <div class="btnrow"><button class="bmain" id="btn-n1">Next — select items</button></div>
+  <div class="btnrow"><button class="bmain blue" id="btn-login">Sign in &amp; select items</button></div>
 </div>
 
-<!-- STEP 2 -->
+<!-- STEP 2: Items -->
 <div class="step" id="s2">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-    <div style="font-size:13px;color:#7A7870">
-      <span id="s2lbl"></span>
-      <span class="selected-role" id="s2role"></span>
+  <div class="user-bar">
+    <div>
+      <span class="user-bar-name" id="ub-name"></span>
+      <span class="role-badge" id="ub-role"></span>
     </div>
+    <div class="user-bar-logout" id="btn-logout">Sign out</div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <span style="font-size:13px;color:#7A7870" id="s2lbl"></span>
     <span style="font-size:13px;font-weight:600;color:#1D9E75" id="s2tot">0 items</span>
   </div>
   <div class="cat-tabs">
@@ -208,7 +221,7 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
   </div>
 </div>
 
-<!-- STEP 3 -->
+<!-- STEP 3: Quantities -->
 <div class="step" id="s3">
   <div style="margin-bottom:10px">
     <div style="font-size:14px;font-weight:600;margin-bottom:2px">Enter quantities</div>
@@ -224,98 +237,100 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
   <div class="err" id="errbox"></div>
 </div>
 
-<!-- STEP 4 -->
+<!-- STEP 4: Success -->
 <div class="step" id="s4">
   <div class="succ"><div class="tick"></div><h2>Saved ✓</h2><p id="done-txt"></p></div>
   <p style="font-size:12px;color:#7A7870;margin-bottom:8px">Copy and send to manager on WhatsApp</p>
   <div class="wawrap"><div class="wamsg" id="wa-txt"></div></div>
   <button class="cpybtn" id="btn-cpy">📋 Copy WhatsApp message</button>
   <div class="cpdone" id="cpdone">✓ Copied!</div>
-  <div class="btnrow" style="margin-top:8px"><button class="bmain" id="btn-rst">Log again</button></div>
+  <div class="btnrow" style="margin-top:8px">
+    <button class="bmain" id="btn-rst">Log again</button>
+  </div>
 </div>
 
 <!-- Add Item Modal -->
 <div class="modal-bg" id="modal-bg">
   <div class="modal">
-    <h3 id="modal-title">Add New Item</h3>
+    <h3>Add New Item</h3>
     <div class="modal-sub" id="modal-sub"></div>
-    <div id="modal-pw">
-      <div class="mfield">
-        <label>Password</label>
-        <input type="password" id="m-pw" placeholder="Enter password" maxlength="10">
-        <div class="merr" id="pw-err">Incorrect password. Managers use 6789, Admins use 5555.</div>
-      </div>
-      <div class="btnrow">
-        <button class="bsml bsec" id="modal-cancel">Cancel</button>
-        <button class="bsml bmain" id="modal-pw-ok">Unlock</button>
+    <div class="mfield">
+      <label>Item name</label>
+      <input type="text" id="m-name" placeholder="e.g. Coconut Milk">
+    </div>
+    <div class="mfield">
+      <label>Unit</label>
+      <div class="unit-grid">
+        <div class="unit-opt on" data-u="kg">kg</div>
+        <div class="unit-opt" data-u="g">g</div>
+        <div class="unit-opt" data-u="ltr">ltr</div>
+        <div class="unit-opt" data-u="nos">nos</div>
+        <div class="unit-opt" data-u="box">box</div>
+        <div class="unit-opt" data-u="bag">bag</div>
+        <div class="unit-opt" data-u="pack">pack</div>
+        <div class="unit-opt" data-u="roll">roll</div>
+        <div class="unit-opt" data-u="tin">tin</div>
+        <div class="unit-opt" data-u="bottle">bottle</div>
+        <div class="unit-opt" data-u="pair">pair</div>
+        <div class="unit-opt" data-u="puch">puch</div>
       </div>
     </div>
-    <div id="modal-form" style="display:none">
-      <div class="mfield">
-        <label>Item name</label>
-        <input type="text" id="m-name" placeholder="e.g. Coconut Milk">
-      </div>
-      <div class="mfield">
-        <label>Unit</label>
-        <div class="unit-grid">
-          <div class="unit-opt on" data-u="kg">kg</div>
-          <div class="unit-opt" data-u="g">g</div>
-          <div class="unit-opt" data-u="ltr">ltr</div>
-          <div class="unit-opt" data-u="nos">nos</div>
-          <div class="unit-opt" data-u="box">box</div>
-          <div class="unit-opt" data-u="bag">bag</div>
-          <div class="unit-opt" data-u="pack">pack</div>
-          <div class="unit-opt" data-u="roll">roll</div>
-          <div class="unit-opt" data-u="tin">tin</div>
-          <div class="unit-opt" data-u="bottle">bottle</div>
-          <div class="unit-opt" data-u="pair">pair</div>
-          <div class="unit-opt" data-u="puch">puch</div>
-        </div>
-      </div>
-      <div class="mfield">
-        <label>Category</label>
-        <select id="m-cat">
-          <option>Grocery</option><option>Vegetables</option>
-          <option>Supermarket</option><option>Packaging</option>
-        </select>
-      </div>
-      <div class="merr" id="form-err">Please enter an item name</div>
-      <div class="btnrow" style="margin-top:8px">
-        <button class="bsml bsec" id="modal-cancel2">Cancel</button>
-        <button class="bsml bmain grn" id="modal-add">Add &amp; select item</button>
-      </div>
+    <div class="mfield">
+      <label>Category</label>
+      <select id="m-cat">
+        <option>Grocery</option><option>Vegetables</option>
+        <option>Supermarket</option><option>Packaging</option>
+      </select>
+    </div>
+    <div class="merr" id="form-err">Please enter an item name</div>
+    <div class="btnrow" style="margin-top:8px">
+      <button class="bsml bsec" id="modal-cancel">Cancel</button>
+      <button class="bsml bmain grn" id="modal-add">Add &amp; select item</button>
     </div>
   </div>
 </div>
 
 <script>
 var SCRIPT="https://script.google.com/macros/s/AKfycbw35DfkdbG8yKby0xiTehVF89TCdUV7OsSz97R8DEnKvwc3brKgdnwfPc1hOlO-KhKHDQ/exec";
-var PWD_MGR="6789", PWD_ADMIN="5555";
 
-// Role definitions
-var ROLES={
-  Chef:   {names:["Vinodh","Michael","Anand","Ramar","Thaneesh","Sandip","Monica"], canAdd:false, cls:"on-chef", badge:"sr-chef", label:"Chef"},
-  Manager:{names:["Suresh","Kajal","Fahmida","Mamta","Shaswanth"],                  canAdd:true,  pwd:PWD_MGR, cls:"on-mgr", badge:"sr-mgr", label:"Manager"},
-  Admin:  {names:["Deva","Duwaraka"],                                                canAdd:true,  pwd:PWD_ADMIN, cls:"on-admin", badge:"sr-admin", label:"Admin"}
+// ── Staff directory ───────────────────────────────────────────
+var STAFF={
+  "Deva":      {pin:"5385",role:"Admin"},
+  "Duwaraka":  {pin:"2783",role:"Admin"},
+  "Suresh":    {pin:"1111",role:"Manager"},
+  "Kajal":     {pin:"2222",role:"Manager"},
+  "Fahmida":   {pin:"3333",role:"Manager"},
+  "Mamta":     {pin:"4444",role:"Manager"},
+  "Shaswanth": {pin:"5555",role:"Manager"},
+  "Vinodh":    {pin:"1234",role:"Chef"},
+  "Michael":   {pin:"2345",role:"Chef"},
+  "Anand":     {pin:"3456",role:"Chef"},
+  "Ramar":     {pin:"4567",role:"Chef"},
+  "Thaneesh":  {pin:"5678",role:"Chef"},
+  "Sandip":    {pin:"6789",role:"Chef"},
+  "Monica":    {pin:"7890",role:"Chef"}
 };
-function getRoleOf(name){
-  for(var r in ROLES) if(ROLES[r].names.indexOf(name)>=0) return r;
-  return null;
-}
+var ROLE_BADGE={Chef:"rb-chef",Manager:"rb-mgr",Admin:"rb-admin"};
+var ROLE_LABEL={Chef:"👨‍🍳 Chef",Manager:"🗂 Manager",Admin:"⭐ Admin"};
+var CAN_ADD={Chef:false,Manager:true,Admin:true};
 
 var ALL={
-  Grocery:[["Ajinamoto","kg"],["Apalam","box"],["Atta (Chakki)","kg"],["Baking Soda","pack"],["Bay Leaves","g"],["Besan Flour","kg"],["Black Pepper","kg"],["Black Salt","g"],["Boiled Rice","bag"],["Cardamom Green","g"],["Cashew LP","box"],["Cashew Whole (Sweet)","box"],["Chana Dal","box"],["Chana Masala","nos"],["Chat Masala","nos"],["Chili Powder","kg"],["Chilly Whole Red","kg"],["Cinnamon","g"],["Cloves","g"],["Coconut Oil","box"],["Coriander Powder","kg"],["Coriander Seed","kg"],["Corn Flour","bag"],["Dates Big/Small","kg"],["Dry Ginger Powder","kg"],["Fennel Seed","kg"],["Fenugreek Seed","kg"],["Garam Masala","box"],["Ghee","box"],["Gingelly Oil","ltr"],["Idli Rice","bag"],["Jaggery","kg"],["Jeera Powder","kg"],["Jeera Whole","kg"],["Kashmiri Chili Powder","kg"],["Kashmiri Chilly Whole","kg"],["Khoa","g"],["Kitchen King Masala","nos"],["Maida","kg"],["Mix Dal","kg"],["Moong Dal","box"],["Mustard Seed","kg"],["Noodles","nos"],["Oil","box"],["Paneer","box"],["Pickle","nos"],["Pistachio / Pista","nos"],["Poppy Seed","kg"],["Rava","bag"],["Raw Rice","bag"],["Rice Basmati","kg"],["Rice Flour","kg"],["Sezwan Chutney","box"],["Soya","kg"],["Tamarind","kg"],["Tata Salt","bag"],["Toor Dal","bag"],["Turmeric Powder","kg"],["Urid Dal Whole","kg"],["Urid Split","bag"],["Vinegar","nos"],["White Chenna","bag"],["White Sugar","bag"],["Asafoetida (Hing)","g"],["Garlic Granules","g"],["Gulkand","nos"],["Mango Chutney","kg"],["Biryani Rice","kg"],["Chick Peas (Dried)","tin"],["Dates Small","kg"],["Hot Chili Whole","kg"],["Black Cardamom","pack"],["Black Split Urad Dal","kg"],["Jaljira Powder","nos"],["Nannari Syrup","nos"],["Pani Puri","nos"],["Tomato Ketchup","bottle"]],
+  Grocery:[["Ajinamoto","kg"],["Apalam","box"],["Atta (Chakki)","kg"],["Baking Soda","pack"],["Bay Leaves","g"],["Besan Flour","kg"],["Black Pepper","kg"],["Black Salt","g"],["Boiled Rice","bag"],["Cardamom Green","g"],["Cashew LP","box"],["Cashew Whole (Sweet)","box"],["Chana Dal","box"],["Chana Masala","nos"],["Chat Masala","nos"],["Chili Powder","kg"],["Chilly Whole Red","kg"],["Cinnamon","g"],["Cloves","g"],["Coconut Oil","box"],["Coriander Powder","kg"],["Coriander Seed","kg"],["Corn Flour","bag"],["Dates Big/Small","kg"],["Dry Ginger Powder","kg"],["Fennel Seed","kg"],["Fenugreek Seed","kg"],["Garam Masala","box"],["Ghee","box"],["Gingelly Oil","ltr"],["Idli Rice","bag"],["Jaggery","kg"],["Jeera Powder","kg"],["Jeere Whole","kg"],["Kashmiri Chili Powder","kg"],["Kashmiri Chilly Whole","kg"],["Khoa","g"],["Kitchen King Masala","nos"],["Maida","kg"],["Mix Dal","kg"],["Moong Dal","box"],["Mustard Seed","kg"],["Noodles","nos"],["Oil","box"],["Paneer","box"],["Pickle","nos"],["Pistachio / Pista","nos"],["Poppy Seed","kg"],["Rava","bag"],["Raw Rice","bag"],["Rice Basmati","kg"],["Rice Flour","kg"],["Sezwan Chutney","box"],["Soya","kg"],["Tamarind","kg"],["Tata Salt","bag"],["Toor Dal","bag"],["Turmeric Powder","kg"],["Urid Dal Whole","kg"],["Urid Split","bag"],["Vinegar","nos"],["White Chenna","bag"],["White Sugar","bag"],["Asafoetida (Hing)","g"],["Garlic Granules","g"],["Gulkand","nos"],["Mango Chutney","kg"],["Biryani Rice","kg"],["Chick Peas (Dried)","tin"],["Dates Small","kg"],["Hot Chili Whole","kg"],["Black Cardamom","pack"],["Black Split Urad Dal","kg"],["Jaljira Powder","nos"],["Nannari Syrup","nos"],["Pani Puri","nos"],["Tomato Ketchup","bottle"]],
   Vegetables:[["Alphonso (Mango Pulp)","box"],["Amla (Gooseberry)","kg"],["Baby Corn","box"],["Bajji Chili","kg"],["Beans","box"],["Bitter Gourd","box"],["Brinjal","kg"],["Broccoli","nos"],["Brown Onion","kg"],["Cabbage","nos"],["Carrot","bag"],["Celery","puch"],["Coffee Powder","box"],["Coriander","box"],["Cucumber","nos"],["Curd","nos"],["Curry Leaves","kg"],["Flat Beans","kg"],["Garlic","box"],["Ginger Fresh","box"],["Gobi","box"],["Green Caps","kg"],["Green Chili","kg"],["Ice Cubes","bag"],["Kesar","pack"],["Lemon","box"],["Lemon Grass","puch"],["Mint Leaf","puch"],["Mushroom","box"],["Orange","box"],["Palak","box"],["Papdi","nos"],["Potato","kg"],["Raw Banana","kg"],["Raw Sugar","kg"],["Red Cabbage","nos"],["Red Caps","kg"],["Red Onion","kg"],["Ridge Gourd","box"],["Sev","nos"],["Tea Powder","box"],["Tomato","box"],["Water","nos"],["Watermelon","nos"],["Yellow Pumpkin","nos"],["Boondhi","pack"],["Horlicks","nos"]],
   Supermarket:[["All Purpose Cleaner","ltr"],["Baby Corn Frozen","box"],["Butter 250/500","box"],["Cheese","pack"],["Chinese Veg","nos"],["Coke","nos"],["Coconut","box"],["Dishwashing Liquid","nos"],["Dishwashing Soap","nos"],["Drumstick","box"],["Fanta","nos"],["Floor Cleaner","nos"],["Floor Cleaner (Super)","ltr"],["Frozen Peas","kg"],["Full Cream Milk","ltr"],["Ginger Beer","nos"],["Glass Cleaner","ltr"],["Glitz (Domestic Cleaner)","bottle"],["Golden Milk","nos"],["Green Beans / Cut Beans","kg"],["Green Chili (Box)","box"],["Horlicks","nos"],["Ice Bags","bag"],["Jackfruit","box"],["Mixed Veg (Kurma)","nos"],["Mushroom Frozen (Cut/Whole)","nos"],["Small Onion","box"],["Snake Gourd","box"],["Solo","nos"],["Splenda / Sweetener","box"],["Sprite (2L/Can)","nos"],["Suran","box"],["Sweet Box","box"],["Thick Cream","nos"],["Water (Bottles)","nos"],["Watermelon","nos"],["White Bin Bags 20L","roll"],["White Rolls / Pav Buns","nos"],["Zero","nos"]],
   Packaging:[["250ml Container/Lid","box"],["500ml Container/Lid","box"],["Blue Cloth","nos"],["Chutney Cup/Lid (Small)","box"],["Cling Wrap","roll"],["Coffee Cup Holder Tray","box"],["Coffee Cups","box"],["Coffee Stirrers","pack"],["Dinner Napkins","box"],["Dishwashing Gloves","pair"],["Dosa Take Away","box"],["Foil Cover","pack"],["Garbage Bag","pack"],["Hairnet","pack"],["KOT Rolls Big","box"],["Straw / Foil Bags","pack"],["Take Away Bags Big/Small","box"],["Wash Room / Paper Towel","box"],["White Gloves","box"]]
 };
+
 var newItems={Grocery:[],Vegetables:[],Supermarket:[],Packaging:[]};
 var CATS=['Grocery','Vegetables','Supermarket','Packaging'];
 var TIDS={Grocery:'G',Vegetables:'V',Supermarket:'S',Packaging:'P'};
-var sel={}, activeCat='Grocery', selectedName='', selectedRole='', selectedUnit='kg';
+var sel={}, activeCat='Grocery', selectedUnit='kg';
+var currentUser=null; // {name, role}
+var pinEntry='';
 
 document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
 
+// ── tap helper ────────────────────────────────────────────────
 function tap(el,fn){
   var moved=false;
   el.addEventListener('touchstart',function(){moved=false;},{passive:true});
@@ -328,6 +343,85 @@ function showStep(n){
   for(var i=1;i<=3;i++) document.getElementById('p'+i).className='pd'+(i<=n?' on':'');
   window.scrollTo(0,0);
 }
+
+// ── PIN pad ───────────────────────────────────────────────────
+function updatePinDisplay(){
+  for(var i=0;i<4;i++){
+    document.getElementById('pd'+i).className='pin-dot'+(i<pinEntry.length?' filled':'');
+  }
+}
+document.querySelectorAll('.pin-btn[data-n]').forEach(function(btn){
+  tap(btn,function(){
+    if(pinEntry.length<4){
+      pinEntry+=this.getAttribute('data-n');
+      updatePinDisplay();
+      if(pinEntry.length===4) tryAutoLogin();
+    }
+  });
+});
+tap(document.getElementById('pin-del'),function(){
+  if(pinEntry.length>0){
+    pinEntry=pinEntry.slice(0,-1);
+    updatePinDisplay();
+  }
+});
+
+function tryAutoLogin(){
+  // Auto-attempt login when 4 digits entered
+  var name=document.getElementById('login-name').value.trim();
+  if(name) doLogin(name, pinEntry);
+}
+
+function doLogin(name, pin){
+  // Case-insensitive name match
+  var matchedKey=null;
+  Object.keys(STAFF).forEach(function(k){
+    if(k.toLowerCase()===name.toLowerCase()) matchedKey=k;
+  });
+  var err=document.getElementById('login-err');
+  if(!matchedKey || STAFF[matchedKey].pin!==pin){
+    err.style.display='block';
+    pinEntry='';updatePinDisplay();
+    return;
+  }
+  err.style.display='none';
+  currentUser={name:matchedKey, role:STAFF[matchedKey].role};
+  // Set user bar
+  document.getElementById('ub-name').textContent=matchedKey;
+  var rb=document.getElementById('ub-role');
+  rb.textContent=ROLE_LABEL[currentUser.role];
+  rb.className='role-badge '+ROLE_BADGE[currentUser.role];
+  // Set step 2 label
+  var d=new Date(document.getElementById('f-date').value+'T12:00:00');
+  document.getElementById('s2lbl').textContent=
+    document.getElementById('f-store').value+' · '+
+    d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
+  sel={};activeCat='Grocery';
+  switchTab('Grocery');updateCounts();showStep(2);
+}
+
+tap(document.getElementById('btn-login'),function(){
+  var name=document.getElementById('login-name').value.trim();
+  if(!name){document.getElementById('login-err').style.display='block';document.getElementById('login-err').textContent='Please enter your name.';return;}
+  if(pinEntry.length<4){document.getElementById('login-err').style.display='block';document.getElementById('login-err').textContent='Please enter your 4-digit PIN.';return;}
+  doLogin(name,pinEntry);
+});
+
+// Allow Enter on name field to focus PIN (already handled by pad)
+document.getElementById('login-name').addEventListener('keydown',function(e){
+  if(e.key==='Enter') document.getElementById('btn-login').click();
+});
+
+// Logout
+tap(document.getElementById('btn-logout'),function(){
+  currentUser=null;pinEntry='';
+  document.getElementById('login-name').value='';
+  updatePinDisplay();
+  document.getElementById('login-err').style.display='none';
+  sel={};showStep(1);
+});
+
+// ── Item counts ───────────────────────────────────────────────
 function updateCounts(){
   var total=Object.keys(sel).length;
   var el=document.getElementById('s2tot');
@@ -338,6 +432,8 @@ function updateCounts(){
     if(ce){ce.textContent=n;ce.className='cnt'+(n>0?' show':'');}
   });
 }
+
+// ── Render items ──────────────────────────────────────────────
 function renderItems(){
   var q=document.getElementById('srch').value.toLowerCase();
   var base=ALL[activeCat].concat(newItems[activeCat]);
@@ -353,8 +449,8 @@ function renderItems(){
       +'</div>';
   }
   if(!list.length) html='<div class="nores">No items found</div>';
-  // Show Add row only for Manager and Admin
-  if(ROLES[selectedRole]&&ROLES[selectedRole].canAdd){
+  // Add new item row — only for Manager and Admin
+  if(currentUser && CAN_ADD[currentUser.role]){
     html+='<div class="irow add-row" id="add-row">'
       +'<div style="width:22px;height:22px;border-radius:6px;border:1.5px dashed #854F0B;flex-shrink:0;display:flex;align-items:center;justify-content:center;pointer-events:none"><span style="color:#854F0B;font-size:16px;line-height:1;pointer-events:none">+</span></div>'
       +'<span class="iname" style="color:#854F0B;font-weight:500;pointer-events:none">Add new item…</span>'
@@ -375,18 +471,16 @@ function renderItems(){
   if(addRow){
     tap(addRow,function(){
       document.getElementById('m-cat').value=activeCat;
-      document.getElementById('m-pw').value='';
       document.getElementById('m-name').value='';
-      document.getElementById('pw-err').style.display='none';
       document.getElementById('form-err').style.display='none';
-      document.getElementById('modal-pw').style.display='block';
-      document.getElementById('modal-form').style.display='none';
-      document.getElementById('modal-title').textContent='Add New Item';
-      document.getElementById('modal-sub').textContent=selectedRole+' password required';
+      selectedUnit='kg';
+      document.querySelectorAll('.unit-opt').forEach(function(u){u.className='unit-opt'+(u.getAttribute('data-u')==='kg'?' on':'');});
+      document.getElementById('modal-sub').textContent='Adding to '+activeCat+' · logged as '+currentUser.name+' ('+currentUser.role+')';
       document.getElementById('modal-bg').className='modal-bg show';
     });
   }
 }
+
 function switchTab(cat){
   activeCat=cat;
   document.querySelectorAll('.ctab').forEach(function(t){
@@ -395,89 +489,19 @@ function switchTab(cat){
   });
   document.getElementById('srch').value='';renderItems();
 }
-
-// Name buttons
-document.querySelectorAll('.name-btn').forEach(function(btn){
-  tap(btn,function(){
-    document.querySelectorAll('.name-btn').forEach(function(b){
-      b.className='name-btn';
-    });
-    selectedName=this.getAttribute('data-name');
-    selectedRole=this.getAttribute('data-role');
-    var r=ROLES[selectedRole];
-    this.className='name-btn '+r.cls;
-  });
-});
-
-// Tabs
-document.querySelectorAll('.ctab').forEach(function(t){
-  tap(t,function(){switchTab(this.getAttribute('data-cat'));});
-});
+document.querySelectorAll('.ctab').forEach(function(t){tap(t,function(){switchTab(this.getAttribute('data-cat'));});});
 document.getElementById('srch').addEventListener('input',renderItems);
 
-// Password unlock
-tap(document.getElementById('modal-pw-ok'),function(){
-  var entered=document.getElementById('m-pw').value;
-  var role=ROLES[selectedRole];
-  if(entered===role.pwd){
-    document.getElementById('modal-pw').style.display='none';
-    document.getElementById('modal-form').style.display='block';
-    selectedUnit='kg';
-    document.querySelectorAll('.unit-opt').forEach(function(u){
-      u.className='unit-opt'+(u.getAttribute('data-u')==='kg'?' on':'');
-    });
-  } else {
-    document.getElementById('pw-err').style.display='block';
-  }
-});
-document.getElementById('m-pw').addEventListener('keydown',function(e){
-  if(e.key==='Enter') document.getElementById('modal-pw-ok').click();
-});
-document.querySelectorAll('.unit-opt').forEach(function(u){
-  tap(u,function(){
-    selectedUnit=this.getAttribute('data-u');
-    document.querySelectorAll('.unit-opt').forEach(function(x){x.className='unit-opt';});
-    this.className='unit-opt on';
-  });
-});
-function closeModal(){document.getElementById('modal-bg').className='modal-bg';}
-tap(document.getElementById('modal-cancel'),closeModal);
-tap(document.getElementById('modal-cancel2'),closeModal);
-tap(document.getElementById('modal-add'),function(){
-  var name=document.getElementById('m-name').value.trim();
-  var cat=document.getElementById('m-cat').value;
-  if(!name){document.getElementById('form-err').style.display='block';return;}
-  var entry=[name,selectedUnit,true];
-  newItems[cat].push(entry);ALL[cat].push(entry);
-  sel[name]={cat:cat,unit:selectedUnit,qty:'',isNew:true};
-  closeModal();
-  if(cat!==activeCat) switchTab(cat); else renderItems();
-  updateCounts();
-});
-
-// Step 1 → 2
-tap(document.getElementById('btn-n1'),function(){
-  if(!selectedName){alert('Please select your name');return;}
-  var d=new Date(document.getElementById('f-date').value+'T12:00:00');
-  var r=ROLES[selectedRole];
-  document.getElementById('s2lbl').textContent=
-    document.getElementById('f-store').value+' · '+
-    d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'})+
-    ' · '+selectedName;
-  var roleEl=document.getElementById('s2role');
-  roleEl.textContent=selectedRole;
-  roleEl.className='selected-role '+r.badge;
-  roleEl.style.display='inline-block';
-  sel={};activeCat='Grocery';switchTab('Grocery');updateCounts();showStep(2);
-});
+// ── Step 2 back ───────────────────────────────────────────────
 tap(document.getElementById('btn-b2'),function(){showStep(1);});
 
-// Step 2 → 3
+// ── Step 2 → 3 ────────────────────────────────────────────────
 tap(document.getElementById('btn-n2'),function(){
   if(!Object.keys(sel).length){alert('Please select at least one item');return;}
-  document.getElementById('q-sub').textContent=Object.keys(sel).length+' items — enter quantities';
+  document.getElementById('q-sub').textContent=Object.keys(sel).length+' items — enter quantities used';
   renderQty();showStep(3);
 });
+
 function renderQty(){
   var html='',lastCat='';
   var keys=Object.keys(sel).sort(function(a,b){return CATS.indexOf(sel[a].cat)-CATS.indexOf(sel[b].cat);});
@@ -488,8 +512,7 @@ function renderQty(){
       +'<div class="qbtn" data-n="'+nm+'" data-d="-1">−</div>'
       +'<input class="qin" type="number" min="0" step="0.5" value="'+(info.qty||'')+'" placeholder="0" data-n="'+nm+'">'
       +'<span class="qunit">'+info.unit+'</span>'
-      +'<div class="qbtn" data-n="'+nm+'" data-d="1">+</div>'
-      +'</div>';
+      +'<div class="qbtn" data-n="'+nm+'" data-d="1">+</div></div>';
   }
   document.getElementById('qlist').innerHTML=html;
   document.getElementById('qlist').querySelectorAll('.qin').forEach(function(inp){
@@ -506,7 +529,7 @@ function renderQty(){
 }
 tap(document.getElementById('btn-b3'),function(){showStep(2);});
 
-// Submit
+// ── Submit ────────────────────────────────────────────────────
 tap(document.getElementById('btn-sub'),function(){
   var btn=document.getElementById('btn-sub'),err=document.getElementById('errbox');
   btn.disabled=true;btn.innerHTML='<span class="spin"></span>Saving…';
@@ -519,14 +542,14 @@ tap(document.getElementById('btn-sub'),function(){
   var newOnes=entries.filter(function(e){return e.isNew;}).map(function(e){return e.item+' ('+e.category+')';});
   var fullNotes=notes+(newOnes.length?'\n⭐ New items: '+newOnes.join(', '):'');
   fetch(SCRIPT,{method:'POST',mode:'no-cors',body:JSON.stringify({
-    store:store,category:'See individual entries',date:date,
-    loggedBy:selectedName+' ('+selectedRole+')',
+    store:store,category:'Multiple',date:date,
+    loggedBy:currentUser.name+' ('+currentUser.role+')',
     notes:fullNotes,entries:entries
   })}).then(function(){
     var d=new Date(date+'T12:00:00'),ds=d.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
     var cats=CATS.filter(function(c){return entries.some(function(e){return e.category===c;});});
-    document.getElementById('done-txt').textContent=entries.length+' items · '+cats.join(', ')+' · '+selectedName+' · '+ds;
-    var wa='*A2B Consumption Log*\n'+store+' · '+ds+'\nLogged by: *'+selectedName+'* ('+selectedRole+')\n';
+    document.getElementById('done-txt').textContent=entries.length+' items · '+cats.join(', ')+' · '+currentUser.name+' · '+ds;
+    var wa='*A2B Consumption Log*\n'+store+' · '+ds+'\nLogged by: *'+currentUser.name+'* ('+currentUser.role+')\n';
     CATS.forEach(function(cat){
       var ce=entries.filter(function(e){return e.category===cat;});
       if(ce.length){wa+='\n*'+cat+'*\n';ce.forEach(function(e){wa+='  • '+e.item+(e.isNew?' ⭐':'')+': '+e.qty+' '+e.unit+'\n';});}
@@ -541,19 +564,41 @@ tap(document.getElementById('btn-sub'),function(){
   });
 });
 
-// Copy
+// ── Copy ──────────────────────────────────────────────────────
 tap(document.getElementById('btn-cpy'),function(){
   var txt=document.getElementById('wa-txt').textContent,done=document.getElementById('cpdone');
   try{navigator.clipboard.writeText(txt).then(function(){done.style.display='block';setTimeout(function(){done.style.display='none';},2000);});}
   catch(e){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done.style.display='block';setTimeout(function(){done.style.display='none';},2000);}
 });
 
-// Reset
+// ── Reset ─────────────────────────────────────────────────────
 tap(document.getElementById('btn-rst'),function(){
   sel={};document.getElementById('f-notes').value='';
-  selectedName='';selectedRole='';
-  document.querySelectorAll('.name-btn').forEach(function(b){b.className='name-btn';});
-  activeCat='Grocery';showStep(1);
+  activeCat='Grocery';
+  // Stay logged in — just go back to step 2
+  switchTab('Grocery');updateCounts();showStep(2);
+});
+
+// ── Modal: Add item ───────────────────────────────────────────
+document.querySelectorAll('.unit-opt').forEach(function(u){
+  tap(u,function(){
+    selectedUnit=this.getAttribute('data-u');
+    document.querySelectorAll('.unit-opt').forEach(function(x){x.className='unit-opt';});
+    this.className='unit-opt on';
+  });
+});
+function closeModal(){document.getElementById('modal-bg').className='modal-bg';}
+tap(document.getElementById('modal-cancel'),closeModal);
+tap(document.getElementById('modal-add'),function(){
+  var name=document.getElementById('m-name').value.trim();
+  var cat=document.getElementById('m-cat').value;
+  if(!name){document.getElementById('form-err').style.display='block';return;}
+  var entry=[name,selectedUnit,true];
+  newItems[cat].push(entry);ALL[cat].push(entry);
+  sel[name]={cat:cat,unit:selectedUnit,qty:'',isNew:true};
+  closeModal();
+  if(cat!==activeCat) switchTab(cat); else renderItems();
+  updateCounts();
 });
 </script>
 </body>
