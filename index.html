@@ -23,7 +23,29 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .crow:last-child{border-bottom:none}
 .clbl{font-size:12px;color:#7A7870;min-width:76px}
 select,input[type=date]{flex:1;border:none;background:transparent;color:#1A1916;font-size:14px;font-family:inherit;outline:none;text-align:right;padding:0}
-.slbl{font-size:12px;color:#7A7870;margin-bottom:8px;padding:0 2px}
+
+/* Role sections */
+.role-section{margin-bottom:14px}
+.role-label{font-size:11px;font-weight:700;letter-spacing:.06em;padding:4px 10px;border-radius:20px;display:inline-block;margin-bottom:8px}
+.rl-chef{background:#E6F1FB;color:#0C3D6E}
+.rl-mgr{background:#E1F5EE;color:#085041}
+.rl-admin{background:#FAEEDA;color:#4A2906}
+
+/* Name buttons */
+.name-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:4px}
+.name-btn{padding:12px 10px;border-radius:12px;border:1.5px solid #E2E0D8;background:#fff;color:#7A7870;font-size:13px;font-weight:500;text-align:center;cursor:pointer;font-family:inherit;touch-action:manipulation;user-select:none;-webkit-user-select:none;position:relative}
+.name-btn .role-tag{font-size:9px;border-radius:4px;padding:1px 5px;margin-left:3px;vertical-align:middle;font-weight:700}
+.name-btn.on-chef{border-color:#185FA5;background:#E6F1FB;color:#0C3D6E;font-weight:600}
+.name-btn.on-mgr{border-color:#1D9E75;background:#E1F5EE;color:#085041;font-weight:600}
+.name-btn.on-admin{border-color:#854F0B;background:#FAEEDA;color:#4A2906;font-weight:600}
+
+/* Role badge shown after selection */
+.selected-role{display:none;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-left:6px;vertical-align:middle}
+.sr-chef{background:#E6F1FB;color:#0C3D6E}
+.sr-mgr{background:#E1F5EE;color:#085041}
+.sr-admin{background:#FAEEDA;color:#4A2906}
+
+/* Category tabs */
 .cat-tabs{display:flex;border-radius:12px;overflow:hidden;border:1px solid #E2E0D8;margin-bottom:12px;background:#fff}
 .ctab{flex:1;padding:11px 4px;font-size:12px;font-weight:600;text-align:center;background:transparent;font-family:inherit;color:#7A7870;border-right:1px solid #E2E0D8;position:relative;line-height:1.25;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 .ctab:last-child{border-right:none}
@@ -31,13 +53,18 @@ select,input[type=date]{flex:1;border:none;background:transparent;color:#1A1916;
 .cG.on{background:#1D9E75}.cV.on{background:#185FA5}.cS.on{background:#993556}.cP.on{background:#854F0B}
 .cnt{position:absolute;top:3px;right:3px;width:15px;height:15px;border-radius:50%;background:#E53935;color:#fff;font-size:9px;font-weight:700;display:none;align-items:center;justify-content:center;pointer-events:none}
 .cnt.show{display:flex}
+
+/* Search */
 .srchwrap{position:relative;margin-bottom:10px}
-.srchwrap input{width:100%;border:1px solid #E2E0D8;border-radius:10px;background:#fff;padding:11px 12px 11px 38px;font-size:14px;color:#1A1916;font-family:inherit;outline:none}
+.srchwrap input[type=text]{width:100%;border:1px solid #E2E0D8;border-radius:10px;background:#fff;padding:11px 12px 11px 38px;font-size:14px;color:#1A1916;font-family:inherit;outline:none}
 .sico{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#7A7870;pointer-events:none}
-.ilist{border-radius:12px;border:1px solid #E2E0D8;overflow:hidden;max-height:320px;overflow-y:auto;margin-bottom:10px;background:#fff;-webkit-overflow-scrolling:touch}
+
+/* Item list */
+.ilist{border-radius:12px;border:1px solid #E2E0D8;overflow:hidden;max-height:300px;overflow-y:auto;margin-bottom:10px;background:#fff;-webkit-overflow-scrolling:touch}
 .irow{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid #E2E0D8;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 .irow:last-child{border-bottom:none}
 .irow.on{background:#E1F5EE}
+.irow.add-row{background:#FFF8E1}
 .chk{width:22px;height:22px;border-radius:6px;border:1.5px solid #E2E0D8;flex-shrink:0;pointer-events:none}
 .chk.on{background:#1D9E75;border-color:#1D9E75;display:flex;align-items:center;justify-content:center}
 .chk.on::after{content:'';display:block;width:10px;height:6px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
@@ -45,6 +72,8 @@ select,input[type=date]{flex:1;border:none;background:transparent;color:#1A1916;
 .iunit{font-size:12px;color:#7A7870;pointer-events:none}
 .nores{padding:30px;text-align:center;color:#7A7870;font-size:14px}
 .scnt{font-size:12px;color:#7A7870;margin-bottom:8px;padding:0 2px}
+
+/* Qty */
 .qlist{border-radius:12px;border:1px solid #E2E0D8;overflow:hidden;margin-bottom:12px;background:#fff}
 .qrow{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid #E2E0D8}
 .qrow:last-child{border-bottom:none}
@@ -54,14 +83,31 @@ select,input[type=date]{flex:1;border:none;background:transparent;color:#1A1916;
 .qbtn{width:34px;height:34px;border-radius:8px;border:1px solid #E2E0D8;background:#F7F6F3;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#1A1916;touch-action:manipulation;user-select:none}
 .qin{width:58px;padding:6px 4px;border:1px solid #E2E0D8;border-radius:8px;font-size:14px;text-align:center;background:#F7F6F3;color:#1A1916;font-family:inherit}
 textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;color:#1A1916;font-size:14px;font-family:inherit;padding:12px 14px;resize:none;outline:none;margin-bottom:12px}
+
+/* Buttons */
 .btnrow{display:flex;gap:8px}
 .bmain{flex:1;padding:15px;border-radius:12px;border:none;background:#1A1916;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation}
 .bmain.grn{background:#1D9E75}
 .bmain:disabled{opacity:.5}
 .bsec{padding:15px 18px;border-radius:12px;border:1px solid #E2E0D8;background:#fff;color:#1A1916;font-size:15px;cursor:pointer;font-family:inherit;touch-action:manipulation}
-.rvrow{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid #E2E0D8;font-size:13px}
-.rvrow:last-child{border-bottom:none}
-.rvlbl{color:#7A7870}.rvval{font-weight:500;text-align:right}
+.bsml{padding:10px 16px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation}
+
+/* Modal */
+.modal-bg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;justify-content:center}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:460px}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:4px}
+.modal-sub{font-size:12px;color:#7A7870;margin-bottom:14px}
+.mfield{margin-bottom:12px}
+.mfield label{display:block;font-size:12px;color:#7A7870;margin-bottom:5px}
+.mfield input[type=text],.mfield input[type=password],.mfield select{width:100%;border:1px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:11px 12px;font-size:14px;color:#1A1916;font-family:inherit;outline:none}
+.mfield input:focus{border-color:#185FA5}
+.merr{font-size:12px;color:#C0392B;margin-top:5px;display:none}
+.unit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.unit-opt{padding:8px 4px;border-radius:8px;border:1px solid #E2E0D8;background:#fff;font-size:12px;text-align:center;cursor:pointer;touch-action:manipulation;user-select:none;font-family:inherit;color:#7A7870}
+.unit-opt.on{border-color:#185FA5;background:#E6F1FB;color:#0C3D6E;font-weight:600}
+
+/* Success */
 .succ{background:#E1F5EE;border-radius:16px;padding:28px 20px;text-align:center;margin-bottom:14px}
 .tick{width:52px;height:52px;border-radius:50%;background:#1D9E75;margin:0 auto 14px;display:flex;align-items:center;justify-content:center}
 .tick::after{content:'';display:block;width:22px;height:13px;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(-45deg) translate(2px,-2px)}
@@ -98,24 +144,57 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
       <select id="f-store"><option>Harrisdale A2B</option><option>Yokine A2B</option></select>
     </div>
     <div class="crow"><span class="clbl">Date</span><input type="date" id="f-date"></div>
-    <div class="crow"><span class="clbl">Logged by</span>
-      <select id="f-who"><option>Chef — Kitchen</option><option>Manager</option><option>Other</option></select>
+  </div>
+
+  <div class="role-section">
+    <div><span class="role-label rl-chef">👨‍🍳 Chef</span></div>
+    <div class="name-grid">
+      <div class="name-btn" data-name="Vinodh" data-role="Chef">Vinodh</div>
+      <div class="name-btn" data-name="Michael" data-role="Chef">Michael</div>
+      <div class="name-btn" data-name="Anand" data-role="Chef">Anand</div>
+      <div class="name-btn" data-name="Ramar" data-role="Chef">Ramar</div>
+      <div class="name-btn" data-name="Thaneesh" data-role="Chef">Thaneesh</div>
+      <div class="name-btn" data-name="Sandip" data-role="Chef">Sandip</div>
+      <div class="name-btn" data-name="Monica" data-role="Chef">Monica</div>
     </div>
   </div>
+
+  <div class="role-section">
+    <div><span class="role-label rl-mgr">🗂 Manager</span></div>
+    <div class="name-grid">
+      <div class="name-btn" data-name="Suresh" data-role="Manager">Suresh</div>
+      <div class="name-btn" data-name="Kajal" data-role="Manager">Kajal</div>
+      <div class="name-btn" data-name="Fahmida" data-role="Manager">Fahmida</div>
+      <div class="name-btn" data-name="Mamta" data-role="Manager">Mamta</div>
+      <div class="name-btn" data-name="Shaswanth" data-role="Manager">Shaswanth</div>
+    </div>
+  </div>
+
+  <div class="role-section">
+    <div><span class="role-label rl-admin">⭐ Admin</span></div>
+    <div class="name-grid">
+      <div class="name-btn" data-name="Deva" data-role="Admin">Deva</div>
+      <div class="name-btn" data-name="Duwaraka" data-role="Admin">Duwaraka</div>
+    </div>
+  </div>
+
   <div class="btnrow"><button class="bmain" id="btn-n1">Next — select items</button></div>
 </div>
 
 <!-- STEP 2 -->
 <div class="step" id="s2">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-    <span style="font-size:13px;color:#7A7870" id="s2lbl"></span>
+    <div style="font-size:13px;color:#7A7870">
+      <span id="s2lbl"></span>
+      <span class="selected-role" id="s2role"></span>
+    </div>
     <span style="font-size:13px;font-weight:600;color:#1D9E75" id="s2tot">0 items</span>
   </div>
   <div class="cat-tabs">
-    <div class="ctab cG on" id="tab-G" data-cat="Grocery">Grocery<br><span style="font-weight:400;font-size:10px">78</span><span class="cnt" id="cnt-G"></span></div>
-    <div class="ctab cV" id="tab-V" data-cat="Vegetables">Veg<br><span style="font-weight:400;font-size:10px">47</span><span class="cnt" id="cnt-V"></span></div>
-    <div class="ctab cS" id="tab-S" data-cat="Supermarket">Super<br><span style="font-weight:400;font-size:10px">39</span><span class="cnt" id="cnt-S"></span></div>
-    <div class="ctab cP" id="tab-P" data-cat="Packaging">Pack<br><span style="font-weight:400;font-size:10px">19</span><span class="cnt" id="cnt-P"></span></div>
+    <div class="ctab cG on" data-cat="Grocery">Grocery<br><span style="font-weight:400;font-size:10px">78</span><span class="cnt" id="cnt-G"></span></div>
+    <div class="ctab cV" data-cat="Vegetables">Veg<br><span style="font-weight:400;font-size:10px">47</span><span class="cnt" id="cnt-V"></span></div>
+    <div class="ctab cS" data-cat="Supermarket">Super<br><span style="font-weight:400;font-size:10px">39</span><span class="cnt" id="cnt-S"></span></div>
+    <div class="ctab cP" data-cat="Packaging">Pack<br><span style="font-weight:400;font-size:10px">19</span><span class="cnt" id="cnt-P"></span></div>
   </div>
   <div class="srchwrap">
     <svg class="sico" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -136,7 +215,7 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
     <div style="font-size:12px;color:#7A7870" id="q-sub"></div>
   </div>
   <div class="qlist" id="qlist"></div>
-  <p class="slbl">Notes (optional)</p>
+  <p style="font-size:12px;color:#7A7870;margin-bottom:8px">Notes (optional)</p>
   <textarea id="f-notes" rows="2" placeholder="e.g. Higher usage — weekend event"></textarea>
   <div class="btnrow">
     <button class="bsec" id="btn-b3">Back</button>
@@ -148,28 +227,92 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
 <!-- STEP 4 -->
 <div class="step" id="s4">
   <div class="succ"><div class="tick"></div><h2>Saved ✓</h2><p id="done-txt"></p></div>
-  <p class="slbl" style="margin-bottom:8px">Copy and send to manager on WhatsApp</p>
+  <p style="font-size:12px;color:#7A7870;margin-bottom:8px">Copy and send to manager on WhatsApp</p>
   <div class="wawrap"><div class="wamsg" id="wa-txt"></div></div>
   <button class="cpybtn" id="btn-cpy">📋 Copy WhatsApp message</button>
   <div class="cpdone" id="cpdone">✓ Copied!</div>
   <div class="btnrow" style="margin-top:8px"><button class="bmain" id="btn-rst">Log again</button></div>
 </div>
 
+<!-- Add Item Modal -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3 id="modal-title">Add New Item</h3>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div id="modal-pw">
+      <div class="mfield">
+        <label>Password</label>
+        <input type="password" id="m-pw" placeholder="Enter password" maxlength="10">
+        <div class="merr" id="pw-err">Incorrect password. Managers use 6789, Admins use 5555.</div>
+      </div>
+      <div class="btnrow">
+        <button class="bsml bsec" id="modal-cancel">Cancel</button>
+        <button class="bsml bmain" id="modal-pw-ok">Unlock</button>
+      </div>
+    </div>
+    <div id="modal-form" style="display:none">
+      <div class="mfield">
+        <label>Item name</label>
+        <input type="text" id="m-name" placeholder="e.g. Coconut Milk">
+      </div>
+      <div class="mfield">
+        <label>Unit</label>
+        <div class="unit-grid">
+          <div class="unit-opt on" data-u="kg">kg</div>
+          <div class="unit-opt" data-u="g">g</div>
+          <div class="unit-opt" data-u="ltr">ltr</div>
+          <div class="unit-opt" data-u="nos">nos</div>
+          <div class="unit-opt" data-u="box">box</div>
+          <div class="unit-opt" data-u="bag">bag</div>
+          <div class="unit-opt" data-u="pack">pack</div>
+          <div class="unit-opt" data-u="roll">roll</div>
+          <div class="unit-opt" data-u="tin">tin</div>
+          <div class="unit-opt" data-u="bottle">bottle</div>
+          <div class="unit-opt" data-u="pair">pair</div>
+          <div class="unit-opt" data-u="puch">puch</div>
+        </div>
+      </div>
+      <div class="mfield">
+        <label>Category</label>
+        <select id="m-cat">
+          <option>Grocery</option><option>Vegetables</option>
+          <option>Supermarket</option><option>Packaging</option>
+        </select>
+      </div>
+      <div class="merr" id="form-err">Please enter an item name</div>
+      <div class="btnrow" style="margin-top:8px">
+        <button class="bsml bsec" id="modal-cancel2">Cancel</button>
+        <button class="bsml bmain grn" id="modal-add">Add &amp; select item</button>
+      </div>
+    </div>
+  </div>
 </div>
+
 <script>
 var SCRIPT="https://script.google.com/macros/s/AKfycbw8H9mLYoy6yqFh0fFwuVMm2ovKg2wRH9bSwXI3fXnSTP67PtdZp_icYI9kfuDRgZrmUg/exec";
+var PWD_MGR="6789", PWD_ADMIN="5555";
+
+// Role definitions
+var ROLES={
+  Chef:   {names:["Vinodh","Michael","Anand","Ramar","Thaneesh","Sandip","Monica"], canAdd:false, cls:"on-chef", badge:"sr-chef", label:"Chef"},
+  Manager:{names:["Suresh","Kajal","Fahmida","Mamta","Shaswanth"],                  canAdd:true,  pwd:PWD_MGR, cls:"on-mgr", badge:"sr-mgr", label:"Manager"},
+  Admin:  {names:["Deva","Duwaraka"],                                                canAdd:true,  pwd:PWD_ADMIN, cls:"on-admin", badge:"sr-admin", label:"Admin"}
+};
+function getRoleOf(name){
+  for(var r in ROLES) if(ROLES[r].names.indexOf(name)>=0) return r;
+  return null;
+}
+
 var ALL={
   Grocery:[["Ajinamoto","kg"],["Apalam","box"],["Atta (Chakki)","kg"],["Baking Soda","pack"],["Bay Leaves","g"],["Besan Flour","kg"],["Black Pepper","kg"],["Black Salt","g"],["Boiled Rice","bag"],["Cardamom Green","g"],["Cashew LP","box"],["Cashew Whole (Sweet)","box"],["Chana Dal","box"],["Chana Masala","nos"],["Chat Masala","nos"],["Chili Powder","kg"],["Chilly Whole Red","kg"],["Cinnamon","g"],["Cloves","g"],["Coconut Oil","box"],["Coriander Powder","kg"],["Coriander Seed","kg"],["Corn Flour","bag"],["Dates Big/Small","kg"],["Dry Ginger Powder","kg"],["Fennel Seed","kg"],["Fenugreek Seed","kg"],["Garam Masala","box"],["Ghee","box"],["Gingelly Oil","ltr"],["Idli Rice","bag"],["Jaggery","kg"],["Jeera Powder","kg"],["Jeera Whole","kg"],["Kashmiri Chili Powder","kg"],["Kashmiri Chilly Whole","kg"],["Khoa","g"],["Kitchen King Masala","nos"],["Maida","kg"],["Mix Dal","kg"],["Moong Dal","box"],["Mustard Seed","kg"],["Noodles","nos"],["Oil","box"],["Paneer","box"],["Pickle","nos"],["Pistachio / Pista","nos"],["Poppy Seed","kg"],["Rava","bag"],["Raw Rice","bag"],["Rice Basmati","kg"],["Rice Flour","kg"],["Sezwan Chutney","box"],["Soya","kg"],["Tamarind","kg"],["Tata Salt","bag"],["Toor Dal","bag"],["Turmeric Powder","kg"],["Urid Dal Whole","kg"],["Urid Split","bag"],["Vinegar","nos"],["White Chenna","bag"],["White Sugar","bag"],["Asafoetida (Hing)","g"],["Garlic Granules","g"],["Gulkand","nos"],["Mango Chutney","kg"],["Biryani Rice","kg"],["Chick Peas (Dried)","tin"],["Dates Small","kg"],["Hot Chili Whole","kg"],["Black Cardamom","pack"],["Black Split Urad Dal","kg"],["Jaljira Powder","nos"],["Nannari Syrup","nos"],["Pani Puri","nos"],["Tomato Ketchup","bottle"]],
   Vegetables:[["Alphonso (Mango Pulp)","box"],["Amla (Gooseberry)","kg"],["Baby Corn","box"],["Bajji Chili","kg"],["Beans","box"],["Bitter Gourd","box"],["Brinjal","kg"],["Broccoli","nos"],["Brown Onion","kg"],["Cabbage","nos"],["Carrot","bag"],["Celery","puch"],["Coffee Powder","box"],["Coriander","box"],["Cucumber","nos"],["Curd","nos"],["Curry Leaves","kg"],["Flat Beans","kg"],["Garlic","box"],["Ginger Fresh","box"],["Gobi","box"],["Green Caps","kg"],["Green Chili","kg"],["Ice Cubes","bag"],["Kesar","pack"],["Lemon","box"],["Lemon Grass","puch"],["Mint Leaf","puch"],["Mushroom","box"],["Orange","box"],["Palak","box"],["Papdi","nos"],["Potato","kg"],["Raw Banana","kg"],["Raw Sugar","kg"],["Red Cabbage","nos"],["Red Caps","kg"],["Red Onion","kg"],["Ridge Gourd","box"],["Sev","nos"],["Tea Powder","box"],["Tomato","box"],["Water","nos"],["Watermelon","nos"],["Yellow Pumpkin","nos"],["Boondhi","pack"],["Horlicks","nos"]],
   Supermarket:[["All Purpose Cleaner","ltr"],["Baby Corn Frozen","box"],["Butter 250/500","box"],["Cheese","pack"],["Chinese Veg","nos"],["Coke","nos"],["Coconut","box"],["Dishwashing Liquid","nos"],["Dishwashing Soap","nos"],["Drumstick","box"],["Fanta","nos"],["Floor Cleaner","nos"],["Floor Cleaner (Super)","ltr"],["Frozen Peas","kg"],["Full Cream Milk","ltr"],["Ginger Beer","nos"],["Glass Cleaner","ltr"],["Glitz (Domestic Cleaner)","bottle"],["Golden Milk","nos"],["Green Beans / Cut Beans","kg"],["Green Chili (Box)","box"],["Horlicks","nos"],["Ice Bags","bag"],["Jackfruit","box"],["Mixed Veg (Kurma)","nos"],["Mushroom Frozen (Cut/Whole)","nos"],["Small Onion","box"],["Snake Gourd","box"],["Solo","nos"],["Splenda / Sweetener","box"],["Sprite (2L/Can)","nos"],["Suran","box"],["Sweet Box","box"],["Thick Cream","nos"],["Water (Bottles)","nos"],["Watermelon","nos"],["White Bin Bags 20L","roll"],["White Rolls / Pav Buns","nos"],["Zero","nos"]],
   Packaging:[["250ml Container/Lid","box"],["500ml Container/Lid","box"],["Blue Cloth","nos"],["Chutney Cup/Lid (Small)","box"],["Cling Wrap","roll"],["Coffee Cup Holder Tray","box"],["Coffee Cups","box"],["Coffee Stirrers","pack"],["Dinner Napkins","box"],["Dishwashing Gloves","pair"],["Dosa Take Away","box"],["Foil Cover","pack"],["Garbage Bag","pack"],["Hairnet","pack"],["KOT Rolls Big","box"],["Straw / Foil Bags","pack"],["Take Away Bags Big/Small","box"],["Wash Room / Paper Towel","box"],["White Gloves","box"]]
 };
+var newItems={Grocery:[],Vegetables:[],Supermarket:[],Packaging:[]};
 var CATS=['Grocery','Vegetables','Supermarket','Packaging'];
 var TIDS={Grocery:'G',Vegetables:'V',Supermarket:'S',Packaging:'P'};
-// sel stores ALL selected items across ALL categories
-// key = itemName, value = {cat, unit, qty}
-var sel={};
-var activeCat='Grocery';
+var sel={}, activeCat='Grocery', selectedName='', selectedRole='', selectedUnit='kg';
 
 document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
 
@@ -180,119 +323,168 @@ function tap(el,fn){
   el.addEventListener('touchend',function(e){if(!moved){e.preventDefault();fn.call(el,e);}});
   el.addEventListener('click',function(e){fn.call(el,e);});
 }
-
 function showStep(n){
   for(var i=1;i<=4;i++) document.getElementById('s'+i).className='step'+(i===n?' on':'');
   for(var i=1;i<=3;i++) document.getElementById('p'+i).className='pd'+(i<=n?' on':'');
   window.scrollTo(0,0);
 }
-
 function updateCounts(){
   var total=Object.keys(sel).length;
-  var totEl=document.getElementById('s2tot');
-  if(totEl) totEl.textContent=total?total+' item'+(total>1?'s':'')+' selected':'0 items selected';
-  CATS.forEach(function(cat){
-    var tid=TIDS[cat];
-    var n=Object.keys(sel).filter(function(k){return sel[k].cat===cat;}).length;
-    var el=document.getElementById('cnt-'+tid);
-    if(el){el.textContent=n;el.className='cnt'+(n>0?' show':'');}
+  var el=document.getElementById('s2tot');
+  if(el) el.textContent=total?total+' item'+(total>1?'s':'')+' selected':'0 items';
+  CATS.forEach(function(c){
+    var n=Object.keys(sel).filter(function(k){return sel[k].cat===c;}).length;
+    var ce=document.getElementById('cnt-'+TIDS[c]);
+    if(ce){ce.textContent=n;ce.className='cnt'+(n>0?' show':'');}
   });
 }
-
 function renderItems(){
   var q=document.getElementById('srch').value.toLowerCase();
-  var list=ALL[activeCat].filter(function(r){return !q||r[0].toLowerCase().indexOf(q)>=0;});
+  var base=ALL[activeCat].concat(newItems[activeCat]);
+  var list=base.filter(function(r){return !q||r[0].toLowerCase().indexOf(q)>=0;});
   var html='';
-  if(!list.length){
-    html='<div class="nores">No items found</div>';
-  } else {
-    for(var i=0;i<list.length;i++){
-      var nm=list[i][0],un=list[i][1];
-      var on=sel[nm]&&sel[nm].cat===activeCat;
-      html+='<div class="irow'+(on?' on':'')+'" data-n="'+nm+'" data-u="'+un+'">'
-        +'<div class="chk'+(on?' on':'')+'"></div>'
-        +'<span class="iname">'+nm+'</span>'
-        +'<span class="iunit">'+un+'</span>'
-        +'</div>';
-    }
+  for(var i=0;i<list.length;i++){
+    var nm=list[i][0],un=list[i][1],isNew=list[i][2];
+    var on=sel[nm]&&sel[nm].cat===activeCat;
+    html+='<div class="irow'+(on?' on':'')+'" data-n="'+nm+'" data-u="'+un+'">'
+      +'<div class="chk'+(on?' on':'')+'"></div>'
+      +'<span class="iname">'+nm+(isNew?' <span style="font-size:10px;background:#FFF3CD;color:#854F0B;border-radius:3px;padding:1px 4px">new</span>':'')+'</span>'
+      +'<span class="iunit">'+un+'</span>'
+      +'</div>';
+  }
+  if(!list.length) html='<div class="nores">No items found</div>';
+  // Show Add row only for Manager and Admin
+  if(ROLES[selectedRole]&&ROLES[selectedRole].canAdd){
+    html+='<div class="irow add-row" id="add-row">'
+      +'<div style="width:22px;height:22px;border-radius:6px;border:1.5px dashed #854F0B;flex-shrink:0;display:flex;align-items:center;justify-content:center;pointer-events:none"><span style="color:#854F0B;font-size:16px;line-height:1;pointer-events:none">+</span></div>'
+      +'<span class="iname" style="color:#854F0B;font-weight:500;pointer-events:none">Add new item…</span>'
+      +'</div>';
   }
   document.getElementById('ilist').innerHTML=html;
-  // Count selected in this category
   var n=Object.keys(sel).filter(function(k){return sel[k].cat===activeCat;}).length;
-  document.getElementById('scnt').textContent=n?n+' selected in '+activeCat+' — tap more or switch tab':'Tap items to select';
-  // Attach tap to each row
-  document.getElementById('ilist').querySelectorAll('.irow').forEach(function(row){
+  document.getElementById('scnt').textContent=n?n+' selected in '+activeCat+' — switch tabs for more':'Tap items to select';
+  document.getElementById('ilist').querySelectorAll('.irow:not(.add-row)').forEach(function(row){
     tap(row,function(){
       var nm=this.getAttribute('data-n'),un=this.getAttribute('data-u');
-      if(sel[nm]&&sel[nm].cat===activeCat){
-        delete sel[nm];
-      } else {
-        sel[nm]={cat:activeCat,unit:un,qty:''};
-      }
-      updateCounts();
-      renderItems();
+      if(sel[nm]&&sel[nm].cat===activeCat) delete sel[nm];
+      else sel[nm]={cat:activeCat,unit:un,qty:'',isNew:false};
+      updateCounts();renderItems();
     });
   });
+  var addRow=document.getElementById('add-row');
+  if(addRow){
+    tap(addRow,function(){
+      document.getElementById('m-cat').value=activeCat;
+      document.getElementById('m-pw').value='';
+      document.getElementById('m-name').value='';
+      document.getElementById('pw-err').style.display='none';
+      document.getElementById('form-err').style.display='none';
+      document.getElementById('modal-pw').style.display='block';
+      document.getElementById('modal-form').style.display='none';
+      document.getElementById('modal-title').textContent='Add New Item';
+      document.getElementById('modal-sub').textContent=selectedRole+' password required';
+      document.getElementById('modal-bg').className='modal-bg show';
+    });
+  }
 }
-
 function switchTab(cat){
   activeCat=cat;
   document.querySelectorAll('.ctab').forEach(function(t){
     var tc=t.getAttribute('data-cat');
     t.className='ctab c'+TIDS[tc]+(tc===cat?' on':'');
   });
-  document.getElementById('srch').value='';
-  renderItems();
+  document.getElementById('srch').value='';renderItems();
 }
 
-// Wire up tabs with tap()
-document.querySelectorAll('.ctab').forEach(function(t){
-  tap(t,function(){
-    switchTab(this.getAttribute('data-cat'));
+// Name buttons
+document.querySelectorAll('.name-btn').forEach(function(btn){
+  tap(btn,function(){
+    document.querySelectorAll('.name-btn').forEach(function(b){
+      b.className='name-btn';
+    });
+    selectedName=this.getAttribute('data-name');
+    selectedRole=this.getAttribute('data-role');
+    var r=ROLES[selectedRole];
+    this.className='name-btn '+r.cls;
   });
 });
 
-// Search
+// Tabs
+document.querySelectorAll('.ctab').forEach(function(t){
+  tap(t,function(){switchTab(this.getAttribute('data-cat'));});
+});
 document.getElementById('srch').addEventListener('input',renderItems);
+
+// Password unlock
+tap(document.getElementById('modal-pw-ok'),function(){
+  var entered=document.getElementById('m-pw').value;
+  var role=ROLES[selectedRole];
+  if(entered===role.pwd){
+    document.getElementById('modal-pw').style.display='none';
+    document.getElementById('modal-form').style.display='block';
+    selectedUnit='kg';
+    document.querySelectorAll('.unit-opt').forEach(function(u){
+      u.className='unit-opt'+(u.getAttribute('data-u')==='kg'?' on':'');
+    });
+  } else {
+    document.getElementById('pw-err').style.display='block';
+  }
+});
+document.getElementById('m-pw').addEventListener('keydown',function(e){
+  if(e.key==='Enter') document.getElementById('modal-pw-ok').click();
+});
+document.querySelectorAll('.unit-opt').forEach(function(u){
+  tap(u,function(){
+    selectedUnit=this.getAttribute('data-u');
+    document.querySelectorAll('.unit-opt').forEach(function(x){x.className='unit-opt';});
+    this.className='unit-opt on';
+  });
+});
+function closeModal(){document.getElementById('modal-bg').className='modal-bg';}
+tap(document.getElementById('modal-cancel'),closeModal);
+tap(document.getElementById('modal-cancel2'),closeModal);
+tap(document.getElementById('modal-add'),function(){
+  var name=document.getElementById('m-name').value.trim();
+  var cat=document.getElementById('m-cat').value;
+  if(!name){document.getElementById('form-err').style.display='block';return;}
+  var entry=[name,selectedUnit,true];
+  newItems[cat].push(entry);ALL[cat].push(entry);
+  sel[name]={cat:cat,unit:selectedUnit,qty:'',isNew:true};
+  closeModal();
+  if(cat!==activeCat) switchTab(cat); else renderItems();
+  updateCounts();
+});
 
 // Step 1 → 2
 tap(document.getElementById('btn-n1'),function(){
+  if(!selectedName){alert('Please select your name');return;}
   var d=new Date(document.getElementById('f-date').value+'T12:00:00');
+  var r=ROLES[selectedRole];
   document.getElementById('s2lbl').textContent=
     document.getElementById('f-store').value+' · '+
-    d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
-  // DO NOT reset sel here — keep any existing selections if returning
-  sel={};
-  activeCat='Grocery';
-  switchTab('Grocery');
-  updateCounts();
-  showStep(2);
+    d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'})+
+    ' · '+selectedName;
+  var roleEl=document.getElementById('s2role');
+  roleEl.textContent=selectedRole;
+  roleEl.className='selected-role '+r.badge;
+  roleEl.style.display='inline-block';
+  sel={};activeCat='Grocery';switchTab('Grocery');updateCounts();showStep(2);
 });
-
-// Step 2 back
 tap(document.getElementById('btn-b2'),function(){showStep(1);});
 
 // Step 2 → 3
 tap(document.getElementById('btn-n2'),function(){
   if(!Object.keys(sel).length){alert('Please select at least one item');return;}
-  document.getElementById('q-sub').textContent=Object.keys(sel).length+' items — enter how much was used';
-  renderQty();
-  showStep(3);
+  document.getElementById('q-sub').textContent=Object.keys(sel).length+' items — enter quantities';
+  renderQty();showStep(3);
 });
-
 function renderQty(){
   var html='',lastCat='';
-  var keys=Object.keys(sel).sort(function(a,b){
-    return CATS.indexOf(sel[a].cat)-CATS.indexOf(sel[b].cat);
-  });
+  var keys=Object.keys(sel).sort(function(a,b){return CATS.indexOf(sel[a].cat)-CATS.indexOf(sel[b].cat);});
   for(var i=0;i<keys.length;i++){
     var nm=keys[i],info=sel[nm];
-    if(info.cat!==lastCat){
-      html+='<div class="qsec">'+info.cat.toUpperCase()+'</div>';
-      lastCat=info.cat;
-    }
-    html+='<div class="qrow">'
-      +'<span class="qname">'+nm+'</span>'
+    if(info.cat!==lastCat){html+='<div class="qsec">'+info.cat.toUpperCase()+'</div>';lastCat=info.cat;}
+    html+='<div class="qrow"><span class="qname">'+nm+(info.isNew?' <span style="font-size:10px;background:#FFF3CD;color:#854F0B;border-radius:3px;padding:1px 4px">new</span>':'')+'</span>'
       +'<div class="qbtn" data-n="'+nm+'" data-d="-1">−</div>'
       +'<input class="qin" type="number" min="0" step="0.5" value="'+(info.qty||'')+'" placeholder="0" data-n="'+nm+'">'
       +'<span class="qunit">'+info.unit+'</span>'
@@ -312,34 +504,35 @@ function renderQty(){
     });
   });
 }
-
-// Step 3 back
 tap(document.getElementById('btn-b3'),function(){showStep(2);});
 
 // Submit
 tap(document.getElementById('btn-sub'),function(){
-  var btn=document.getElementById('btn-sub');
-  var err=document.getElementById('errbox');
+  var btn=document.getElementById('btn-sub'),err=document.getElementById('errbox');
   btn.disabled=true;btn.innerHTML='<span class="spin"></span>Saving…';
   var store=document.getElementById('f-store').value;
-  var who=document.getElementById('f-who').value;
   var date=document.getElementById('f-date').value;
   var notes=document.getElementById('f-notes').value;
   var entries=Object.keys(sel).map(function(item){
-    return{item:item,unit:sel[item].unit,qty:parseFloat(sel[item].qty)||0,category:sel[item].cat};
+    return{item:item,unit:sel[item].unit,qty:parseFloat(sel[item].qty)||0,category:sel[item].cat,isNew:sel[item].isNew||false};
   });
+  var newOnes=entries.filter(function(e){return e.isNew;}).map(function(e){return e.item+' ('+e.category+')';});
+  var fullNotes=notes+(newOnes.length?'\n⭐ New items: '+newOnes.join(', '):'');
   fetch(SCRIPT,{method:'POST',mode:'no-cors',body:JSON.stringify({
-    store:store,category:'Multiple',date:date,loggedBy:who,notes:notes,entries:entries
+    store:store,category:'Multiple',date:date,
+    loggedBy:selectedName+' ('+selectedRole+')',
+    notes:fullNotes,entries:entries
   })}).then(function(){
     var d=new Date(date+'T12:00:00'),ds=d.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
     var cats=CATS.filter(function(c){return entries.some(function(e){return e.category===c;});});
-    document.getElementById('done-txt').textContent=entries.length+' items · '+cats.join(', ')+' · '+ds;
-    var wa='*A2B Consumption Log*\n'+store+' · '+ds+'\nLogged by: '+who+'\n';
+    document.getElementById('done-txt').textContent=entries.length+' items · '+cats.join(', ')+' · '+selectedName+' · '+ds;
+    var wa='*A2B Consumption Log*\n'+store+' · '+ds+'\nLogged by: *'+selectedName+'* ('+selectedRole+')\n';
     CATS.forEach(function(cat){
       var ce=entries.filter(function(e){return e.category===cat;});
-      if(ce.length){wa+='\n*'+cat+'*\n';ce.forEach(function(e){wa+='  • '+e.item+': '+e.qty+' '+e.unit+'\n';});}
+      if(ce.length){wa+='\n*'+cat+'*\n';ce.forEach(function(e){wa+='  • '+e.item+(e.isNew?' ⭐':'')+': '+e.qty+' '+e.unit+'\n';});}
     });
     if(notes) wa+='\nNote: '+notes;
+    if(newOnes.length) wa+='\n⭐ New items added: '+newOnes.join(', ');
     document.getElementById('wa-txt').textContent=wa.trim();
     showStep(4);
   }).catch(function(e){
@@ -358,6 +551,8 @@ tap(document.getElementById('btn-cpy'),function(){
 // Reset
 tap(document.getElementById('btn-rst'),function(){
   sel={};document.getElementById('f-notes').value='';
+  selectedName='';selectedRole='';
+  document.querySelectorAll('.name-btn').forEach(function(b){b.className='name-btn';});
   activeCat='Grocery';showStep(1);
 });
 </script>
