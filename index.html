@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A2B Consumption Log</title>
+<title>A2B Consumption Log v5</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1A1916;font-size:15px}
@@ -17,74 +17,73 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .prog{display:flex;gap:4px;margin-bottom:14px}
 .pd{flex:1;height:3px;border-radius:2px;background:#E2E0D8;transition:background .25s}
 .pd.on{background:#1D9E75}
-.step{display:none}.step.on{display:block}
+.scr{display:none}.scr.on{display:block}
+/* Login */
+.lbox{background:#fff;border-radius:16px;border:1px solid #E2E0D8;padding:24px 20px;margin-bottom:12px}
+.lbox h2{font-size:17px;font-weight:700;margin-bottom:4px;text-align:center}
+.lbox p{font-size:13px;color:#7A7870;margin-bottom:20px;text-align:center}
+.lf{margin-bottom:12px}
+.lf label{display:block;font-size:12px;color:#7A7870;margin-bottom:5px;font-weight:500}
+.lf input{width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:12px 14px;font-size:16px;color:#1A1916;font-family:inherit;outline:none}
+.lf input:focus{border-color:#185FA5;background:#fff}
+.lerr{background:#FDECEA;border-radius:8px;padding:8px 12px;font-size:13px;color:#C0392B;margin-bottom:12px;display:none}
+/* Card */
 .card{background:#fff;border-radius:14px;border:1px solid #E2E0D8;overflow:hidden;margin-bottom:12px}
 .crow{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid #E2E0D8}
 .crow:last-child{border-bottom:none}
 .clbl{font-size:12px;color:#7A7870;min-width:76px}
-select,input[type=date]{flex:1;border:none;background:transparent;color:#1A1916;font-size:14px;font-family:inherit;outline:none;text-align:right;padding:0}
-.login-box{background:#fff;border-radius:16px;border:1px solid #E2E0D8;padding:24px 20px;margin-bottom:12px;text-align:center}
-.login-box h2{font-size:17px;font-weight:700;margin-bottom:4px}
-.login-box p{font-size:13px;color:#7A7870;margin-bottom:20px}
-.lf{margin-bottom:12px;text-align:left}
-.lf label{display:block;font-size:12px;color:#7A7870;margin-bottom:5px;font-weight:500}
-.lf input{width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:12px 14px;font-size:15px;color:#1A1916;font-family:inherit;outline:none}
-.lf input:focus{border-color:#185FA5;background:#fff}
-
-
-
-
-
-
-
-
-.lerr{background:#FDECEA;border-radius:8px;padding:8px 12px;font-size:13px;color:#C0392B;margin-bottom:12px;display:none;text-align:left}
-#pin-input{width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:12px 14px;font-size:20px;color:#1A1916;font-family:inherit;outline:none;letter-spacing:8px;text-align:center}
-#pin-input:focus{border-color:#185FA5;background:#fff}
-.user-bar{background:#fff;border:1px solid #E2E0D8;border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.crow select,.crow input[type=date]{flex:1;border:none;background:transparent;color:#1A1916;font-size:14px;font-family:inherit;outline:none;text-align:right;padding:0}
+/* User bar */
+.ubar{background:#fff;border:1px solid #E2E0D8;border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
 .ubn{font-size:14px;font-weight:600}
 .rbadge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-left:6px;vertical-align:middle}
 .rc{background:#E6F1FB;color:#0C3D6E}.rm{background:#E1F5EE;color:#085041}.ra{background:#FAEEDA;color:#4A2906}
-.logout{font-size:12px;color:#C0392B;cursor:pointer;touch-action:manipulation;padding:4px 8px;border-radius:6px;border:1px solid #FDECEA;background:#FDECEA;user-select:none}
-.cat-tabs{display:flex;border-radius:12px;overflow:hidden;border:1px solid #E2E0D8;margin-bottom:12px;background:#fff}
-.ctab{flex:1;padding:11px 4px;font-size:12px;font-weight:600;text-align:center;background:transparent;font-family:inherit;color:#7A7870;border-right:1px solid #E2E0D8;position:relative;line-height:1.25;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation}
-.ctab:last-child{border-right:none}
-.ctab.on{color:#fff}
-.cG.on{background:#1D9E75}.cV.on{background:#185FA5}.cS.on{background:#993556}.cP.on{background:#854F0B}
+.logout{font-size:12px;color:#C0392B;cursor:pointer;padding:4px 8px;border-radius:6px;border:1px solid #FDECEA;background:#FDECEA;user-select:none}
+/* Tabs */
+.tabs{display:flex;border-radius:12px;overflow:hidden;border:1px solid #E2E0D8;margin-bottom:12px;background:#fff}
+.tab{flex:1;padding:11px 4px;font-size:12px;font-weight:600;text-align:center;background:transparent;font-family:inherit;color:#7A7870;border-right:1px solid #E2E0D8;position:relative;line-height:1.25;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.tab:last-child{border-right:none}
+.tab.on{color:#fff}
+.tG.on{background:#1D9E75}.tV.on{background:#185FA5}.tS.on{background:#993556}.tP.on{background:#854F0B}
 .cnt{position:absolute;top:3px;right:3px;width:15px;height:15px;border-radius:50%;background:#E53935;color:#fff;font-size:9px;font-weight:700;display:none;align-items:center;justify-content:center;pointer-events:none}
 .cnt.show{display:flex}
-.srchwrap{position:relative;margin-bottom:10px}
-.srchwrap input[type=text]{width:100%;border:1px solid #E2E0D8;border-radius:10px;background:#fff;padding:11px 12px 11px 38px;font-size:14px;color:#1A1916;font-family:inherit;outline:none}
-.sico{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#7A7870;pointer-events:none}
+/* Search */
+.sw{position:relative;margin-bottom:10px}
+.sw input{width:100%;border:1px solid #E2E0D8;border-radius:10px;background:#fff;padding:11px 12px 11px 38px;font-size:14px;color:#1A1916;font-family:inherit;outline:none}
+.si{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#7A7870;pointer-events:none}
+/* Item list */
 .ilist{border-radius:12px;border:1px solid #E2E0D8;overflow:hidden;max-height:400px;overflow-y:auto;margin-bottom:10px;background:#fff;-webkit-overflow-scrolling:touch}
 .irow{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid #E2E0D8;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 .irow:last-child{border-bottom:none}
-.irow.add-row{background:#FFF8E1}
+.irow.ar{background:#FFF8E1}
 .chk{width:22px;height:22px;border-radius:6px;border:1.5px solid #E2E0D8;flex-shrink:0;pointer-events:none}
 .iname{flex:1;font-size:14px;pointer-events:none}
-.iunit-lbl{font-size:12px;color:#7A7870;pointer-events:none}
-.irow-sel{border-bottom:1px solid #E2E0D8;background:#E1F5EE}
-.irow-sel:last-child{border-bottom:none}
-.irow-top{display:flex;align-items:center;gap:10px;padding:11px 14px 8px;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
-.irow-qty{display:flex;align-items:center;gap:8px;padding:0 14px 11px;justify-content:flex-end}
+.iunit{font-size:12px;color:#7A7870;pointer-events:none}
+/* Selected row */
+.srow{border-bottom:1px solid #E2E0D8;background:#E1F5EE}
+.srow:last-child{border-bottom:none}
+.stop{display:flex;align-items:center;gap:10px;padding:11px 14px 8px;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.sqty{display:flex;align-items:center;gap:8px;padding:0 14px 11px}
 .qlbl{font-size:12px;color:#1D9E75;font-weight:500;flex:1}
 .qbtn{width:32px;height:32px;border-radius:8px;border:1px solid #A8DFC8;background:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#1A1916;touch-action:manipulation;user-select:none;outline:none}
-.qin{width:64px;padding:6px 4px;border:1px solid #A8DFC8;border-radius:8px;font-size:15px;text-align:center;background:#fff;color:#1A1916;font-family:inherit;font-weight:500}
-.qin:focus{outline:none;border-color:#1D9E75}
+.qin{width:64px;padding:6px 4px;border:1px solid #A8DFC8;border-radius:8px;font-size:15px;text-align:center;background:#fff;color:#1A1916;font-family:inherit;font-weight:500;-webkit-appearance:none}
 .qunit{font-size:12px;color:#1D9E75;font-weight:500;min-width:24px}
 .nores{padding:30px;text-align:center;color:#7A7870;font-size:14px}
 .scnt{font-size:12px;color:#7A7870;margin-bottom:8px;padding:0 2px}
+/* Review */
 .qsec{padding:7px 14px;background:#F7F6F3;font-size:11px;font-weight:700;color:#7A7870;letter-spacing:.04em;border-bottom:1px solid #E2E0D8}
-.rv-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid #E2E0D8;font-size:13px}
-.rv-row:last-child{border-bottom:none}
-.rv-lbl{color:#7A7870}.rv-val{font-weight:500;text-align:right}
+.rrow{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid #E2E0D8;font-size:13px}
+.rrow:last-child{border-bottom:none}
+.rlbl{color:#7A7870}.rval{font-weight:500;text-align:right}
 textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;color:#1A1916;font-size:14px;font-family:inherit;padding:12px 14px;resize:none;outline:none;margin-bottom:12px}
+/* Buttons */
 .btnrow{display:flex;gap:8px}
 .bmain{flex:1;padding:15px;border-radius:12px;border:none;background:#1A1916;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation}
 .bmain.grn{background:#1D9E75}.bmain.blue{background:#185FA5}
 .bmain:disabled{opacity:.5}
 .bsec{padding:15px 18px;border-radius:12px;border:1px solid #E2E0D8;background:#fff;color:#1A1916;font-size:15px;cursor:pointer;font-family:inherit;touch-action:manipulation}
 .bsml{padding:10px 16px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation}
+/* Success */
 .succ{background:#E1F5EE;border-radius:16px;padding:28px 20px;text-align:center;margin-bottom:14px}
 .tick{width:52px;height:52px;border-radius:50%;background:#1D9E75;margin:0 auto 14px;display:flex;align-items:center;justify-content:center}
 .tick::after{content:'';display:block;width:22px;height:13px;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(-45deg) translate(2px,-2px)}
@@ -97,16 +96,17 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
 .err{background:#FDECEA;border-radius:10px;padding:10px 14px;font-size:13px;color:#C0392B;margin-top:10px;display:none}
 .spin{display:inline-block;width:15px;height:15px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes sp{to{transform:rotate(360deg)}}
-.modal-bg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;justify-content:center}
-.modal-bg.show{display:flex}
+/* Modal */
+.mbg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;justify-content:center}
+.mbg.show{display:flex}
 .modal{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:460px}
 .modal h3{font-size:16px;font-weight:700;margin-bottom:4px}
-.modal-sub{font-size:12px;color:#7A7870;margin-bottom:14px}
-.mfield{margin-bottom:12px}
-.mfield label{display:block;font-size:12px;color:#7A7870;margin-bottom:5px}
-.mfield input[type=text],.mfield select{width:100%;border:1px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:11px 12px;font-size:14px;color:#1A1916;font-family:inherit;outline:none}
+.msub{font-size:12px;color:#7A7870;margin-bottom:14px}
+.mf{margin-bottom:12px}
+.mf label{display:block;font-size:12px;color:#7A7870;margin-bottom:5px}
+.mf input,.mf select{width:100%;border:1px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:11px 12px;font-size:14px;color:#1A1916;font-family:inherit;outline:none}
 .merr{font-size:12px;color:#C0392B;margin-top:5px;display:none}
-.unit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.ugrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .uopt{padding:8px 4px;border-radius:8px;border:1px solid #E2E0D8;background:#fff;font-size:12px;text-align:center;cursor:pointer;touch-action:manipulation;user-select:none;font-family:inherit;color:#7A7870}
 .uopt.on{border-color:#185FA5;background:#E6F1FB;color:#0C3D6E;font-weight:600}
 </style>
@@ -115,109 +115,88 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
 <div class="app">
 <div class="topbar">
   <div class="logo">A2B</div>
-  <div class="ttl"><h1>Consumption Logger</h1><p>Harrisdale &amp; Yokine</p></div>
+  <div class="ttl"><h1>Consumption Logger</h1><p>Harrisdale &amp; Yokine · v5</p></div>
   <div class="pill"><span class="dot"></span>Live</div>
 </div>
 <div class="prog"><div class="pd on" id="p1"></div><div class="pd" id="p2"></div><div class="pd" id="p3"></div></div>
 
-<div class="step on" id="s1">
-  <div class="login-box">
-    <h2>Welcome to A2B</h2>
-    <p>Sign in to start logging</p>
-    <div class="lf"><label>Your name</label>
-      <input type="text" id="ln" placeholder="e.g. Vinodh" autocomplete="off" autocorrect="off" autocapitalize="words" style="width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:12px 14px;font-size:16px;color:#1A1916;font-family:inherit;outline:none;display:block">
-    </div>
-    <div class="lf"><label>PIN</label>
-      <input type="password" id="pin-input" placeholder="4-digit PIN" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" style="width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:12px 14px;font-size:24px;color:#1A1916;font-family:inherit;outline:none;letter-spacing:8px;text-align:center;display:block">
-    </div>
-    <div id="lerr" style="background:#FDECEA;border-radius:8px;padding:8px 12px;font-size:13px;color:#C0392B;margin-bottom:12px;display:none">Incorrect name or PIN</div>
-    <button id="signin-btn" style="width:100%;padding:15px;border-radius:12px;border:none;background:#185FA5;color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px">Sign in &amp; start logging</button>
-  </div>
-  <div class="card">
-    <div class="crow"><span class="clbl">Restaurant</span><select id="fstore" style="flex:1;border:none;background:transparent;color:#1A1916;font-size:14px;font-family:inherit;outline:none;text-align:right;padding:0"><option>Harrisdale A2B</option><option>Yokine A2B</option></select></div>
-    <div class="crow"><span class="clbl">Date</span><input type="date" id="fdate" style="flex:1;border:none;background:transparent;color:#1A1916;font-size:14px;font-family:inherit;outline:none;text-align:right;padding:0"></div>
+<!-- LOGIN -->
+<div class="scr on" id="scr-login">
+  <div class="lbox">
+    <h2>Welcome to A2B</h2><p>Sign in to start logging</p>
+    <div class="lf"><label>Your name</label><input type="text" id="uname" placeholder="e.g. Deva" autocomplete="off" autocorrect="off" autocapitalize="words"></div>
+    <div class="lf"><label>PIN</label><input type="password" id="upin" placeholder="4-digit PIN" inputmode="numeric" maxlength="4" autocomplete="off"></div>
+    <div class="lerr" id="lerr"></div>
+    <button class="bmain blue" id="signin-btn" style="width:100%;margin-top:4px">Sign in &amp; start logging</button>
   </div>
 </div>
 
-<div class="step" id="s2">
-  <div class="user-bar"><div><span class="ubn" id="ubn"></span><span class="rbadge" id="urole"></span></div><div class="logout" id="blogout">Sign out</div></div>
+<!-- ITEMS -->
+<div class="scr" id="scr-items">
+  <div class="ubar"><div><span class="ubn" id="ubn"></span><span class="rbadge" id="urole"></span></div><span class="logout" id="btn-logout">Sign out</span></div>
+  <div class="card" style="margin-bottom:12px">
+    <div class="crow"><span class="clbl">Restaurant</span><select id="fstore"><option>Harrisdale A2B</option><option>Yokine A2B</option></select></div>
+    <div class="crow"><span class="clbl">Date</span><input type="date" id="fdate"></div>
+  </div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
     <span style="font-size:13px;color:#7A7870" id="s2lbl"></span>
     <span style="font-size:13px;font-weight:600;color:#1D9E75" id="s2tot">0 items</span>
   </div>
-  <div class="cat-tabs">
-    <div class="ctab cG on" data-cat="Grocery">Grocery<br><span style="font-weight:400;font-size:10px">78</span><span class="cnt" id="cnt-G"></span></div>
-    <div class="ctab cV" data-cat="Vegetables">Veg<br><span style="font-weight:400;font-size:10px">47</span><span class="cnt" id="cnt-V"></span></div>
-    <div class="ctab cS" data-cat="Supermarket">Super<br><span style="font-weight:400;font-size:10px">39</span><span class="cnt" id="cnt-S"></span></div>
-    <div class="ctab cP" data-cat="Packaging">Pack<br><span style="font-weight:400;font-size:10px">19</span><span class="cnt" id="cnt-P"></span></div>
+  <div class="tabs">
+    <div class="tab tG on" data-cat="Grocery">Grocery<br><span style="font-weight:400;font-size:10px">78</span><span class="cnt" id="cG"></span></div>
+    <div class="tab tV" data-cat="Vegetables">Veg<br><span style="font-weight:400;font-size:10px">47</span><span class="cnt" id="cV"></span></div>
+    <div class="tab tS" data-cat="Supermarket">Super<br><span style="font-weight:400;font-size:10px">39</span><span class="cnt" id="cS"></span></div>
+    <div class="tab tP" data-cat="Packaging">Pack<br><span style="font-weight:400;font-size:10px">19</span><span class="cnt" id="cP"></span></div>
   </div>
-  <div class="srchwrap">
-    <svg class="sico" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-    <input type="text" id="srch" placeholder="Search items…" autocomplete="off">
-  </div>
-  <p class="scnt" id="scnt">Tap item to select — qty input appears instantly</p>
+  <div class="sw"><svg class="si" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input type="text" id="srch" placeholder="Search items…" autocomplete="off"></div>
+  <p class="scnt" id="scnt">Tap item to select — qty appears instantly</p>
   <div class="ilist" id="ilist"></div>
-  <div class="btnrow"><button class="bsec" id="bb2">Back</button><button class="bmain" id="bn2">Review &amp; submit</button></div>
+  <div class="btnrow"><button class="bmain" id="btn-review">Review &amp; submit</button></div>
 </div>
 
-<div class="step" id="s3">
-  <div style="margin-bottom:10px"><div style="font-size:14px;font-weight:600;margin-bottom:2px">Review &amp; submit</div><div style="font-size:12px;color:#7A7870" id="rvsub"></div></div>
+<!-- REVIEW -->
+<div class="scr" id="scr-review">
+  <div style="margin-bottom:10px"><div style="font-size:14px;font-weight:600;margin-bottom:2px">Review &amp; submit</div><div style="font-size:12px;color:#7A7870" id="rv-sub"></div></div>
   <div class="card" style="margin-bottom:12px">
-    <div class="rv-row"><span class="rv-lbl">Restaurant</span><span class="rv-val" id="rvstore"></span></div>
-    <div class="rv-row"><span class="rv-lbl">Date</span><span class="rv-val" id="rvdate"></span></div>
-    <div class="rv-row"><span class="rv-lbl">Logged by</span><span class="rv-val" id="rvwho"></span></div>
+    <div class="rrow"><span class="rlbl">Restaurant</span><span class="rval" id="rv-store"></span></div>
+    <div class="rrow"><span class="rlbl">Date</span><span class="rval" id="rv-date"></span></div>
+    <div class="rrow"><span class="rlbl">Logged by</span><span class="rval" id="rv-who"></span></div>
   </div>
-  <div class="card" id="rvitems" style="margin-bottom:12px"></div>
+  <div class="card" id="rv-items" style="margin-bottom:12px"></div>
   <p style="font-size:12px;color:#7A7870;margin-bottom:8px">Notes (optional)</p>
   <textarea id="fnotes" rows="2" placeholder="e.g. Higher usage — weekend event"></textarea>
-  <div class="btnrow"><button class="bsec" id="bb3">Back</button><button class="bmain grn" id="bsub">Submit to Google Sheet</button></div>
+  <div class="btnrow"><button class="bsec" id="btn-back2">Back</button><button class="bmain grn" id="btn-submit">Submit to Google Sheet</button></div>
   <div class="err" id="errbox"></div>
 </div>
 
-<div class="step" id="s4">
-  <div class="succ"><div class="tick"></div><h2>Saved &#10003;</h2><p id="donetxt"></p></div>
+<!-- SUCCESS -->
+<div class="scr" id="scr-done">
+  <div class="succ"><div class="tick"></div><h2>Saved ✓</h2><p id="done-txt"></p></div>
   <p style="font-size:12px;color:#7A7870;margin-bottom:8px">Copy and send to manager on WhatsApp</p>
   <div class="wawrap"><div class="wamsg" id="watxt"></div></div>
-  <button class="cpybtn" id="bcpy">&#128203; Copy WhatsApp message</button>
-  <div class="cpdone" id="cpdone">&#10003; Copied!</div>
-  <div class="btnrow" style="margin-top:8px"><button class="bmain" id="brst">Log again</button></div>
+  <button class="cpybtn" id="btn-copy">📋 Copy WhatsApp message</button>
+  <div class="cpdone" id="cpdone">✓ Copied!</div>
+  <div class="btnrow" style="margin-top:8px"><button class="bmain" id="btn-again">Log again</button></div>
 </div>
 
-<div class="modal-bg" id="modalbg">
-  <div class="modal">
-    <h3>Add New Item</h3><div class="modal-sub" id="modalsub"></div>
-    <div class="mfield"><label>Item name</label><input type="text" id="mname" placeholder="e.g. Coconut Milk"></div>
-    <div class="mfield"><label>Unit</label>
-      <div class="unit-grid">
-        <div class="uopt on" data-u="kg">kg</div><div class="uopt" data-u="g">g</div><div class="uopt" data-u="ltr">ltr</div><div class="uopt" data-u="nos">nos</div>
-        <div class="uopt" data-u="box">box</div><div class="uopt" data-u="bag">bag</div><div class="uopt" data-u="pack">pack</div><div class="uopt" data-u="roll">roll</div>
-        <div class="uopt" data-u="tin">tin</div><div class="uopt" data-u="bottle">bottle</div><div class="uopt" data-u="pair">pair</div><div class="uopt" data-u="puch">puch</div>
-      </div>
-    </div>
-    <div class="mfield"><label>Category</label><select id="mcat"><option>Grocery</option><option>Vegetables</option><option>Supermarket</option><option>Packaging</option></select></div>
-    <div class="merr" id="ferr">Please enter an item name</div>
-    <div class="btnrow" style="margin-top:8px"><button class="bsml bsec" id="mcancel">Cancel</button><button class="bsml bmain grn" id="madd">Add &amp; select</button></div>
-  </div>
-</div>
+<!-- ADD ITEM MODAL -->
+<div class="mbg" id="modal"><div class="modal">
+  <h3>Add New Item</h3><div class="msub" id="msub"></div>
+  <div class="mf"><label>Item name</label><input type="text" id="mname" placeholder="e.g. Coconut Milk"></div>
+  <div class="mf"><label>Unit</label><div class="ugrid" id="ugrid">
+    <div class="uopt on" data-u="kg">kg</div><div class="uopt" data-u="g">g</div><div class="uopt" data-u="ltr">ltr</div><div class="uopt" data-u="nos">nos</div>
+    <div class="uopt" data-u="box">box</div><div class="uopt" data-u="bag">bag</div><div class="uopt" data-u="pack">pack</div><div class="uopt" data-u="roll">roll</div>
+    <div class="uopt" data-u="tin">tin</div><div class="uopt" data-u="bottle">bottle</div><div class="uopt" data-u="pair">pair</div><div class="uopt" data-u="puch">puch</div>
+  </div></div>
+  <div class="mf"><label>Category</label><select id="mcat"><option>Grocery</option><option>Vegetables</option><option>Supermarket</option><option>Packaging</option></select></div>
+  <div class="merr" id="merr">Please enter an item name</div>
+  <div class="btnrow" style="margin-top:8px"><button class="bsml bsec" id="btn-mcancel">Cancel</button><button class="bsml bmain grn" id="btn-madd">Add &amp; select</button></div>
+</div></div>
 
 <script>
-// Catch any JS errors and show them on page
-window.onerror = function(msg, src, line, col, err) {
-  document.body.innerHTML = '<div style="padding:20px;font-family:sans-serif">'
-    + '<h2 style="color:red">JS Error</h2>'
-    + '<p><b>Message:</b> ' + msg + '</p>'
-    + '<p><b>Line:</b> ' + line + '</p>'
-    + '<p><b>Error:</b> ' + (err ? err.stack : 'none') + '</p>'
-    + '</div>';
-  return false;
-};
-try {
-
 var SC="https://script.google.com/macros/s/AKfycbxiUHbSpBFcoOIUup0NP3Lw6q9ZTAFezQW3y2NQRhf8XEMtBUz7b_aJhQjE7QD3vhPKcw/exec";
-
 var STAFF={"Deva":{pin:"5385",role:"Admin"},"Duwaraka":{pin:"2783",role:"Admin"},"Suresh":{pin:"1111",role:"Manager"},"Kajal":{pin:"2222",role:"Manager"},"Fahmida":{pin:"3333",role:"Manager"},"Mamta":{pin:"4444",role:"Manager"},"Shaswanth":{pin:"5555",role:"Manager"},"Vinodh":{pin:"1234",role:"Chef"},"Michael":{pin:"2345",role:"Chef"},"Anand":{pin:"3456",role:"Chef"},"Ramar":{pin:"4567",role:"Chef"},"Thaneesh":{pin:"5678",role:"Chef"},"Sandip":{pin:"6789",role:"Chef"},"Monica":{pin:"7890",role:"Chef"}};
 var RBG={Chef:"rc",Manager:"rm",Admin:"ra"};
-var RLB={Chef:"Chef",Manager:"Manager",Admin:"Admin"};
 var CAN_ADD={Chef:false,Manager:true,Admin:true};
 var ALL={
 Grocery:[["Ajinamoto","kg"],["Apalam","box"],["Atta (Chakki)","kg"],["Baking Soda","pack"],["Bay Leaves","g"],["Besan Flour","kg"],["Black Pepper","kg"],["Black Salt","g"],["Boiled Rice","bag"],["Cardamom Green","g"],["Cashew LP","box"],["Cashew Whole (Sweet)","box"],["Chana Dal","box"],["Chana Masala","nos"],["Chat Masala","nos"],["Chili Powder","kg"],["Chilly Whole Red","kg"],["Cinnamon","g"],["Cloves","g"],["Coconut Oil","box"],["Coriander Powder","kg"],["Coriander Seed","kg"],["Corn Flour","bag"],["Dates Big/Small","kg"],["Dry Ginger Powder","kg"],["Fennel Seed","kg"],["Fenugreek Seed","kg"],["Garam Masala","box"],["Ghee","box"],["Gingelly Oil","ltr"],["Idli Rice","bag"],["Jaggery","kg"],["Jeera Powder","kg"],["Jeera Whole","kg"],["Kashmiri Chili Powder","kg"],["Kashmiri Chilly Whole","kg"],["Khoa","g"],["Kitchen King Masala","nos"],["Maida","kg"],["Mix Dal","kg"],["Moong Dal","box"],["Mustard Seed","kg"],["Noodles","nos"],["Oil","box"],["Paneer","box"],["Pickle","nos"],["Pistachio / Pista","nos"],["Poppy Seed","kg"],["Rava","bag"],["Raw Rice","bag"],["Rice Basmati","kg"],["Rice Flour","kg"],["Sezwan Chutney","box"],["Soya","kg"],["Tamarind","kg"],["Tata Salt","bag"],["Toor Dal","bag"],["Turmeric Powder","kg"],["Urid Dal Whole","kg"],["Urid Split","bag"],["Vinegar","nos"],["White Chenna","bag"],["White Sugar","bag"],["Asafoetida (Hing)","g"],["Garlic Granules","g"],["Gulkand","nos"],["Mango Chutney","kg"],["Biryani Rice","kg"],["Chick Peas (Dried)","tin"],["Dates Small","kg"],["Hot Chili Whole","kg"],["Black Cardamom","pack"],["Black Split Urad Dal","kg"],["Jaljira Powder","nos"],["Nannari Syrup","nos"],["Pani Puri","nos"],["Tomato Ketchup","bottle"]],
@@ -228,54 +207,67 @@ Packaging:[["250ml Container/Lid","box"],["500ml Container/Lid","box"],["Blue Cl
 var NI={Grocery:[],Vegetables:[],Supermarket:[],Packaging:[]};
 var CATS=["Grocery","Vegetables","Supermarket","Packaging"];
 var TIDS={Grocery:"G",Vegetables:"V",Supermarket:"S",Packaging:"P"};
-var sel={},ac="Grocery",su="kg",CU=null,pin="";
+var sel={},ac="Grocery",su="kg",CU=null;
+
 document.getElementById("fdate").value=new Date().toISOString().split("T")[0];
-function tap(el,fn){
-  var mv=false,fired=false;
-  el.addEventListener("touchstart",function(){mv=false;},{passive:true});
-  el.addEventListener("touchmove",function(){mv=true;},{passive:true});
-  el.addEventListener("touchend",function(e){
-    if(!mv){e.preventDefault();fired=true;fn.call(el,e);setTimeout(function(){fired=false;},300);}
-  });
-  el.addEventListener("click",function(e){if(!fired)fn.call(el,e);});
+
+// ── Screen navigation ─────────────────────────────────────────
+function show(id){
+  document.querySelectorAll(".scr").forEach(function(s){s.className="scr";});
+  document.getElementById(id).className="scr on";
+  window.scrollTo(0,0);
 }
-function ss(n){for(var i=1;i<=4;i++)document.getElementById("s"+i).className="step"+(i===n?" on":"");for(var i=1;i<=3;i++)document.getElementById("p"+i).className="pd"+(i<=n?" on":"");window.scrollTo(0,0);}
-function upd(){var tot=Object.keys(sel).length;var el=document.getElementById("s2tot");if(el)el.textContent=tot?tot+" item"+(tot>1?"s":"")+" selected":"0 items";CATS.forEach(function(c){var n=Object.keys(sel).filter(function(k){return sel[k].cat===c;}).length;var ce=document.getElementById("cnt-"+TIDS[c]);if(ce){ce.textContent=n;ce.className="cnt"+(n>0?" show":"");}});}
-// PIN
-function handleLogin(){
-  try{
-  var nm=document.getElementById("ln").value.trim();
-  var p=document.getElementById("pin-input").value.replace(/[^0-9]/g,"");
-  var lerr=document.getElementById("lerr");
-  lerr.style.display="block";lerr.style.background="#FFF3CD";lerr.style.color="#333";
-  lerr.textContent="Step1: name="+nm+" pin="+p+" len="+p.length;
+function setProg(n){for(var i=1;i<=3;i++)document.getElementById("p"+i).className="pd"+(i<=n?" on":"");}
+
+// ── Login ─────────────────────────────────────────────────────
+function doLogin(){
+  var name=document.getElementById("uname").value.trim();
+  var pin=document.getElementById("upin").value.trim();
+  var err=document.getElementById("lerr");
+  if(!name){err.style.display="block";err.textContent="Please enter your name";return;}
+  if(pin.length<4){err.style.display="block";err.textContent="Please enter your 4-digit PIN";return;}
   var mk=null;
-  Object.keys(STAFF).forEach(function(k){if(k.toLowerCase()===nm.toLowerCase())mk=k;});
-  lerr.textContent="Step2: mk="+mk+" match="+(mk?STAFF[mk].pin===p:"no match");
-  if(!mk||STAFF[mk].pin!==p){lerr.textContent="FAILED: mk="+mk+" got="+p+" exp="+(mk?STAFF[mk].pin:"?");return;}
-  lerr.textContent="Step3: OK! Logging in as "+mk;
+  Object.keys(STAFF).forEach(function(k){if(k.toLowerCase()===name.toLowerCase())mk=k;});
+  if(!mk||STAFF[mk].pin!==pin){err.style.display="block";err.textContent="Incorrect name or PIN";document.getElementById("upin").value="";return;}
+  err.style.display="none";
   CU={name:mk,role:STAFF[mk].role};
   document.getElementById("ubn").textContent=mk;
   var rb=document.getElementById("urole");
-  rb.textContent=RLB[CU.role];rb.className="rbadge "+RBG[CU.role];
-  var d=new Date(document.getElementById("fdate").value+"T12:00:00");
-  document.getElementById("s2lbl").textContent=document.getElementById("fstore").value+" · "+d.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"});
-  ac="Grocery";switchTab("Grocery");upd();ss(2);
-  }catch(e){var l=document.getElementById("lerr");if(l){l.style.display="block";l.style.background="#FDECEA";l.textContent="CATCH ERROR: "+e.message;}}
+  rb.textContent=STAFF[mk].role;rb.className="rbadge "+RBG[STAFF[mk].role];
+  ac="Grocery";switchTab("Grocery");upd();setProg(2);show("scr-items");
+  // Update label after showing screen
+  setTimeout(function(){
+    var d=new Date(document.getElementById("fdate").value+"T12:00:00");
+    document.getElementById("s2lbl").textContent=document.getElementById("fstore").value+" · "+d.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"});
+  },50);
 }
+document.getElementById("signin-btn").addEventListener("click",doLogin);
+document.getElementById("upin").addEventListener("input",function(){
+  if(this.value.length===4){var n=document.getElementById("uname").value.trim();if(n)doLogin();}
+});
+document.getElementById("uname").addEventListener("keydown",function(e){if(e.key==="Enter")document.getElementById("upin").focus();});
 
-// Auto-submit on 4th digit
-document.getElementById("pin-input").addEventListener("input",function(){
-  this.value=this.value.replace(/[^0-9]/g,"").slice(0,4);
-  if(this.value.length===4){
-    var nm=document.getElementById("ln").value.trim();
-    if(nm) handleLogin();
-  }
+// ── Logout ────────────────────────────────────────────────────
+document.getElementById("btn-logout").addEventListener("click",function(){
+  CU=null;sel={};
+  document.getElementById("uname").value="";
+  document.getElementById("upin").value="";
+  document.getElementById("lerr").style.display="none";
+  setProg(1);show("scr-login");
 });
 
-document.getElementById("ln").addEventListener("keydown",function(e){if(e.key==="Enter")handleLogin();});
-tap(document.getElementById("blogout"),function(){CU=null;pin="";sel={};document.getElementById("ln").value="";document.getElementById("pin-input").value="";document.getElementById("lerr").style.display="none";ss(1);ss(1);});
-// Items
+// ── Item counts ───────────────────────────────────────────────
+function upd(){
+  var t=Object.keys(sel).length;
+  document.getElementById("s2tot").textContent=t?t+" item"+(t>1?"s":"")+" selected":"0 items";
+  CATS.forEach(function(c){
+    var n=Object.keys(sel).filter(function(k){return sel[k].cat===c;}).length;
+    var el=document.getElementById("c"+TIDS[c]);
+    if(el){el.textContent=n;el.className="cnt"+(n>0?" show":"");}
+  });
+}
+
+// ── Render items ──────────────────────────────────────────────
 function renderItems(){
   var q=document.getElementById("srch").value.toLowerCase();
   var base=ALL[ac].concat(NI[ac]);
@@ -285,100 +277,125 @@ function renderItems(){
     var nm=list[i][0],un=list[i][1],isN=list[i][2];
     var isSel=sel[nm]&&sel[nm].cat===ac;
     var qty=isSel?(sel[nm].qty||""):"";
-    var newBadge=isN?" <span style='font-size:10px;background:#FFF3CD;color:#854F0B;border-radius:3px;padding:1px 4px'>new</span>":"";
+    var nb=isN?" <span style='font-size:10px;background:#FFF3CD;color:#854F0B;border-radius:3px;padding:1px 4px'>new</span>":"";
     if(isSel){
-      html+='<div class="irow-sel"><div class="irow-top" data-n="'+nm+'" data-u="'+un+'"><div class="chk on" style="display:flex;align-items:center;justify-content:center;background:#1D9E75;border-color:#1D9E75"><span style="display:block;width:10px;height:6px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px)"></span></div><span class="iname" style="pointer-events:none">'+nm+newBadge+'</span><span style="font-size:11px;color:#1D9E75;pointer-events:none">tap to remove</span></div><div class="irow-qty"><span class="qlbl">Qty reqd:</span><div class="qbtn" data-n="'+nm+'" data-d="-1">&#8722;</div><input class="qin" type="text" inputmode="decimal" pattern="[0-9.]*" readonly value="'+qty+'" placeholder="0" data-n="'+nm+'"><span class="qunit">'+un+'</span><div class="qbtn" data-n="'+nm+'" data-d="1">+</div></div></div>';
+      html+="<div class='srow'><div class='stop' data-n='"+nm+"'><div class='chk' style='background:#1D9E75;border-color:#1D9E75;display:flex;align-items:center;justify-content:center'><span style='display:block;width:10px;height:6px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px)'></span></div><span class='iname' style='pointer-events:none'>"+nm+nb+"</span><span style='font-size:11px;color:#1D9E75;pointer-events:none'>tap to remove</span></div><div class='sqty'><span class='qlbl'>Qty reqd:</span><div class='qbtn' data-n='"+nm+"' data-d='-1'>&#8722;</div><input class='qin' type='number' min='0' step='0.5' value='"+qty+"' placeholder='0' data-n='"+nm+"'><span class='qunit'>"+un+"</span><div class='qbtn' data-n='"+nm+"' data-d='1'>+</div></div></div>";
     } else {
-      html+='<div class="irow" data-n="'+nm+'" data-u="'+un+'"><div class="chk"></div><span class="iname">'+nm+newBadge+'</span><span class="iunit-lbl">'+un+'</span></div>';
+      html+="<div class='irow' data-n='"+nm+"' data-u='"+un+"'><div class='chk'></div><span class='iname'>"+nm+nb+"</span><span class='iunit'>"+un+"</span></div>";
     }
   }
-  if(!list.length)html='<div class="nores">No items found</div>';
-  if(CU&&CAN_ADD[CU.role])html+='<div class="irow add-row" id="addrow"><div style="width:22px;height:22px;border-radius:6px;border:1.5px dashed #854F0B;flex-shrink:0;display:flex;align-items:center;justify-content:center;pointer-events:none"><span style="color:#854F0B;font-size:16px;line-height:1;pointer-events:none">+</span></div><span class="iname" style="color:#854F0B;font-weight:500;pointer-events:none">Add new item&hellip;</span></div>';
+  if(!list.length)html="<div class='nores'>No items found</div>";
+  if(CU&&CAN_ADD[CU.role])html+="<div class='irow ar' id='addrow'><div style='width:22px;height:22px;border-radius:6px;border:1.5px dashed #854F0B;flex-shrink:0;display:flex;align-items:center;justify-content:center;pointer-events:none'><span style='color:#854F0B;font-size:16px;line-height:1;pointer-events:none'>+</span></div><span class='iname' style='color:#854F0B;font-weight:500;pointer-events:none'>Add new item&hellip;</span></div>";
   document.getElementById("ilist").innerHTML=html;
   var n=Object.keys(sel).filter(function(k){return sel[k].cat===ac;}).length;
-  document.getElementById("scnt").textContent=n?n+" selected in "+ac+" \u2014 switch tabs for more":"Tap item to select \u2014 qty input appears instantly";
-  // Unselected taps
-  document.getElementById("ilist").querySelectorAll(".irow:not(.add-row)").forEach(function(row){
-    tap(row,function(){var nm=this.getAttribute("data-n"),un=this.getAttribute("data-u");sel[nm]={cat:ac,unit:un,qty:"",isNew:false};upd();renderItems();// Don't auto-focus qty input to prevent keyboard popup});
+  document.getElementById("scnt").textContent=n?n+" selected in "+ac+" \u2014 switch tabs for more":"Tap item to select \u2014 qty appears instantly";
+  // Wire events
+  document.getElementById("ilist").querySelectorAll(".irow:not(.ar)").forEach(function(r){
+    r.addEventListener("click",function(){var nm=this.getAttribute("data-n"),un=this.getAttribute("data-u");sel[nm]={cat:ac,unit:un,qty:"",isNew:false};upd();renderItems();});
   });
-  // Selected top (deselect)
-  document.getElementById("ilist").querySelectorAll(".irow-top").forEach(function(row){
-    tap(row,function(){document.activeElement&&document.activeElement.blur();var nm=this.getAttribute("data-n");delete sel[nm];upd();renderItems();});
+  document.getElementById("ilist").querySelectorAll(".stop").forEach(function(r){
+    r.addEventListener("click",function(){delete sel[this.getAttribute("data-n")];upd();renderItems();});
   });
-  // Qty inputs
   document.getElementById("ilist").querySelectorAll(".qin").forEach(function(inp){
-    inp.addEventListener("focus",function(){this.removeAttribute("readonly");});
-    inp.addEventListener("blur",function(){this.setAttribute("readonly","");});
-    inp.addEventListener("input",function(){var n=this.getAttribute("data-n");if(sel[n])sel[n].qty=this.value;});
+    inp.addEventListener("input",function(){if(sel[this.getAttribute("data-n")])sel[this.getAttribute("data-n")].qty=this.value;});
   });
-  // +/- buttons
   document.getElementById("ilist").querySelectorAll(".qbtn").forEach(function(btn){
-    tap(btn,function(){document.activeElement&&document.activeElement.blur();var n=this.getAttribute("data-n"),d=parseFloat(this.getAttribute("data-d"));var inp=document.querySelector(".qin[data-n='"+n+"']");if(!inp)return;var v=Math.max(0,Math.round(((parseFloat(inp.value)||0)+d)*10)/10);inp.value=v;if(sel[n])sel[n].qty=v;inp.blur();});
+    btn.addEventListener("click",function(){
+      var n=this.getAttribute("data-n"),d=parseFloat(this.getAttribute("data-d"));
+      var inp=document.querySelector(".qin[data-n='"+n+"']");
+      if(!inp)return;
+      var v=Math.max(0,Math.round(((parseFloat(inp.value)||0)+d)*10)/10);
+      inp.value=v;if(sel[n])sel[n].qty=v;
+    });
   });
-  // Add row
   var ar=document.getElementById("addrow");
-  if(ar){tap(ar,function(){document.getElementById("mcat").value=ac;document.getElementById("mname").value="";document.getElementById("ferr").style.display="none";su="kg";document.querySelectorAll(".uopt").forEach(function(u){u.className="uopt"+(u.getAttribute("data-u")==="kg"?" on":"");});document.getElementById("modalsub").textContent="Adding to "+ac+" \u00b7 "+CU.name;document.getElementById("modalbg").className="modal-bg show";});}
+  if(ar)ar.addEventListener("click",function(){
+    document.getElementById("mcat").value=ac;document.getElementById("mname").value="";document.getElementById("merr").style.display="none";
+    su="kg";document.querySelectorAll(".uopt").forEach(function(u){u.className="uopt"+(u.getAttribute("data-u")==="kg"?" on":"");});
+    document.getElementById("msub").textContent="Adding to "+ac+" \u00b7 "+CU.name;
+    document.getElementById("modal").className="mbg show";
+  });
 }
-function switchTab(c){ac=c;document.querySelectorAll(".ctab").forEach(function(t){var tc=t.getAttribute("data-cat");t.className="ctab c"+TIDS[tc]+(tc===c?" on":"");});document.getElementById("srch").value="";renderItems();}
-document.querySelectorAll(".ctab").forEach(function(t){tap(t,function(){switchTab(this.getAttribute("data-cat"));});});
+
+function switchTab(c){
+  ac=c;
+  document.querySelectorAll(".tab").forEach(function(t){var tc=t.getAttribute("data-cat");t.className="tab t"+TIDS[tc]+(tc===c?" on":"");});
+  document.getElementById("srch").value="";
+  var il=document.getElementById("ilist");if(il)il.scrollTop=0;
+  renderItems();
+}
+document.querySelectorAll(".tab").forEach(function(t){t.addEventListener("click",function(){switchTab(this.getAttribute("data-cat"));});});
 document.getElementById("srch").addEventListener("input",renderItems);
-tap(document.getElementById("bb2"),function(){ss(1);});
-tap(document.getElementById("bn2"),function(){
+function updateLbl(){
+  var fdate=document.getElementById("fdate");
+  var fstore=document.getElementById("fstore");
+  if(!fdate||!fstore) return;
+  var d=new Date(fdate.value+"T12:00:00");
+  document.getElementById("s2lbl").textContent=fstore.value+" · "+d.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"});
+}
+document.addEventListener("change",function(e){if(e.target.id==="fstore"||e.target.id==="fdate")updateLbl();});
+
+// ── Back / Review ─────────────────────────────────────────────
+document.getElementById("btn-review").addEventListener("click",function(){
   if(!Object.keys(sel).length){alert("Please select at least one item");return;}
   var store=document.getElementById("fstore").value;
   var d=new Date(document.getElementById("fdate").value+"T12:00:00");
-  document.getElementById("rvstore").textContent=store;
-  document.getElementById("rvdate").textContent=d.toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long"});
-  document.getElementById("rvwho").textContent=CU.name+" ("+CU.role+")";
-  document.getElementById("rvsub").textContent=Object.keys(sel).length+" items";
+  document.getElementById("rv-store").textContent=store;
+  document.getElementById("rv-date").textContent=d.toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long"});
+  document.getElementById("rv-who").textContent=CU.name+" ("+CU.role+")";
+  document.getElementById("rv-sub").textContent=Object.keys(sel).length+" items";
   var html="",lc="";
-  var keys=Object.keys(sel).sort(function(a,b){return CATS.indexOf(sel[a].cat)-CATS.indexOf(sel[b].cat);});
-  keys.forEach(function(nm){var info=sel[nm];if(info.cat!==lc){html+='<div class="qsec">'+info.cat.toUpperCase()+"</div>";lc=info.cat;}html+='<div class="rv-row"><span class="rv-lbl">'+nm+'</span><span class="rv-val">'+(parseFloat(info.qty)||0)+" "+info.unit+"</span></div>";});
-  document.getElementById("rvitems").innerHTML=html;
+  Object.keys(sel).sort(function(a,b){return CATS.indexOf(sel[a].cat)-CATS.indexOf(sel[b].cat);}).forEach(function(nm){
+    var info=sel[nm];
+    if(info.cat!==lc){html+="<div class='qsec'>"+info.cat.toUpperCase()+"</div>";lc=info.cat;}
+    html+="<div class='rrow'><span class='rlbl'>"+nm+"</span><span class='rval'>"+(parseFloat(info.qty)||0)+" "+info.unit+"</span></div>";
+  });
+  document.getElementById("rv-items").innerHTML=html;
   document.getElementById("fnotes").value="";
-  ss(3);
+  setProg(3);show("scr-review");
 });
-tap(document.getElementById("bb3"),function(){ss(2);});
-tap(document.getElementById("bsub"),function(){
-  var btn=document.getElementById("bsub"),err=document.getElementById("errbox");
-  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Saving&hellip;';
-  var store=document.getElementById("fstore").value,date=document.getElementById("fdate").value,dateFmt=(function(){var p=date.split('-');return p[2]+'/'+p[1]+'/'+p[0];})(),notes=document.getElementById("fnotes").value;
+document.getElementById("btn-back2").addEventListener("click",function(){setProg(2);show("scr-items");});
+
+// ── Submit ────────────────────────────────────────────────────
+document.getElementById("btn-submit").addEventListener("click",function(){
+  var btn=this,err=document.getElementById("errbox");
+  btn.disabled=true;btn.innerHTML="<span class='spin'></span>Saving\u2026";
+  var store=document.getElementById("fstore").value,date=document.getElementById("fdate").value,notes=document.getElementById("fnotes").value;
   var entries=Object.keys(sel).map(function(item){return{item:item,unit:sel[item].unit,qty:parseFloat(sel[item].qty)||0,category:sel[item].cat,isNew:sel[item].isNew||false};});
   var nO=entries.filter(function(e){return e.isNew;}).map(function(e){return e.item+" ("+e.category+")";});
-  var fn=notes+(nO.length?"\n\u2b50 New items: "+nO.join(", "):"");
-  fetch(SC,{method:"POST",mode:"no-cors",body:JSON.stringify({store:store,category:"Multiple",date:date,displayDate:dateFmt,loggedBy:CU.name+" ("+CU.role+")",notes:fn,entries:entries})})
+  fetch(SC,{method:"POST",mode:"no-cors",body:JSON.stringify({store:store,category:"Multiple",date:date,loggedBy:CU.name+" ("+CU.role+")",notes:notes+(nO.length?"\n\u2b50 New: "+nO.join(", "):""),entries:entries})})
   .then(function(){
     var d=new Date(date+"T12:00:00"),ds=d.toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"});
-    var cats=CATS.filter(function(c){return entries.some(function(e){return e.category===c;});});
-    document.getElementById("donetxt").textContent=entries.length+" items \u00b7 "+cats.join(", ")+" \u00b7 "+CU.name+" \u00b7 "+ds;
+    document.getElementById("done-txt").textContent=entries.length+" items \u00b7 "+CU.name+" \u00b7 "+ds;
     var wa="*A2B Consumption Log*\n"+store+" \u00b7 "+ds+"\nLogged by: *"+CU.name+"* ("+CU.role+")\n";
     CATS.forEach(function(cat){var ce=entries.filter(function(e){return e.category===cat;});if(ce.length){wa+="\n*"+cat+"*\n";ce.forEach(function(e){wa+="  \u2022 "+e.item+(e.isNew?" \u2b50":"")+": "+e.qty+" "+e.unit+"\n";});}});
     if(notes)wa+="\nNote: "+notes;
-    if(nO.length)wa+="\n\u2b50 New items: "+nO.join(", ");
     document.getElementById("watxt").textContent=wa.trim();
-    ss(4);
+    show("scr-done");
   }).catch(function(e){btn.disabled=false;btn.innerHTML="Submit to Google Sheet";err.style.display="block";err.textContent="Error: "+e.message;});
 });
-tap(document.getElementById("bcpy"),function(){var txt=document.getElementById("watxt").textContent,done=document.getElementById("cpdone");try{navigator.clipboard.writeText(txt).then(function(){done.style.display="block";setTimeout(function(){done.style.display="none";},2000);});}catch(e){var ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done.style.display="block";setTimeout(function(){done.style.display="none";},2000);}});
-tap(document.getElementById("brst"),function(){sel={};document.getElementById("fnotes").value="";ac="Grocery";switchTab("Grocery");upd();ss(2);});
-// Modal
-document.querySelectorAll(".uopt").forEach(function(u){tap(u,function(){su=this.getAttribute("data-u");document.querySelectorAll(".uopt").forEach(function(x){x.className="uopt";});this.className="uopt on";});});
-function closeModal(){document.getElementById("modalbg").className="modal-bg";}
-tap(document.getElementById("mcancel"),closeModal);
-tap(document.getElementById("madd"),function(){var nm=document.getElementById("mname").value.trim(),cat=document.getElementById("mcat").value;if(!nm){document.getElementById("ferr").style.display="block";return;}var e=[nm,su,true];NI[cat].push(e);ALL[cat].push(e);sel[nm]={cat:cat,unit:su,qty:"",isNew:true};closeModal();if(cat!==ac)switchTab(cat);else renderItems();upd();});
 
-} catch(e) {
-  document.body.innerHTML = '<div style="padding:20px;font-family:sans-serif">'
-    + '<h2 style="color:red">Script crashed on load</h2>'
-    + '<p>' + e.message + '</p>'
-    + '<p>Line info: ' + JSON.stringify(e) + '</p>'
-    + '</div>';
-}
-// Attach sign in button
-document.getElementById("signin-btn").addEventListener("click", handleLogin);
-document.getElementById("signin-btn").addEventListener("touchend", function(e){
-  e.preventDefault();
-  handleLogin();
+// ── Copy ──────────────────────────────────────────────────────
+document.getElementById("btn-copy").addEventListener("click",function(){
+  var txt=document.getElementById("watxt").textContent,done=document.getElementById("cpdone");
+  try{navigator.clipboard.writeText(txt).then(function(){done.style.display="block";setTimeout(function(){done.style.display="none";},2000);});}
+  catch(e){var ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done.style.display="block";setTimeout(function(){done.style.display="none";},2000);}
+});
+
+// ── Log again ─────────────────────────────────────────────────
+document.getElementById("btn-again").addEventListener("click",function(){
+  sel={};document.getElementById("fnotes").value="";ac="Grocery";switchTab("Grocery");upd();setProg(2);show("scr-items");
+});
+
+// ── Modal ─────────────────────────────────────────────────────
+document.querySelectorAll(".uopt").forEach(function(u){u.addEventListener("click",function(){su=this.getAttribute("data-u");document.querySelectorAll(".uopt").forEach(function(x){x.className="uopt";});this.className="uopt on";});});
+document.getElementById("btn-mcancel").addEventListener("click",function(){document.getElementById("modal").className="mbg";});
+document.getElementById("btn-madd").addEventListener("click",function(){
+  var nm=document.getElementById("mname").value.trim(),cat=document.getElementById("mcat").value;
+  if(!nm){document.getElementById("merr").style.display="block";return;}
+  var e=[nm,su,true];NI[cat].push(e);ALL[cat].push(e);sel[nm]={cat:cat,unit:su,qty:"",isNew:true};
+  document.getElementById("modal").className="mbg";
+  if(cat!==ac)switchTab(cat);else renderItems();upd();
 });
 </script>
 </body>
