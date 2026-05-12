@@ -131,7 +131,7 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
       <input type="password" id="pin-input" placeholder="4-digit PIN" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" style="width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:12px 14px;font-size:24px;color:#1A1916;font-family:inherit;outline:none;letter-spacing:8px;text-align:center;display:block">
     </div>
     <div id="lerr" style="background:#FDECEA;border-radius:8px;padding:8px 12px;font-size:13px;color:#C0392B;margin-bottom:12px;display:none">Incorrect name or PIN</div>
-    <button onclick="handleLogin()" style="width:100%;padding:15px;border-radius:12px;border:none;background:#185FA5;color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px">Sign in &amp; start logging</button>
+    <button id="signin-btn" style="width:100%;padding:15px;border-radius:12px;border:none;background:#185FA5;color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px">Sign in &amp; start logging</button>
   </div>
   <div class="card">
     <div class="crow"><span class="clbl">Restaurant</span><select id="fstore" style="flex:1;border:none;background:transparent;color:#1A1916;font-size:14px;font-family:inherit;outline:none;text-align:right;padding:0"><option>Harrisdale A2B</option><option>Yokine A2B</option></select></div>
@@ -201,6 +201,18 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
 </div>
 
 <script>
+// Catch any JS errors and show them on page
+window.onerror = function(msg, src, line, col, err) {
+  document.body.innerHTML = '<div style="padding:20px;font-family:sans-serif">'
+    + '<h2 style="color:red">JS Error</h2>'
+    + '<p><b>Message:</b> ' + msg + '</p>'
+    + '<p><b>Line:</b> ' + line + '</p>'
+    + '<p><b>Error:</b> ' + (err ? err.stack : 'none') + '</p>'
+    + '</div>';
+  return false;
+};
+try {
+
 var SC="https://script.google.com/macros/s/AKfycbxiUHbSpBFcoOIUup0NP3Lw6q9ZTAFezQW3y2NQRhf8XEMtBUz7b_aJhQjE7QD3vhPKcw/exec";
 
 var STAFF={"Deva":{pin:"5385",role:"Admin"},"Duwaraka":{pin:"2783",role:"Admin"},"Suresh":{pin:"1111",role:"Manager"},"Kajal":{pin:"2222",role:"Manager"},"Fahmida":{pin:"3333",role:"Manager"},"Mamta":{pin:"4444",role:"Manager"},"Shaswanth":{pin:"5555",role:"Manager"},"Vinodh":{pin:"1234",role:"Chef"},"Michael":{pin:"2345",role:"Chef"},"Anand":{pin:"3456",role:"Chef"},"Ramar":{pin:"4567",role:"Chef"},"Thaneesh":{pin:"5678",role:"Chef"},"Sandip":{pin:"6789",role:"Chef"},"Monica":{pin:"7890",role:"Chef"}};
@@ -231,19 +243,17 @@ function ss(n){for(var i=1;i<=4;i++)document.getElementById("s"+i).className="st
 function upd(){var tot=Object.keys(sel).length;var el=document.getElementById("s2tot");if(el)el.textContent=tot?tot+" item"+(tot>1?"s":"")+" selected":"0 items";CATS.forEach(function(c){var n=Object.keys(sel).filter(function(k){return sel[k].cat===c;}).length;var ce=document.getElementById("cnt-"+TIDS[c]);if(ce){ce.textContent=n;ce.className="cnt"+(n>0?" show":"");}});}
 // PIN
 function handleLogin(){
+  try{
   var nm=document.getElementById("ln").value.trim();
   var p=document.getElementById("pin-input").value.replace(/[^0-9]/g,"");
-  var err=document.getElementById("lerr");
-  err.style.display="block";
-  err.style.background="#FFF3CD";
-  err.style.color="#333";
-  err.textContent="Debug: name="+nm+" pin="+p+" len="+p.length;
-  if(!nm||p.length<4){err.textContent="Need name and 4 digits. Got: name="+nm+" pin="+p;return;}
+  var lerr=document.getElementById("lerr");
+  lerr.style.display="block";lerr.style.background="#FFF3CD";lerr.style.color="#333";
+  lerr.textContent="Step1: name="+nm+" pin="+p+" len="+p.length;
   var mk=null;
   Object.keys(STAFF).forEach(function(k){if(k.toLowerCase()===nm.toLowerCase())mk=k;});
-  err.textContent="Debug2: mk="+mk+" STAFF keys="+Object.keys(STAFF).join(",");
-  if(!mk||STAFF[mk].pin!==p){err.textContent="Wrong: mk="+mk+" got="+p+" expected="+(mk?STAFF[mk].pin:"?");document.getElementById("pin-input").value="";return;}
-  err.style.display="none";
+  lerr.textContent="Step2: mk="+mk+" match="+(mk?STAFF[mk].pin===p:"no match");
+  if(!mk||STAFF[mk].pin!==p){lerr.textContent="FAILED: mk="+mk+" got="+p+" exp="+(mk?STAFF[mk].pin:"?");return;}
+  lerr.textContent="Step3: OK! Logging in as "+mk;
   CU={name:mk,role:STAFF[mk].role};
   document.getElementById("ubn").textContent=mk;
   var rb=document.getElementById("urole");
@@ -251,6 +261,7 @@ function handleLogin(){
   var d=new Date(document.getElementById("fdate").value+"T12:00:00");
   document.getElementById("s2lbl").textContent=document.getElementById("fstore").value+" · "+d.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"});
   ac="Grocery";switchTab("Grocery");upd();ss(2);
+  }catch(e){var l=document.getElementById("lerr");if(l){l.style.display="block";l.style.background="#FDECEA";l.textContent="CATCH ERROR: "+e.message;}}
 }
 
 // Auto-submit on 4th digit
@@ -355,6 +366,20 @@ document.querySelectorAll(".uopt").forEach(function(u){tap(u,function(){su=this.
 function closeModal(){document.getElementById("modalbg").className="modal-bg";}
 tap(document.getElementById("mcancel"),closeModal);
 tap(document.getElementById("madd"),function(){var nm=document.getElementById("mname").value.trim(),cat=document.getElementById("mcat").value;if(!nm){document.getElementById("ferr").style.display="block";return;}var e=[nm,su,true];NI[cat].push(e);ALL[cat].push(e);sel[nm]={cat:cat,unit:su,qty:"",isNew:true};closeModal();if(cat!==ac)switchTab(cat);else renderItems();upd();});
+
+} catch(e) {
+  document.body.innerHTML = '<div style="padding:20px;font-family:sans-serif">'
+    + '<h2 style="color:red">Script crashed on load</h2>'
+    + '<p>' + e.message + '</p>'
+    + '<p>Line info: ' + JSON.stringify(e) + '</p>'
+    + '</div>';
+}
+// Attach sign in button
+document.getElementById("signin-btn").addEventListener("click", handleLogin);
+document.getElementById("signin-btn").addEventListener("touchend", function(e){
+  e.preventDefault();
+  handleLogin();
+});
 </script>
 </body>
 </html>
