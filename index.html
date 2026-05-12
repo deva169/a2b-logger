@@ -241,7 +241,7 @@ function renderItems(){
     var qty=isSel?(sel[nm].qty||""):"";
     var newBadge=isN?" <span style='font-size:10px;background:#FFF3CD;color:#854F0B;border-radius:3px;padding:1px 4px'>new</span>":"";
     if(isSel){
-      html+='<div class="irow-sel"><div class="irow-top" data-n="'+nm+'" data-u="'+un+'"><div class="chk on" style="display:flex;align-items:center;justify-content:center;background:#1D9E75;border-color:#1D9E75"><span style="display:block;width:10px;height:6px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px)"></span></div><span class="iname" style="pointer-events:none">'+nm+newBadge+'</span><span style="font-size:11px;color:#1D9E75;pointer-events:none">tap to remove</span></div><div class="irow-qty"><span class="qlbl">Qty used:</span><div class="qbtn" data-n="'+nm+'" data-d="-1">&#8722;</div><input class="qin" type="number" min="0" step="0.5" value="'+qty+'" placeholder="0" data-n="'+nm+'"><span class="qunit">'+un+'</span><div class="qbtn" data-n="'+nm+'" data-d="1">+</div></div></div>';
+      html+='<div class="irow-sel"><div class="irow-top" data-n="'+nm+'" data-u="'+un+'"><div class="chk on" style="display:flex;align-items:center;justify-content:center;background:#1D9E75;border-color:#1D9E75"><span style="display:block;width:10px;height:6px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px)"></span></div><span class="iname" style="pointer-events:none">'+nm+newBadge+'</span><span style="font-size:11px;color:#1D9E75;pointer-events:none">tap to remove</span></div><div class="irow-qty"><span class="qlbl">Qty reqd:</span><div class="qbtn" data-n="'+nm+'" data-d="-1">&#8722;</div><input class="qin" type="text" inputmode="decimal" pattern="[0-9.]*" value="'+qty+'" placeholder="0" data-n="'+nm+'"><span class="qunit">'+un+'</span><div class="qbtn" data-n="'+nm+'" data-d="1">+</div></div></div>';
     } else {
       html+='<div class="irow" data-n="'+nm+'" data-u="'+un+'"><div class="chk"></div><span class="iname">'+nm+newBadge+'</span><span class="iunit-lbl">'+un+'</span></div>';
     }
@@ -253,7 +253,7 @@ function renderItems(){
   document.getElementById("scnt").textContent=n?n+" selected in "+ac+" \u2014 switch tabs for more":"Tap item to select \u2014 qty input appears instantly";
   // Unselected taps
   document.getElementById("ilist").querySelectorAll(".irow:not(.add-row)").forEach(function(row){
-    tap(row,function(){var nm=this.getAttribute("data-n"),un=this.getAttribute("data-u");sel[nm]={cat:ac,unit:un,qty:"",isNew:false};upd();renderItems();setTimeout(function(){var inp=document.querySelector(".qin[data-n='"+nm+"']");if(inp){inp.focus();inp.select();}},60);});
+    tap(row,function(){var nm=this.getAttribute("data-n"),un=this.getAttribute("data-u");sel[nm]={cat:ac,unit:un,qty:"",isNew:false};upd();renderItems();// Don't auto-focus qty input to prevent keyboard popup});
   });
   // Selected top (deselect)
   document.getElementById("ilist").querySelectorAll(".irow-top").forEach(function(row){
@@ -265,7 +265,7 @@ function renderItems(){
   });
   // +/- buttons
   document.getElementById("ilist").querySelectorAll(".qbtn").forEach(function(btn){
-    tap(btn,function(){document.activeElement&&document.activeElement.blur();var n=this.getAttribute("data-n"),d=parseFloat(this.getAttribute("data-d"));var inp=document.querySelector(".qin[data-n='"+n+"']");if(!inp)return;var v=Math.max(0,Math.round(((parseFloat(inp.value)||0)+d)*10)/10);inp.value=v;if(sel[n])sel[n].qty=v;});
+    tap(btn,function(){document.activeElement&&document.activeElement.blur();var n=this.getAttribute("data-n"),d=parseFloat(this.getAttribute("data-d"));var inp=document.querySelector(".qin[data-n='"+n+"']");if(!inp)return;var v=Math.max(0,Math.round(((parseFloat(inp.value)||0)+d)*10)/10);inp.value=v;if(sel[n])sel[n].qty=v;inp.blur();});
   });
   // Add row
   var ar=document.getElementById("addrow");
@@ -294,11 +294,11 @@ tap(document.getElementById("bb3"),function(){ss(2);});
 tap(document.getElementById("bsub"),function(){
   var btn=document.getElementById("bsub"),err=document.getElementById("errbox");
   btn.disabled=true;btn.innerHTML='<span class="spin"></span>Saving&hellip;';
-  var store=document.getElementById("fstore").value,date=document.getElementById("fdate").value,notes=document.getElementById("fnotes").value;
+  var store=document.getElementById("fstore").value,date=document.getElementById("fdate").value,dateFmt=(function(){var p=date.split('-');return p[2]+'/'+p[1]+'/'+p[0];})(),notes=document.getElementById("fnotes").value;
   var entries=Object.keys(sel).map(function(item){return{item:item,unit:sel[item].unit,qty:parseFloat(sel[item].qty)||0,category:sel[item].cat,isNew:sel[item].isNew||false};});
   var nO=entries.filter(function(e){return e.isNew;}).map(function(e){return e.item+" ("+e.category+")";});
   var fn=notes+(nO.length?"\n\u2b50 New items: "+nO.join(", "):"");
-  fetch(SC,{method:"POST",mode:"no-cors",body:JSON.stringify({store:store,category:"Multiple",date:date,loggedBy:CU.name+" ("+CU.role+")",notes:fn,entries:entries})})
+  fetch(SC,{method:"POST",mode:"no-cors",body:JSON.stringify({store:store,category:"Multiple",date:date,displayDate:dateFmt,loggedBy:CU.name+" ("+CU.role+")",notes:fn,entries:entries})})
   .then(function(){
     var d=new Date(date+"T12:00:00"),ds=d.toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"});
     var cats=CATS.filter(function(c){return entries.some(function(e){return e.category===c;});});
