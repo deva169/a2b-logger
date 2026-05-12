@@ -241,7 +241,7 @@ function renderItems(){
     var qty=isSel?(sel[nm].qty||""):"";
     var newBadge=isN?" <span style='font-size:10px;background:#FFF3CD;color:#854F0B;border-radius:3px;padding:1px 4px'>new</span>":"";
     if(isSel){
-      html+='<div class="irow-sel"><div class="irow-top" data-n="'+nm+'" data-u="'+un+'"><div class="chk on" style="display:flex;align-items:center;justify-content:center;background:#1D9E75;border-color:#1D9E75"><span style="display:block;width:10px;height:6px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px)"></span></div><span class="iname" style="pointer-events:none">'+nm+newBadge+'</span><span style="font-size:11px;color:#1D9E75;pointer-events:none">tap to remove</span></div><div class="irow-qty"><span class="qlbl">Qty reqd:</span><div class="qbtn" data-n="'+nm+'" data-d="-1">&#8722;</div><input class="qin" type="text" inputmode="decimal" pattern="[0-9.]*" value="'+qty+'" placeholder="0" data-n="'+nm+'"><span class="qunit">'+un+'</span><div class="qbtn" data-n="'+nm+'" data-d="1">+</div></div></div>';
+      html+='<div class="irow-sel"><div class="irow-top" data-n="'+nm+'" data-u="'+un+'"><div class="chk on" style="display:flex;align-items:center;justify-content:center;background:#1D9E75;border-color:#1D9E75"><span style="display:block;width:10px;height:6px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px)"></span></div><span class="iname" style="pointer-events:none">'+nm+newBadge+'</span><span style="font-size:11px;color:#1D9E75;pointer-events:none">tap to remove</span></div><div class="irow-qty"><span class="qlbl">Qty reqd:</span><div class="qbtn" data-n="'+nm+'" data-d="-1">&#8722;</div><input class="qin" type="text" inputmode="decimal" pattern="[0-9.]*" readonly value="'+qty+'" placeholder="0" data-n="'+nm+'"><span class="qunit">'+un+'</span><div class="qbtn" data-n="'+nm+'" data-d="1">+</div></div></div>';
     } else {
       html+='<div class="irow" data-n="'+nm+'" data-u="'+un+'"><div class="chk"></div><span class="iname">'+nm+newBadge+'</span><span class="iunit-lbl">'+un+'</span></div>';
     }
@@ -261,6 +261,8 @@ function renderItems(){
   });
   // Qty inputs
   document.getElementById("ilist").querySelectorAll(".qin").forEach(function(inp){
+    inp.addEventListener("focus",function(){this.removeAttribute("readonly");});
+    inp.addEventListener("blur",function(){this.setAttribute("readonly","");});
     inp.addEventListener("input",function(){var n=this.getAttribute("data-n");if(sel[n])sel[n].qty=this.value;});
   });
   // +/- buttons
