@@ -30,15 +30,17 @@ select,input[type=date]{flex:1;border:none;background:transparent;color:#1A1916;
 .lf label{display:block;font-size:12px;color:#7A7870;margin-bottom:5px;font-weight:500}
 .lf input{width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:12px 14px;font-size:15px;color:#1A1916;font-family:inherit;outline:none}
 .lf input:focus{border-color:#185FA5;background:#fff}
-.pin-display{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
-.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid #E2E0D8;transition:all .15s}
-.pin-dot.filled{background:#185FA5;border-color:#185FA5}
-.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.pbtn{padding:16px;border-radius:12px;border:1px solid #E2E0D8;background:#fff;font-size:20px;font-weight:500;cursor:pointer;font-family:inherit;color:#1A1916;touch-action:manipulation;user-select:none;-webkit-user-select:none}
-.pbtn:active{background:#E6F1FB}
-.pbtn.del{font-size:16px;color:#7A7870}
-.pbtn.empty{border:none;background:transparent;cursor:default}
+
+
+
+
+
+
+
+
 .lerr{background:#FDECEA;border-radius:8px;padding:8px 12px;font-size:13px;color:#C0392B;margin-bottom:12px;display:none;text-align:left}
+#pin-input{width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:12px 14px;font-size:20px;color:#1A1916;font-family:inherit;outline:none;letter-spacing:8px;text-align:center}
+#pin-input:focus{border-color:#185FA5;background:#fff}
 .user-bar{background:#fff;border:1px solid #E2E0D8;border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
 .ubn{font-size:14px;font-weight:600}
 .rbadge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-left:6px;vertical-align:middle}
@@ -120,24 +122,21 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
 
 <div class="step on" id="s1">
   <div class="login-box">
-    <h2>Welcome to A2B</h2><p>Enter your name and PIN to continue</p>
-    <div class="lf"><label>Your name</label><input type="text" id="ln" placeholder="Type your name…" autocomplete="off" autocorrect="off" autocapitalize="words"></div>
-    <div class="lf"><label>PIN</label>
-      <div class="pin-display"><div class="pin-dot" id="pd0"></div><div class="pin-dot" id="pd1"></div><div class="pin-dot" id="pd2"></div><div class="pin-dot" id="pd3"></div></div>
-      <div class="pin-pad">
-        <div class="pbtn" data-n="1">1</div><div class="pbtn" data-n="2">2</div><div class="pbtn" data-n="3">3</div>
-        <div class="pbtn" data-n="4">4</div><div class="pbtn" data-n="5">5</div><div class="pbtn" data-n="6">6</div>
-        <div class="pbtn" data-n="7">7</div><div class="pbtn" data-n="8">8</div><div class="pbtn" data-n="9">9</div>
-        <div class="pbtn empty"></div><div class="pbtn" data-n="0">0</div><div class="pbtn del" id="pdel">&#9003;</div>
-      </div>
+    <h2>Welcome to A2B</h2>
+    <p>Sign in to start logging</p>
+    <div class="lf"><label>Your name</label>
+      <input type="text" id="ln" placeholder="e.g. Vinodh" autocomplete="off" autocorrect="off" autocapitalize="words" style="width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:12px 14px;font-size:16px;color:#1A1916;font-family:inherit;outline:none;display:block">
     </div>
-    <div class="lerr" id="lerr">Name or PIN incorrect. Please try again.</div>
+    <div class="lf"><label>PIN</label>
+      <input type="password" id="pin-input" placeholder="4-digit PIN" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" style="width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:12px 14px;font-size:24px;color:#1A1916;font-family:inherit;outline:none;letter-spacing:8px;text-align:center;display:block">
+    </div>
+    <div id="lerr" style="background:#FDECEA;border-radius:8px;padding:8px 12px;font-size:13px;color:#C0392B;margin-bottom:12px;display:none">Incorrect name or PIN</div>
+    <button onclick="handleLogin()" style="width:100%;padding:15px;border-radius:12px;border:none;background:#185FA5;color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px">Sign in &amp; start logging</button>
   </div>
   <div class="card">
-    <div class="crow"><span class="clbl">Restaurant</span><select id="fstore"><option>Harrisdale A2B</option><option>Yokine A2B</option></select></div>
-    <div class="crow"><span class="clbl">Date</span><input type="date" id="fdate"></div>
+    <div class="crow"><span class="clbl">Restaurant</span><select id="fstore" style="flex:1;border:none;background:transparent;color:#1A1916;font-size:14px;font-family:inherit;outline:none;text-align:right;padding:0"><option>Harrisdale A2B</option><option>Yokine A2B</option></select></div>
+    <div class="crow"><span class="clbl">Date</span><input type="date" id="fdate" style="flex:1;border:none;background:transparent;color:#1A1916;font-size:14px;font-family:inherit;outline:none;text-align:right;padding:0"></div>
   </div>
-  <div class="btnrow"><button class="bmain blue" id="blogin">Sign in &amp; start logging</button></div>
 </div>
 
 <div class="step" id="s2">
@@ -203,6 +202,7 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
 
 <script>
 var SC="https://script.google.com/macros/s/AKfycbxiUHbSpBFcoOIUup0NP3Lw6q9ZTAFezQW3y2NQRhf8XEMtBUz7b_aJhQjE7QD3vhPKcw/exec";
+
 var STAFF={"Deva":{pin:"5385",role:"Admin"},"Duwaraka":{pin:"2783",role:"Admin"},"Suresh":{pin:"1111",role:"Manager"},"Kajal":{pin:"2222",role:"Manager"},"Fahmida":{pin:"3333",role:"Manager"},"Mamta":{pin:"4444",role:"Manager"},"Shaswanth":{pin:"5555",role:"Manager"},"Vinodh":{pin:"1234",role:"Chef"},"Michael":{pin:"2345",role:"Chef"},"Anand":{pin:"3456",role:"Chef"},"Ramar":{pin:"4567",role:"Chef"},"Thaneesh":{pin:"5678",role:"Chef"},"Sandip":{pin:"6789",role:"Chef"},"Monica":{pin:"7890",role:"Chef"}};
 var RBG={Chef:"rc",Manager:"rm",Admin:"ra"};
 var RLB={Chef:"Chef",Manager:"Manager",Admin:"Admin"};
@@ -218,17 +218,52 @@ var CATS=["Grocery","Vegetables","Supermarket","Packaging"];
 var TIDS={Grocery:"G",Vegetables:"V",Supermarket:"S",Packaging:"P"};
 var sel={},ac="Grocery",su="kg",CU=null,pin="";
 document.getElementById("fdate").value=new Date().toISOString().split("T")[0];
-function tap(el,fn){var mv=false;el.addEventListener("touchstart",function(){mv=false;},{passive:true});el.addEventListener("touchmove",function(){mv=true;},{passive:true});el.addEventListener("touchend",function(e){if(!mv){e.preventDefault();fn.call(el,e);}});el.addEventListener("click",function(e){fn.call(el,e);});}
+function tap(el,fn){
+  var mv=false,fired=false;
+  el.addEventListener("touchstart",function(){mv=false;},{passive:true});
+  el.addEventListener("touchmove",function(){mv=true;},{passive:true});
+  el.addEventListener("touchend",function(e){
+    if(!mv){e.preventDefault();fired=true;fn.call(el,e);setTimeout(function(){fired=false;},300);}
+  });
+  el.addEventListener("click",function(e){if(!fired)fn.call(el,e);});
+}
 function ss(n){for(var i=1;i<=4;i++)document.getElementById("s"+i).className="step"+(i===n?" on":"");for(var i=1;i<=3;i++)document.getElementById("p"+i).className="pd"+(i<=n?" on":"");window.scrollTo(0,0);}
 function upd(){var tot=Object.keys(sel).length;var el=document.getElementById("s2tot");if(el)el.textContent=tot?tot+" item"+(tot>1?"s":"")+" selected":"0 items";CATS.forEach(function(c){var n=Object.keys(sel).filter(function(k){return sel[k].cat===c;}).length;var ce=document.getElementById("cnt-"+TIDS[c]);if(ce){ce.textContent=n;ce.className="cnt"+(n>0?" show":"");}});}
 // PIN
-function upPin(){for(var i=0;i<4;i++)document.getElementById("pd"+i).className="pin-dot"+(i<pin.length?" filled":"");}
-document.querySelectorAll(".pbtn[data-n]").forEach(function(b){tap(b,function(){if(pin.length<4){pin+=this.getAttribute("data-n");upPin();if(pin.length===4){var nm=document.getElementById("ln").value.trim();if(nm)doLogin(nm,pin);}}});});
-tap(document.getElementById("pdel"),function(){if(pin.length>0){pin=pin.slice(0,-1);upPin();}});
-tap(document.getElementById("blogin"),function(){var nm=document.getElementById("ln").value.trim();var e=document.getElementById("lerr");if(!nm){e.style.display="block";e.textContent="Please enter your name.";return;}if(pin.length<4){e.style.display="block";e.textContent="Please enter your 4-digit PIN.";return;}doLogin(nm,pin);});
-document.getElementById("ln").addEventListener("keydown",function(e){if(e.key==="Enter")document.getElementById("blogin").click();});
-function doLogin(name,p){var mk=null;Object.keys(STAFF).forEach(function(k){if(k.toLowerCase()===name.toLowerCase())mk=k;});var e=document.getElementById("lerr");if(!mk||STAFF[mk].pin!==p){e.style.display="block";pin="";upPin();return;}e.style.display="none";CU={name:mk,role:STAFF[mk].role};document.getElementById("ubn").textContent=mk;var rb=document.getElementById("urole");rb.textContent=RLB[CU.role];rb.className="rbadge "+RBG[CU.role];var d=new Date(document.getElementById("fdate").value+"T12:00:00");document.getElementById("s2lbl").textContent=document.getElementById("fstore").value+" · "+d.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"});ac="Grocery";switchTab("Grocery");upd();ss(2);}
-tap(document.getElementById("blogout"),function(){CU=null;pin="";sel={};document.getElementById("ln").value="";upPin();document.getElementById("lerr").style.display="none";ss(1);});
+function handleLogin(){
+  var nm=document.getElementById("ln").value.trim();
+  var p=document.getElementById("pin-input").value.replace(/[^0-9]/g,"");
+  var err=document.getElementById("lerr");
+  err.style.display="block";
+  err.style.background="#FFF3CD";
+  err.style.color="#333";
+  err.textContent="Debug: name="+nm+" pin="+p+" len="+p.length;
+  if(!nm||p.length<4){err.textContent="Need name and 4 digits. Got: name="+nm+" pin="+p;return;}
+  var mk=null;
+  Object.keys(STAFF).forEach(function(k){if(k.toLowerCase()===nm.toLowerCase())mk=k;});
+  err.textContent="Debug2: mk="+mk+" STAFF keys="+Object.keys(STAFF).join(",");
+  if(!mk||STAFF[mk].pin!==p){err.textContent="Wrong: mk="+mk+" got="+p+" expected="+(mk?STAFF[mk].pin:"?");document.getElementById("pin-input").value="";return;}
+  err.style.display="none";
+  CU={name:mk,role:STAFF[mk].role};
+  document.getElementById("ubn").textContent=mk;
+  var rb=document.getElementById("urole");
+  rb.textContent=RLB[CU.role];rb.className="rbadge "+RBG[CU.role];
+  var d=new Date(document.getElementById("fdate").value+"T12:00:00");
+  document.getElementById("s2lbl").textContent=document.getElementById("fstore").value+" · "+d.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"});
+  ac="Grocery";switchTab("Grocery");upd();ss(2);
+}
+
+// Auto-submit on 4th digit
+document.getElementById("pin-input").addEventListener("input",function(){
+  this.value=this.value.replace(/[^0-9]/g,"").slice(0,4);
+  if(this.value.length===4){
+    var nm=document.getElementById("ln").value.trim();
+    if(nm) handleLogin();
+  }
+});
+
+document.getElementById("ln").addEventListener("keydown",function(e){if(e.key==="Enter")handleLogin();});
+tap(document.getElementById("blogout"),function(){CU=null;pin="";sel={};document.getElementById("ln").value="";document.getElementById("pin-input").value="";document.getElementById("lerr").style.display="none";ss(1);ss(1);});
 // Items
 function renderItems(){
   var q=document.getElementById("srch").value.toLowerCase();
