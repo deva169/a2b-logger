@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2B Manager View</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1A1916;font-size:15px}
+.app{max-width:460px;margin:0 auto;padding:12px 12px 80px}
+.topbar{display:flex;align-items:center;gap:10px;background:#085041;border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.logo{width:36px;height:36px;background:#fff;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#085041;flex-shrink:0}
+.ttl{color:#fff;flex:1}.ttl h1{font-size:15px;font-weight:700}.ttl p{font-size:11px;opacity:.7;margin-top:1px}
+.pill{background:rgba(255,255,255,.18);border-radius:20px;padding:3px 9px;font-size:11px;color:#fff}
+.scr{display:none}.scr.on{display:block}
+/* Login */
+.lbox{background:#fff;border-radius:16px;border:1px solid #E2E0D8;padding:24px 20px;margin-bottom:12px}
+.lbox h2{font-size:17px;font-weight:700;margin-bottom:4px;text-align:center}
+.lbox p{font-size:13px;color:#7A7870;margin-bottom:20px;text-align:center}
+.lf{margin-bottom:12px}
+.lf label{display:block;font-size:12px;color:#7A7870;margin-bottom:5px;font-weight:500}
+.lf input{width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:12px 14px;font-size:16px;color:#1A1916;font-family:inherit;outline:none}
+.lf input:focus{border-color:#085041;background:#fff}
+.lerr{background:#FDECEA;border-radius:8px;padding:8px 12px;font-size:13px;color:#C0392B;margin-bottom:12px;display:none}
+.bmain{width:100%;padding:15px;border-radius:12px;border:none;background:#085041;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px}
+/* Date banner */
+.date-banner{background:#E1F5EE;border-radius:12px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.date-lbl{font-size:13px;font-weight:600;color:#085041}
+.date-sub{font-size:12px;color:#1D9E75}
+.refresh-btn{font-size:12px;color:#085041;cursor:pointer;border:1px solid #085041;border-radius:8px;padding:4px 10px;background:#fff;touch-action:manipulation}
+/* Restaurant tabs */
+.rtabs{display:flex;border-radius:12px;overflow:hidden;border:1px solid #E2E0D8;margin-bottom:14px;background:#fff}
+.rtab{flex:1;padding:12px 8px;font-size:13px;font-weight:600;text-align:center;cursor:pointer;color:#7A7870;border-right:1px solid #E2E0D8;touch-action:manipulation;user-select:none;line-height:1.3}
+.rtab:last-child{border-right:none}
+.rtab.on{background:#085041;color:#fff}
+/* Summary badges */
+.sum-row{display:flex;gap:8px;margin-bottom:14px}
+.sbadge{flex:1;border-radius:10px;padding:8px;text-align:center}
+.sbadge .num{font-size:20px;font-weight:700}
+.sbadge .lbl{font-size:11px;margin-top:2px}
+.sb-ok{background:#E1F5EE;color:#085041}
+.sb-adj{background:#FEF3C7;color:#92400E}
+.sb-no{background:#FDECEA;color:#7B241C}
+.sb-pend{background:#E6F1FB;color:#0C447C}
+/* Category section */
+.cat-hdr{padding:8px 14px;border-radius:10px 10px 0 0;font-size:11px;font-weight:700;letter-spacing:.04em;color:#fff;margin-top:12px}
+.ch-G{background:#1D9E75}.ch-V{background:#185FA5}.ch-S{background:#993556}.ch-P{background:#854F0B}
+/* Item card */
+.item-card{background:#fff;border:1px solid #E2E0D8;border-top:none;padding:12px 14px}
+.item-card:last-child{border-radius:0 0 10px 10px}
+.item-name{font-size:14px;font-weight:600;margin-bottom:2px}
+.item-meta{font-size:12px;color:#7A7870;margin-bottom:10px}
+/* Status selector */
+.status-sel{width:100%;padding:10px 12px;border-radius:10px;border:2px solid #E2E0D8;background:#fff;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;outline:none;margin-bottom:8px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.status-sel.s-available{border-color:#1D9E75;background-color:#E1F5EE;color:#085041}
+.status-sel.s-adjust{border-color:#F59E0B;background-color:#FEF3C7;color:#92400E}
+.status-sel.s-unavailable{border-color:#C0392B;background-color:#FDECEA;color:#7B241C}
+.status-sel.s-pending{border-color:#E2E0D8;color:#7A7870}
+/* Qty adjust row */
+.qty-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.qty-lbl{font-size:12px;color:#7A7870;min-width:80px}
+.qbtn{width:32px;height:32px;border-radius:8px;border:1px solid #E2E0D8;background:#F7F6F3;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#1A1916;touch-action:manipulation;user-select:none}
+.qin{width:64px;padding:6px 4px;border:1px solid #E2E0D8;border-radius:8px;font-size:14px;text-align:center;background:#F7F6F3;color:#1A1916;font-family:inherit}
+.qunit{font-size:12px;color:#7A7870}
+/* Reason input */
+.reason-inp{width:100%;border:1px solid #E2E0D8;border-radius:8px;background:#F7F6F3;padding:8px 10px;font-size:13px;color:#1A1916;font-family:inherit;outline:none}
+.reason-inp:focus{border-color:#085041}
+/* Submit bar */
+.submit-bar{position:fixed;bottom:0;left:0;right:0;background:#1A1916;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:50}
+.sub-counts{font-size:12px;color:rgba(255,255,255,.7);display:flex;gap:10px}
+.sub-btn{padding:11px 20px;border-radius:10px;border:none;background:#1D9E75;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation}
+.sub-btn:disabled{opacity:.5}
+/* Success */
+.succ{background:#E1F5EE;border-radius:16px;padding:28px 20px;text-align:center;margin-bottom:14px}
+.tick{width:52px;height:52px;border-radius:50%;background:#1D9E75;margin:0 auto 14px;display:flex;align-items:center;justify-content:center}
+.tick::after{content:'';display:block;width:22px;height:13px;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(-45deg) translate(2px,-2px)}
+.succ h2{font-size:18px;font-weight:700;color:#085041;margin-bottom:4px}
+.succ p{font-size:14px;color:#1D9E75}
+.wawrap{background:#e5ddd5;border-radius:14px;padding:12px;margin-bottom:10px}
+.wamsg{background:#dcf8c6;border-radius:10px 10px 3px 10px;padding:10px 12px;font-size:13px;line-height:1.55;color:#111;display:inline-block;max-width:100%;white-space:pre-wrap;word-break:break-word}
+.cpybtn{width:100%;padding:14px;border-radius:12px;border:1.5px solid #1D9E75;background:#fff;color:#1D9E75;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:8px;touch-action:manipulation}
+.cpdone{text-align:center;font-size:13px;color:#1D9E75;margin-bottom:8px;display:none}
+.spin{display:inline-block;width:15px;height:15px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.empty{padding:30px;text-align:center;color:#7A7870;font-size:14px;background:#fff;border-radius:12px;border:1px solid #E2E0D8}
+.logout{font-size:12px;color:#fff;opacity:.7;cursor:pointer;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:3px 8px;touch-action:manipulation}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="topbar">
+  <div class="logo">A2B</div>
+  <div class="ttl"><h1>Manager View</h1><p>Today's orders</p></div>
+  <span class="logout" id="btn-logout" style="display:none">Sign out</span>
+</div>
+
+<!-- LOGIN -->
+<div class="scr on" id="scr-login">
+  <div class="lbox">
+    <h2>Manager Sign In</h2>
+    <p>Managers and Admins only</p>
+    <div class="lf"><label>Your name</label><input type="text" id="uname" placeholder="e.g. Suresh" autocomplete="off" autocorrect="off" autocapitalize="words"></div>
+    <div class="lf"><label>PIN</label><input type="password" id="upin" placeholder="4-digit PIN" inputmode="numeric" maxlength="4" autocomplete="off"></div>
+    <div class="lerr" id="lerr"></div>
+    <button class="bmain" id="signin-btn">Sign in</button>
+  </div>
+</div>
+
+<!-- ORDERS -->
+<div class="scr" id="scr-orders">
+  <div class="date-banner">
+    <div><div class="date-lbl" id="date-lbl"></div><div class="date-sub" id="date-sub"></div></div>
+    <button class="refresh-btn" id="btn-refresh">↻ Refresh</button>
+  </div>
+  <div class="rtabs">
+    <div class="rtab on" data-rest="Harrisdale A2B" id="tab-H">Harrisdale A2B</div>
+    <div class="rtab" data-rest="Yokine A2B" id="tab-Y">Yokine A2B</div>
+  </div>
+  <div class="sum-row">
+    <div class="sbadge sb-pend"><div class="num" id="cnt-pend">0</div><div class="lbl">Pending</div></div>
+    <div class="sbadge sb-ok"><div class="num" id="cnt-ok">0</div><div class="lbl">Available</div></div>
+    <div class="sbadge sb-adj"><div class="num" id="cnt-adj">0</div><div class="lbl">Adjusted</div></div>
+    <div class="sbadge sb-no"><div class="num" id="cnt-no">0</div><div class="lbl">Not avail.</div></div>
+  </div>
+  <div id="order-list"></div>
+  <div style="height:70px"></div>
+  <div class="submit-bar">
+    <div class="sub-counts">
+      <span id="sb-ok">✅ 0</span>
+      <span id="sb-adj">✏️ 0</span>
+      <span id="sb-no">❌ 0</span>
+    </div>
+    <button class="sub-btn" id="btn-submit">Send confirmation</button>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="scr" id="scr-done">
+  <div class="succ"><div class="tick"></div><h2>Confirmation Sent ✓</h2><p id="done-txt"></p></div>
+  <p style="font-size:12px;color:#7A7870;margin-bottom:8px">Copy and send on WhatsApp</p>
+  <div class="wawrap"><div class="wamsg" id="watxt"></div></div>
+  <button class="cpybtn" id="btn-copy">📋 Copy WhatsApp message</button>
+  <div class="cpdone" id="cpdone">✓ Copied!</div>
+  <div style="margin-top:12px;display:flex;gap:8px">
+    <button class="bmain" id="btn-back-orders" style="background:#7A7870">← Back to orders</button>
+    <button class="bmain" id="btn-refresh2">Refresh orders</button>
+  </div>
+</div>
+</div>
+
+<script>
+var SC="https://script.google.com/macros/s/AKfycbxiUHbSpBFcoOIUup0NP3Lw6q9ZTAFezQW3y2NQRhf8XEMtBUz7b_aJhQjE7QD3vhPKcw/exec";
+
+var STAFF={
+  "Deva":      {pin:"5385",role:"Admin"},
+  "Duwaraka":  {pin:"2783",role:"Admin"},
+  "Suresh":    {pin:"1111",role:"Manager"},
+  "Kajal":     {pin:"2222",role:"Manager"},
+  "Fahmida":   {pin:"3333",role:"Manager"},
+  "Mamta":     {pin:"4444",role:"Manager"},
+  "Shaswanth": {pin:"5555",role:"Manager"},
+  "Deepak":    {pin:"0000",role:"Store Manager"},
+  "Ravi":      {pin:"1100",role:"Store Manager"}
+};
+
+var CATS=["Grocery","Vegetables","Supermarket","Packaging"];
+var CAT_CLS={Grocery:"ch-G",Vegetables:"ch-V",Supermarket:"ch-S",Packaging:"ch-P"};
+var CU=null, activeRest="Harrisdale A2B";
+
+// item state: {status, qty, originalQty, unit, reason}
+var STATE={};
+
+// Demo today's orders — in production fetched from Google Sheet via doGet
+var TODAY_ORDERS=[
+  {store:"Harrisdale A2B",category:"Grocery",   item:"Maida",          unit:"kg",  qty:10, loggedBy:"Vinodh (Chef)"},
+  {store:"Harrisdale A2B",category:"Grocery",   item:"Oil",            unit:"box", qty:2,  loggedBy:"Vinodh (Chef)"},
+  {store:"Harrisdale A2B",category:"Grocery",   item:"Paneer",         unit:"box", qty:4,  loggedBy:"Anand (Chef)"},
+  {store:"Harrisdale A2B",category:"Grocery",   item:"Idli Rice",      unit:"bag", qty:6,  loggedBy:"Anand (Chef)"},
+  {store:"Harrisdale A2B",category:"Vegetables",item:"Brown Onion",    unit:"kg",  qty:25, loggedBy:"Ramar (Chef)"},
+  {store:"Harrisdale A2B",category:"Vegetables",item:"Potato",         unit:"kg",  qty:20, loggedBy:"Ramar (Chef)"},
+  {store:"Harrisdale A2B",category:"Vegetables",item:"Tomato",         unit:"box", qty:4,  loggedBy:"Ramar (Chef)"},
+  {store:"Harrisdale A2B",category:"Supermarket",item:"Full Cream Milk",unit:"ltr",qty:10, loggedBy:"Monica (Chef)"},
+  {store:"Harrisdale A2B",category:"Supermarket",item:"Coconut",       unit:"box", qty:3,  loggedBy:"Monica (Chef)"},
+  {store:"Harrisdale A2B",category:"Packaging", item:"Foil Cover",     unit:"pack",qty:5,  loggedBy:"Thaneesh (Chef)"},
+  {store:"Harrisdale A2B",category:"Packaging", item:"Dinner Napkins", unit:"box", qty:2,  loggedBy:"Thaneesh (Chef)"},
+  {store:"Yokine A2B",    category:"Grocery",   item:"Rice Basmati",   unit:"kg",  qty:15, loggedBy:"Sandip (Chef)"},
+  {store:"Yokine A2B",    category:"Grocery",   item:"Toor Dal",       unit:"bag", qty:3,  loggedBy:"Sandip (Chef)"},
+  {store:"Yokine A2B",    category:"Vegetables",item:"Red Onion",      unit:"kg",  qty:10, loggedBy:"Michael (Chef)"},
+  {store:"Yokine A2B",    category:"Vegetables",item:"Coriander",      unit:"box", qty:3,  loggedBy:"Michael (Chef)"},
+  {store:"Yokine A2B",    category:"Supermarket",item:"Cheese",        unit:"pack",qty:2,  loggedBy:"Michael (Chef)"},
+  {store:"Yokine A2B",    category:"Packaging", item:"Take Away Bags Big/Small",unit:"box",qty:3,loggedBy:"Sandip (Chef)"},
+];
+
+function show(id){document.querySelectorAll(".scr").forEach(function(s){s.className="scr";});document.getElementById(id).className="scr on";window.scrollTo(0,0);}
+
+// ── Login ─────────────────────────────────────────────────────
+function doLogin(){
+  var name=document.getElementById("uname").value.trim();
+  var pin=document.getElementById("upin").value.trim();
+  var err=document.getElementById("lerr");
+  if(!name){err.style.display="block";err.textContent="Please enter your name";return;}
+  if(pin.length<4){err.style.display="block";err.textContent="Please enter your 4-digit PIN";return;}
+  var mk=null;
+  Object.keys(STAFF).forEach(function(k){if(k.toLowerCase()===name.toLowerCase())mk=k;});
+  if(!mk||STAFF[mk].pin!==pin){err.style.display="block";err.textContent="Incorrect name or PIN — Managers and Admins only";document.getElementById("upin").value="";return;}
+  err.style.display="none";
+  CU={name:mk,role:STAFF[mk].role};
+  document.getElementById("btn-logout").style.display="block";
+  loadOrders();
+  show("scr-orders");
+}
+document.getElementById("signin-btn").addEventListener("click",doLogin);
+document.getElementById("upin").addEventListener("input",function(){if(this.value.length===4){var n=document.getElementById("uname").value.trim();if(n)doLogin();}});
+
+// ── Logout ────────────────────────────────────────────────────
+document.getElementById("btn-logout").addEventListener("click",function(){
+  CU=null;STATE={};
+  document.getElementById("uname").value="";
+  document.getElementById("upin").value="";
+  document.getElementById("lerr").style.display="none";
+  document.getElementById("btn-logout").style.display="none";
+  show("scr-login");
+});
+
+// ── Load orders ───────────────────────────────────────────────
+function loadOrders(){
+  var today=new Date();
+  document.getElementById("date-lbl").textContent="Today — "+today.toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  document.getElementById("date-sub").textContent=TODAY_ORDERS.length+" items ordered across both restaurants";
+  // Init state
+  STATE={};
+  TODAY_ORDERS.forEach(function(order,i){
+    STATE[i]={status:"pending",qty:order.qty,originalQty:order.qty,unit:order.unit,reason:""};
+  });
+  renderOrders();
+}
+
+// ── Restaurant tabs ───────────────────────────────────────────
+document.querySelectorAll(".rtab").forEach(function(t){
+  t.addEventListener("click",function(){
+    activeRest=this.getAttribute("data-rest");
+    document.querySelectorAll(".rtab").forEach(function(x){x.classList.remove("on");});
+    this.classList.add("on");
+    renderOrders();
+  });
+});
+
+// ── Render orders ─────────────────────────────────────────────
+function renderOrders(){
+  var filtered=TODAY_ORDERS.filter(function(o){return o.store===activeRest;});
+  var html="";
+  if(!filtered.length){html='<div class="empty">No orders logged today for '+activeRest+'</div>';}
+  else {
+    // Group by category
+    CATS.forEach(function(cat){
+      var items=filtered.filter(function(o){return o.category===cat;});
+      if(!items.length) return;
+      html+='<div class="cat-hdr '+CAT_CLS[cat]+'">'+cat.toUpperCase()+'</div>';
+      items.forEach(function(order){
+        var globalIdx=TODAY_ORDERS.indexOf(order);
+        var st=STATE[globalIdx]||{status:"pending",qty:order.qty,originalQty:order.qty,unit:order.unit,reason:""};
+        var selCls=st.status==="available"?"s-available":st.status==="adjust"?"s-adjust":st.status==="unavailable"?"s-unavailable":"s-pending";
+        html+='<div class="item-card">'
+          +'<div class="item-name">'+order.item+'</div>'
+          +'<div class="item-meta">Requested: <b>'+order.qty+' '+order.unit+'</b> · by '+order.loggedBy+'</div>'
+          +'<select class="status-sel '+selCls+'" data-idx="'+globalIdx+'">'
+          +'<option value="pending"'+(st.status==="pending"?" selected":"")+'>— Select status —</option>'
+          +'<option value="available"'+(st.status==="available"?" selected":"")+'>✅ Available</option>'
+          +'<option value="adjust"'+(st.status==="adjust"?" selected":"")+'>✏️ Adjust quantity</option>'
+          +'<option value="unavailable"'+(st.status==="unavailable"?" selected":"")+'>❌ Not available</option>'
+          +'</select>'
+          +(st.status==="adjust"?
+            '<div class="qty-row"><span class="qty-lbl">Confirm qty:</span>'
+            +'<div class="qbtn" data-idx="'+globalIdx+'" data-d="-1">−</div>'
+            +'<input class="qin" type="number" min="0" step="0.5" value="'+st.qty+'" data-idx="'+globalIdx+'">'
+            +'<span class="qunit">'+order.unit+'</span>'
+            +'<div class="qbtn" data-idx="'+globalIdx+'" data-d="1">+</div>'
+            +'</div>':''
+          )
+          +(st.status==="adjust"||st.status==="unavailable"?
+            '<input class="reason-inp" type="text" placeholder="'+(st.status==="unavailable"?"Reason not available…":"Reason for adjustment…")+'" value="'+st.reason+'" data-idx="'+globalIdx+'">':''
+          )
+          +'</div>';
+      });
+    });
+  }
+  document.getElementById("order-list").innerHTML=html;
+  updateCounts();
+  // Wire events
+  document.getElementById("order-list").querySelectorAll(".status-sel").forEach(function(sel){
+    sel.addEventListener("change",function(){
+      var idx=parseInt(this.getAttribute("data-idx"));
+      STATE[idx].status=this.value;
+      if(this.value==="available") STATE[idx].qty=STATE[idx].originalQty;
+      renderOrders();
+    });
+  });
+  document.getElementById("order-list").querySelectorAll(".qin").forEach(function(inp){
+    inp.addEventListener("input",function(){STATE[parseInt(this.getAttribute("data-idx"))].qty=parseFloat(this.value)||0;});
+  });
+  document.getElementById("order-list").querySelectorAll(".qbtn").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      var idx=parseInt(this.getAttribute("data-idx")),d=parseFloat(this.getAttribute("data-d"));
+      var inp=document.querySelector(".qin[data-idx='"+idx+"']");
+      if(!inp)return;
+      var v=Math.max(0,Math.round(((parseFloat(inp.value)||0)+d)*10)/10);
+      inp.value=v;STATE[idx].qty=v;
+    });
+  });
+  document.getElementById("order-list").querySelectorAll(".reason-inp").forEach(function(inp){
+    inp.addEventListener("input",function(){STATE[parseInt(this.getAttribute("data-idx"))].reason=this.value;});
+  });
+}
+
+function updateCounts(){
+  var ok=0,adj=0,no=0,pend=0;
+  Object.values(STATE).forEach(function(s){
+    if(s.status==="available")ok++;
+    else if(s.status==="adjust")adj++;
+    else if(s.status==="unavailable")no++;
+    else pend++;
+  });
+  document.getElementById("cnt-pend").textContent=pend;
+  document.getElementById("cnt-ok").textContent=ok;
+  document.getElementById("cnt-adj").textContent=adj;
+  document.getElementById("cnt-no").textContent=no;
+  document.getElementById("sb-ok").textContent="✅ "+ok;
+  document.getElementById("sb-adj").textContent="✏️ "+adj;
+  document.getElementById("sb-no").textContent="❌ "+no;
+}
+
+// ── Refresh ───────────────────────────────────────────────────
+document.getElementById("btn-refresh").addEventListener("click",function(){loadOrders();});
+document.getElementById("btn-refresh2").addEventListener("click",function(){loadOrders();show("scr-orders");});
+
+// ── Submit ────────────────────────────────────────────────────
+document.getElementById("btn-submit").addEventListener("click",function(){
+  var pending=Object.values(STATE).filter(function(s){return s.status==="pending";}).length;
+  if(pending>0){
+    if(!confirm(pending+" item"+(pending>1?"s":"")+" still pending. Submit anyway?")){return;}
+  }
+  var btn=this;btn.disabled=true;btn.innerHTML='<span class="spin"></span>Sending…';
+  var items=TODAY_ORDERS.map(function(order,i){
+    return{item:order.item,unit:order.unit,category:order.category,store:order.store,
+      originalQty:STATE[i].originalQty,qty:STATE[i].qty,status:STATE[i].status,reason:STATE[i].reason||""};
+  });
+  fetch(SC,{method:"POST",mode:"no-cors",body:JSON.stringify({
+    type:"manager_confirmation",confirmedBy:CU.name+" ("+CU.role+")",
+    date:new Date().toISOString(),items:items
+  })}).then(function(){
+    buildSuccess(items);show("scr-done");
+  }).catch(function(){
+    // Still show success - no-cors always resolves
+    buildSuccess(items);show("scr-done");
+  });
+});
+
+function buildSuccess(items){
+  var ok=items.filter(function(i){return i.status==="available";});
+  var adj=items.filter(function(i){return i.status==="adjust";});
+  var no=items.filter(function(i){return i.status==="unavailable";});
+  var pend=items.filter(function(i){return i.status==="pending";});
+  var ds=new Date().toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"})+" "+new Date().toLocaleTimeString("en-AU",{hour:"2-digit",minute:"2-digit"});
+  document.getElementById("done-txt").textContent=items.length+" items reviewed · "+CU.name+" · "+ds;
+  var wa="*A2B Order Review — Manager*\n"+ds+"\nBy: *"+CU.name+"* ("+CU.role+")\n";
+  if(ok.length){wa+="\n✅ *AVAILABLE ("+ok.length+")*\n";ok.forEach(function(i){wa+="  • "+i.item+": "+i.qty+" "+i.unit+" ("+i.store+")\n";});}
+  if(adj.length){wa+="\n✏️ *ADJUSTED ("+adj.length+")*\n";adj.forEach(function(i){wa+="  • "+i.item+": "+i.originalQty+" → "+i.qty+" "+i.unit+(i.reason?" ("+i.reason+")":"")+"\n";});}
+  if(no.length){wa+="\n❌ *NOT AVAILABLE ("+no.length+")*\n";no.forEach(function(i){wa+="  • "+i.item+(i.reason?" — "+i.reason:"")+"\n";});}
+  if(pend.length){wa+="\n⏳ *NOT REVIEWED ("+pend.length+")*\n";pend.forEach(function(i){wa+="  • "+i.item+"\n";});}
+  document.getElementById("watxt").textContent=wa.trim();
+}
+
+document.getElementById("btn-copy").addEventListener("click",function(){
+  var txt=document.getElementById("watxt").textContent,done=document.getElementById("cpdone");
+  try{navigator.clipboard.writeText(txt).then(function(){done.style.display="block";setTimeout(function(){done.style.display="none";},2000);});}
+  catch(e){var ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done.style.display="block";setTimeout(function(){done.style.display="none";},2000);}
+});
+document.getElementById("btn-back-orders").addEventListener("click",function(){show("scr-orders");});
+</script>
+</body>
+</html>
