@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2B Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1A1916;font-size:15px}
+.app{max-width:480px;margin:0 auto;padding:12px 12px 40px}
+.topbar{display:flex;align-items:center;gap:10px;background:#085041;border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.logo{width:36px;height:36px;background:#fff;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#085041;flex-shrink:0}
+.ttl{color:#fff;flex:1}.ttl h1{font-size:15px;font-weight:700}.ttl p{font-size:11px;opacity:.7;margin-top:1px}
+.rbtn{background:rgba(255,255,255,.18);border:none;border-radius:20px;padding:5px 12px;font-size:12px;color:#fff;cursor:pointer;touch-action:manipulation}
+/* Login */
+.lbox{background:#fff;border-radius:16px;border:1px solid #E2E0D8;padding:24px 20px;margin-bottom:12px}
+.lbox h2{font-size:17px;font-weight:700;margin-bottom:4px;text-align:center}
+.lbox p{font-size:13px;color:#7A7870;margin-bottom:20px;text-align:center}
+.lf{margin-bottom:12px}
+.lf label{display:block;font-size:12px;color:#7A7870;margin-bottom:5px;font-weight:500}
+.lf input{width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:12px 14px;font-size:16px;color:#1A1916;font-family:inherit;outline:none}
+.lf input:focus{border-color:#085041;background:#fff}
+.lerr{background:#FDECEA;border-radius:8px;padding:8px 12px;font-size:13px;color:#C0392B;margin-bottom:12px;display:none}
+.lbtn{width:100%;padding:15px;border-radius:12px;border:none;background:#085041;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px}
+/* Screens */
+.scr{display:none}.scr.on{display:block}
+/* Period selector */
+.period-bar{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
+.period-bar::-webkit-scrollbar{display:none}
+.pbtn{padding:7px 14px;border-radius:20px;border:1.5px solid #E2E0D8;background:#fff;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;touch-action:manipulation;color:#7A7870;flex-shrink:0}
+.pbtn.on{background:#085041;border-color:#085041;color:#fff}
+/* Store tabs */
+.stabs{display:flex;border-radius:12px;overflow:hidden;border:1px solid #E2E0D8;margin-bottom:14px;background:#fff}
+.stab{flex:1;padding:11px 8px;font-size:13px;font-weight:600;text-align:center;cursor:pointer;color:#7A7870;border-right:1px solid #E2E0D8;touch-action:manipulation;user-select:none}
+.stab:last-child{border-right:none}
+.stab.on{background:#085041;color:#fff}
+/* KPI cards */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.kpi{background:#fff;border-radius:14px;border:1px solid #E2E0D8;padding:14px}
+.kpi-val{font-size:28px;font-weight:700;line-height:1;margin-bottom:4px}
+.kpi-lbl{font-size:12px;color:#7A7870}
+.kpi-sub{font-size:11px;color:#7A7870;margin-top:2px}
+.kpi.wide{grid-column:span 2}
+.kpi-grn .kpi-val{color:#085041}
+.kpi-blue .kpi-val{color:#185FA5}
+.kpi-amber .kpi-val{color:#92400E}
+.kpi-red .kpi-val{color:#C0392B}
+/* Section headers */
+.sec-hdr{font-size:13px;font-weight:700;color:#1A1916;margin-bottom:8px;margin-top:16px;display:flex;align-items:center;justify-content:space-between}
+.sec-sub{font-size:11px;color:#7A7870;font-weight:400}
+/* Bar chart */
+.bar-chart{background:#fff;border-radius:14px;border:1px solid #E2E0D8;padding:14px;margin-bottom:10px}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.bar-row:last-child{margin-bottom:0}
+.bar-lbl{font-size:12px;color:#1A1916;min-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-wrap{flex:1;background:#F7F6F3;border-radius:4px;height:20px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;background:#085041;transition:width .4s}
+.bar-val{font-size:12px;font-weight:600;color:#085041;min-width:45px;text-align:right}
+/* Category breakdown */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.cat-card{background:#fff;border-radius:12px;border:1px solid #E2E0D8;padding:12px}
+.cat-name{font-size:12px;font-weight:700;margin-bottom:6px}
+.cat-val{font-size:22px;font-weight:700}
+.cat-unit{font-size:11px;color:#7A7870}
+.cat-G .cat-name{color:#1D9E75}.cat-V .cat-name{color:#185FA5}
+.cat-S .cat-name{color:#993556}.cat-P .cat-name{color:#854F0B}
+.cat-G{border-left:3px solid #1D9E75}.cat-V{border-left:3px solid #185FA5}
+.cat-S{border-left:3px solid #993556}.cat-P{border-left:3px solid #854F0B}
+/* Item table */
+.item-table{background:#fff;border-radius:14px;border:1px solid #E2E0D8;overflow:hidden;margin-bottom:10px}
+.item-row{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid #E2E0D8;font-size:13px}
+.item-row:last-child{border-bottom:none}
+.item-rank{width:24px;font-size:11px;font-weight:700;color:#7A7870;flex-shrink:0}
+.item-name{flex:1;font-weight:500}
+.item-cat{font-size:10px;padding:2px 6px;border-radius:10px;margin-right:8px;font-weight:600;flex-shrink:0}
+.ic-G{background:#E1F5EE;color:#085041}.ic-V{background:#E6F1FB;color:#0C3D6E}
+.ic-S{background:#FBEAF0;color:#5E1A30}.ic-P{background:#FAEEDA;color:#4A2906}
+.item-val{font-weight:700;color:#085041;min-width:60px;text-align:right}
+/* Week trend */
+.trend-row{display:flex;align-items:flex-end;gap:4px;height:80px;padding:0 4px;margin-bottom:4px}
+.trend-bar{flex:1;background:#085041;border-radius:3px 3px 0 0;min-height:4px;transition:height .3s;cursor:pointer;position:relative}
+.trend-bar:hover{background:#1D9E75}
+.trend-bar.active{background:#F59E0B}
+.trend-labels{display:flex;gap:4px;padding:0 4px}
+.trend-lbl{flex:1;text-align:center;font-size:9px;color:#7A7870;overflow:hidden;text-overflow:ellipsis}
+/* Loading */
+.loading{text-align:center;padding:40px 20px;color:#7A7870;font-size:14px}
+.spin{display:inline-block;width:20px;height:20px;border:2.5px solid #E2E0D8;border-top-color:#085041;border-radius:50%;animation:sp .7s linear infinite;margin-bottom:10px}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* User bar */
+.ubar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.uname{font-size:14px;font-weight:600}
+.urole{font-size:11px;background:#E1F5EE;color:#085041;border-radius:20px;padding:2px 8px;font-weight:600;margin-left:6px}
+.ulogout{font-size:12px;color:#C0392B;cursor:pointer;border:1px solid #FDECEA;background:#FDECEA;border-radius:8px;padding:4px 10px;touch-action:manipulation}
+/* No data */
+.nodata{background:#fff;border-radius:12px;border:1px solid #E2E0D8;padding:30px;text-align:center;color:#7A7870;font-size:14px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="topbar">
+  <div class="logo">A2B</div>
+  <div class="ttl"><h1>A2B Dashboard</h1><p id="top-sub">Consumption Analytics</p></div>
+  <button class="rbtn" id="btn-refresh" style="display:none">↻</button>
+</div>
+
+<!-- LOGIN -->
+<div class="scr on" id="scr-login">
+  <div class="lbox">
+    <h2>Dashboard Login</h2>
+    <p>Managers &amp; Admins only</p>
+    <div class="lf"><label>Your name</label><input type="text" id="uname" placeholder="e.g. Deva" autocomplete="off" autocorrect="off" autocapitalize="words"></div>
+    <div class="lf"><label>PIN</label><input type="password" id="upin" placeholder="4-digit PIN" inputmode="numeric" maxlength="4" autocomplete="off"></div>
+    <div class="lerr" id="lerr"></div>
+    <button class="lbtn" id="signin-btn">View Dashboard</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="scr" id="scr-dash">
+  <div class="ubar">
+    <div><span class="uname" id="uname-lbl"></span><span class="urole" id="urole-lbl"></span></div>
+    <span class="ulogout" id="btn-logout">Sign out</span>
+  </div>
+
+  <!-- Period -->
+  <div class="period-bar">
+    <button class="pbtn on" data-period="week">This Week</button>
+    <button class="pbtn" data-period="month">This Month</button>
+    <button class="pbtn" data-period="all">All Time</button>
+  </div>
+
+  <!-- Store tabs -->
+  <div class="stabs">
+    <div class="stab on" data-store="both">Both Restaurants</div>
+    <div class="stab" data-store="Harrisdale A2B">Harrisdale</div>
+    <div class="stab" data-store="Yokine A2B">Yokine</div>
+  </div>
+
+  <div id="dash-content">
+    <div class="loading"><div class="spin"></div><br>Loading data…</div>
+  </div>
+</div>
+</div>
+
+<script>
+var GET_URL = "https://script.google.com/macros/s/AKfycbwiK21T5ho2vuqzDKoWuQyRu9U81Mlda3CDPmLI4SBCPzW1AfWEFHV-4Re9B4hFMlGNSA/exec";
+
+var STAFF = {
+  "Deva":      {pin:"5385",role:"Admin"},
+  "Duwaraka":  {pin:"2783",role:"Admin"},
+  "Suresh":    {pin:"1111",role:"Manager"},
+  "Kajal":     {pin:"2222",role:"Manager"},
+  "Fahmida":   {pin:"3333",role:"Manager"},
+  "Mamta":     {pin:"4444",role:"Manager"},
+  "Shaswanth": {pin:"5555",role:"Manager"},
+  "Deepak":    {pin:"0000",role:"Store Manager"},
+  "Ravi":      {pin:"1100",role:"Store Manager"}
+};
+
+var CATS = ["Grocery","Vegetables","Supermarket","Packaging"];
+var CAT_CLS = {Grocery:"ic-G",Vegetables:"ic-V",Supermarket:"ic-S",Packaging:"ic-P"};
+var CAT_SHORT = {Grocery:"Groc",Vegetables:"Veg",Supermarket:"Super",Packaging:"Pack"};
+
+var CU = null;
+var allData = []; // all Actuals rows
+var activePeriod = "week";
+var activeStore = "both";
+
+// ── Login ─────────────────────────────────────────────────────
+function doLogin(){
+  var name = document.getElementById("uname").value.trim();
+  var pin  = document.getElementById("upin").value.trim();
+  var err  = document.getElementById("lerr");
+  if(!name){err.style.display="block";err.textContent="Please enter your name";return;}
+  if(pin.length<4){err.style.display="block";err.textContent="Please enter your 4-digit PIN";return;}
+  var mk = null;
+  Object.keys(STAFF).forEach(function(k){if(k.toLowerCase()===name.toLowerCase())mk=k;});
+  if(!mk||STAFF[mk].pin!==pin){err.style.display="block";err.textContent="Incorrect name or PIN";document.getElementById("upin").value="";return;}
+  err.style.display="none";
+  CU = {name:mk, role:STAFF[mk].role};
+  document.getElementById("uname-lbl").textContent = mk;
+  document.getElementById("urole-lbl").textContent = STAFF[mk].role;
+  document.getElementById("btn-refresh").style.display = "block";
+  document.getElementById("top-sub").textContent = "Welcome, " + mk;
+  show("scr-dash");
+  loadData();
+}
+document.getElementById("signin-btn").addEventListener("click", doLogin);
+document.getElementById("upin").addEventListener("input", function(){
+  if(this.value.length===4){var n=document.getElementById("uname").value.trim();if(n)doLogin();}
+});
+
+document.getElementById("btn-logout").addEventListener("click", function(){
+  CU=null; allData=[];
+  document.getElementById("uname").value="";
+  document.getElementById("upin").value="";
+  document.getElementById("lerr").style.display="none";
+  document.getElementById("btn-refresh").style.display="none";
+  show("scr-login");
+});
+
+document.getElementById("btn-refresh").addEventListener("click", loadData);
+
+function show(id){
+  document.querySelectorAll(".scr").forEach(function(s){s.className="scr";});
+  document.getElementById(id).className="scr on";
+  window.scrollTo(0,0);
+}
+
+// ── Period buttons ────────────────────────────────────────────
+document.querySelectorAll(".pbtn").forEach(function(b){
+  b.addEventListener("click",function(){
+    activePeriod = this.getAttribute("data-period");
+    document.querySelectorAll(".pbtn").forEach(function(x){x.className="pbtn";});
+    this.className="pbtn on";
+    renderDash();
+  });
+});
+
+// ── Store tabs ────────────────────────────────────────────────
+document.querySelectorAll(".stab").forEach(function(t){
+  t.addEventListener("click",function(){
+    activeStore = this.getAttribute("data-store");
+    document.querySelectorAll(".stab").forEach(function(x){x.classList.remove("on");});
+    this.classList.add("on");
+    renderDash();
+  });
+});
+
+// ── Load data from Apps Script ────────────────────────────────
+function loadData(){
+  document.getElementById("dash-content").innerHTML = '<div class="loading"><div class="spin"></div><br>Loading data…</div>';
+  fetch(GET_URL + "?sheet=Actuals", {
+    method: "GET",
+    mode: "cors",
+    headers: {"Content-Type": "application/json"}
+  })
+  .then(function(r){
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  })
+  .then(function(data){
+    if(data.actuals && data.actuals.length){
+      allData = data.actuals.map(function(row){
+        // Fix date: Google Sheets may return date as string or number
+        var d = row.date;
+        if(typeof d === 'number'){
+          // Google Sheets serial date
+          var jsDate = new Date((d - 25569) * 86400 * 1000);
+          row.date = jsDate.toISOString();
+        } else if(typeof d === 'string' && d.indexOf('/') > -1){
+          // DD/MM/YYYY format
+          var parts = d.split('/');
+          if(parts.length === 3){
+            row.date = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0])).toISOString();
+          }
+        }
+        return row;
+      });
+    } else {
+      allData = [];
+    }
+    if(!allData.length){
+      document.getElementById("dash-content").innerHTML =
+        '<div class="nodata">No data found in Actuals sheet.<br>Make sure the sheet has data and try again.</div>';
+      return;
+    }
+    renderDash();
+  })
+  .catch(function(err){
+    // Try no-cors fallback with JSONP-style approach
+    document.getElementById("dash-content").innerHTML =
+      '<div class="nodata">Loading error: '+err.message+'<br><br>The Apps Script may need redeployment.<br>Check that doGet is deployed as Anyone can access.</div>';
+  });
+}
+
+// ── Filter data by period and store ──────────────────────────
+function getFiltered(){
+  var now = new Date();
+  var from = new Date(0);
+
+  if(activePeriod === "week"){
+    var day = now.getDay() || 7;
+    from = new Date(now);
+    from.setDate(now.getDate() - day + 1);
+    from.setHours(0,0,0,0);
+  } else if(activePeriod === "month"){
+    from = new Date(now.getFullYear(), now.getMonth(), 1);
+  }
+
+  return allData.filter(function(row){
+    if(!row.date) return true; // include if no date (all time)
+    var d = new Date(row.date);
+    if(isNaN(d)) return true; // include if date unparseable
+    if(from > new Date(0) && d < from) return false;
+    if(activeStore !== "both" && row.store !== activeStore) return false;
+    if(row.status === "unavailable") return false;
+    return true;
+  });
+}
+
+// ── Render dashboard ──────────────────────────────────────────
+function renderDash(){
+  var data = getFiltered();
+
+  if(!data.length){
+    document.getElementById("dash-content").innerHTML =
+      '<div class="nodata">No data for this period &amp; restaurant.<br>Try selecting a wider time range.</div>';
+    return;
+  }
+
+  // ── KPIs ──────────────────────────────────────────────────
+  var totalItems = data.length;
+  var totalQty   = data.reduce(function(s,r){return s+(parseFloat(r.qty)||0);},0);
+
+  // Unique items
+  var uniqueItems = {};
+  data.forEach(function(r){uniqueItems[r.item]=true;});
+  var uniqueCount = Object.keys(uniqueItems).length;
+
+  // Orders by day
+  var byDay = {};
+  data.forEach(function(r){
+    var d = r.date ? r.date.split("T")[0] : "";
+    if(!byDay[d]) byDay[d] = 0;
+    byDay[d]++;
+  });
+  var activeDays = Object.keys(byDay).length;
+
+  // ── Category breakdown ────────────────────────────────────
+  var byCat = {Grocery:0,Vegetables:0,Supermarket:0,Packaging:0};
+  data.forEach(function(r){if(byCat[r.category]!==undefined)byCat[r.category]+=(parseFloat(r.qty)||0);});
+
+  // ── Top 10 items ──────────────────────────────────────────
+  var itemTotals = {};
+  data.forEach(function(r){
+    var key = r.item + "||" + r.category + "||" + r.unit;
+    if(!itemTotals[key]) itemTotals[key] = {item:r.item,category:r.category,unit:r.unit,qty:0};
+    itemTotals[key].qty += parseFloat(r.qty)||0;
+  });
+  var topItems = Object.values(itemTotals).sort(function(a,b){return b.qty-a.qty;}).slice(0,10);
+  var maxQty = topItems[0] ? topItems[0].qty : 1;
+
+  // ── Weekly trend ──────────────────────────────────────────
+  var weekTotals = {};
+  data.forEach(function(r){
+    var d = new Date(r.date);
+    var wk = getISOWeek(d);
+    var key = d.getFullYear() + "-W" + String(wk).padStart(2,"0");
+    if(!weekTotals[key]) weekTotals[key] = {label:"Wk"+wk,qty:0};
+    weekTotals[key].qty += parseFloat(r.qty)||0;
+  });
+  var weeks = Object.keys(weekTotals).sort().slice(-8);
+  var maxWk = Math.max.apply(null, weeks.map(function(k){return weekTotals[k].qty;})) || 1;
+
+  // ── By logged user ────────────────────────────────────────
+  var byUser = {};
+  data.forEach(function(r){
+    var user = (r.loggedBy||"Unknown").split(" (")[0];
+    if(!byUser[user]) byUser[user] = 0;
+    byUser[user]++;
+  });
+  var topUsers = Object.entries(byUser).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+
+  // ── Period label ──────────────────────────────────────────
+  var periodLabel = activePeriod==="week"?"This Week":activePeriod==="month"?"This Month":"All Time";
+  var storeLabel  = activeStore==="both"?"Both Restaurants":activeStore.replace(" A2B","");
+
+  // ── Render HTML ───────────────────────────────────────────
+  var html = "";
+
+  // Summary banner
+  html += '<div style="font-size:12px;color:#7A7870;margin-bottom:12px">'+periodLabel+' · '+storeLabel+'</div>';
+
+  // KPI grid
+  html += '<div class="kpi-grid">';
+  html += '<div class="kpi kpi-grn"><div class="kpi-val">'+totalItems+'</div><div class="kpi-lbl">Total Entries</div><div class="kpi-sub">'+activeDays+' active days</div></div>';
+  html += '<div class="kpi kpi-blue"><div class="kpi-val">'+uniqueCount+'</div><div class="kpi-lbl">Unique Items</div><div class="kpi-sub">across all categories</div></div>';
+  html += '<div class="kpi kpi-amber"><div class="kpi-val">'+Math.round(totalQty).toLocaleString()+'</div><div class="kpi-lbl">Total Qty Used</div><div class="kpi-sub">all units combined</div></div>';
+  html += '<div class="kpi kpi-grn"><div class="kpi-val">'+Math.round(totalItems/Math.max(activeDays,1))+'</div><div class="kpi-lbl">Items/Day Avg</div><div class="kpi-sub">entries per active day</div></div>';
+  html += '</div>';
+
+  // Category breakdown
+  html += '<div class="sec-hdr">Category Breakdown <span class="sec-sub">by qty used</span></div>';
+  html += '<div class="cat-grid">';
+  CATS.forEach(function(cat){
+    var cls = "cat-"+cat.charAt(0);
+    html += '<div class="cat-card '+cls+'"><div class="cat-name">'+cat+'</div>';
+    html += '<div class="cat-val">'+Math.round(byCat[cat]).toLocaleString()+'</div>';
+    html += '<div class="cat-unit">units used</div></div>';
+  });
+  html += '</div>';
+
+  // Weekly trend
+  if(weeks.length > 1){
+    html += '<div class="sec-hdr">Weekly Trend <span class="sec-sub">total qty by week</span></div>';
+    html += '<div class="bar-chart">';
+    html += '<div class="trend-row">';
+    weeks.forEach(function(k){
+      var h = Math.round((weekTotals[k].qty/maxWk)*70);
+      html += '<div class="trend-bar" title="'+weekTotals[k].label+': '+Math.round(weekTotals[k].qty)+'" style="height:'+h+'px"></div>';
+    });
+    html += '</div>';
+    html += '<div class="trend-labels">';
+    weeks.forEach(function(k){
+      html += '<div class="trend-lbl">'+weekTotals[k].label+'</div>';
+    });
+    html += '</div></div>';
+  }
+
+  // Top 10 items
+  html += '<div class="sec-hdr">Top 10 Items <span class="sec-sub">by qty used</span></div>';
+  html += '<div class="bar-chart">';
+  topItems.forEach(function(item,i){
+    var pct = Math.round((item.qty/maxQty)*100);
+    html += '<div class="bar-row">';
+    html += '<div class="bar-lbl" title="'+item.item+'">'+item.item+'</div>';
+    html += '<div class="bar-wrap"><div class="bar-fill" style="width:'+pct+'%"></div></div>';
+    html += '<div class="bar-val">'+Math.round(item.qty)+' '+item.unit+'</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // Top 10 as ranked list
+  html += '<div class="sec-hdr">Item Rankings <span class="sec-sub">'+topItems.length+' most used</span></div>';
+  html += '<div class="item-table">';
+  topItems.forEach(function(item,i){
+    html += '<div class="item-row">';
+    html += '<div class="item-rank">'+(i+1)+'</div>';
+    html += '<div class="item-name">'+item.item+'</div>';
+    html += '<span class="item-cat '+CAT_CLS[item.category]+'">'+CAT_SHORT[item.category]+'</span>';
+    html += '<div class="item-val">'+Math.round(item.qty)+' '+item.unit+'</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // Staff activity
+  if(topUsers.length){
+    html += '<div class="sec-hdr">Staff Activity <span class="sec-sub">entries logged</span></div>';
+    var maxU = topUsers[0][1];
+    html += '<div class="bar-chart">';
+    topUsers.forEach(function(u){
+      var pct = Math.round((u[1]/maxU)*100);
+      html += '<div class="bar-row">';
+      html += '<div class="bar-lbl">'+u[0]+'</div>';
+      html += '<div class="bar-wrap"><div class="bar-fill" style="width:'+pct+'%;background:#185FA5"></div></div>';
+      html += '<div class="bar-val" style="color:#185FA5">'+u[1]+'</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  document.getElementById("dash-content").innerHTML = html;
+}
+
+function getISOWeek(d){
+  var date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  var day  = date.getUTCDay() || 7;
+  date.setUTCDate(date.getUTCDate() + 4 - day);
+  var yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+  return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+}
+</script>
+</body>
+</html>
