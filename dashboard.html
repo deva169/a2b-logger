@@ -144,7 +144,7 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 </div>
 
 <script>
-var GET_URL = "https://script.google.com/macros/s/AKfycby9PJB7nbvVEt3ucVVwYh7PLpvlV72Fm02Bvvf_juxcrMCGmonSpo3GWvJMRe1gLivTYA/exec";
+var GET_URL = "https://script.google.com/macros/s/AKfycbwiK21T5ho2vuqzDKoWuQyRu9U81Mlda3CDPmLI4SBCPzW1AfWEFHV-4Re9B4hFMlGNSA/exec";
 
 var STAFF = {
   "Deva":      {pin:"5385",role:"Admin"},
@@ -231,22 +231,47 @@ document.querySelectorAll(".stab").forEach(function(t){
 // ── Load data from Apps Script ────────────────────────────────
 function loadData(){
   document.getElementById("dash-content").innerHTML = '<div class="loading"><div class="spin"></div><br>Loading data…</div>';
-  // Fetch all actuals data via doGet with a special param
-  fetch(GET_URL + "?sheet=Actuals")
-  .then(function(r){return r.json();})
+  fetch(GET_URL + "?sheet=Actuals", {
+    method: "GET",
+    mode: "cors",
+    headers: {"Content-Type": "application/json"}
+  })
+  .then(function(r){
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  })
   .then(function(data){
-    if(data.actuals){
-      allData = data.actuals;
-    } else if(data.orders){
-      allData = data.orders;
+    if(data.actuals && data.actuals.length){
+      allData = data.actuals.map(function(row){
+        // Fix date: Google Sheets may return date as string or number
+        var d = row.date;
+        if(typeof d === 'number'){
+          // Google Sheets serial date
+          var jsDate = new Date((d - 25569) * 86400 * 1000);
+          row.date = jsDate.toISOString();
+        } else if(typeof d === 'string' && d.indexOf('/') > -1){
+          // DD/MM/YYYY format
+          var parts = d.split('/');
+          if(parts.length === 3){
+            row.date = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0])).toISOString();
+          }
+        }
+        return row;
+      });
     } else {
       allData = [];
+    }
+    if(!allData.length){
+      document.getElementById("dash-content").innerHTML =
+        '<div class="nodata">No data found in Actuals sheet.<br>Make sure the sheet has data and try again.</div>';
+      return;
     }
     renderDash();
   })
   .catch(function(err){
+    // Try no-cors fallback with JSONP-style approach
     document.getElementById("dash-content").innerHTML =
-      '<div class="nodata">Could not load data.<br><br>'+err.message+'<br><br>Tap ↻ to retry.</div>';
+      '<div class="nodata">Loading error: '+err.message+'<br><br>The Apps Script may need redeployment.<br>Check that doGet is deployed as Anyone can access.</div>';
   });
 }
 
@@ -256,7 +281,6 @@ function getFiltered(){
   var from = new Date(0);
 
   if(activePeriod === "week"){
-    // Start of current ISO week (Monday)
     var day = now.getDay() || 7;
     from = new Date(now);
     from.setDate(now.getDate() - day + 1);
@@ -266,8 +290,10 @@ function getFiltered(){
   }
 
   return allData.filter(function(row){
+    if(!row.date) return true; // include if no date (all time)
     var d = new Date(row.date);
-    if(d < from) return false;
+    if(isNaN(d)) return true; // include if date unparseable
+    if(from > new Date(0) && d < from) return false;
     if(activeStore !== "both" && row.store !== activeStore) return false;
     if(row.status === "unavailable") return false;
     return true;
