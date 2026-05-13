@@ -98,7 +98,7 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 <div class="scr on" id="scr-login">
   <div class="lbox">
     <h2>Manager Sign In</h2>
-    <p>Managers and Admins only</p>
+    <p>All staff can view · Store Managers &amp; Admins can edit</p>
     <div class="lf"><label>Your name</label><input type="text" id="uname" placeholder="e.g. Suresh" autocomplete="off" autocorrect="off" autocapitalize="words"></div>
     <div class="lf"><label>PIN</label><input type="password" id="upin" placeholder="4-digit PIN" inputmode="numeric" maxlength="4" autocomplete="off"></div>
     <div class="lerr" id="lerr"></div>
@@ -124,6 +124,9 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
   </div>
   <div id="order-list"></div>
   <div style="height:70px"></div>
+  <div id="view-only-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#185FA5;padding:14px 16px;text-align:center;color:#fff;font-size:14px;font-weight:600;z-index:50">
+    👁 View only — contact Store Manager to make changes
+  </div>
   <div class="submit-bar">
     <div class="sub-counts">
       <span id="sb-ok">✅ 0</span>
@@ -149,18 +152,28 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 </div>
 
 <script>
-var SC="https://script.google.com/macros/s/AKfycbxiUHbSpBFcoOIUup0NP3Lw6q9ZTAFezQW3y2NQRhf8XEMtBUz7b_aJhQjE7QD3vhPKcw/exec";
+var SC="https://script.google.com/macros/s/AKfycby9PJB7nbvVEt3ucVVwYh7PLpvlV72Fm02Bvvf_juxcrMCGmonSpo3GWvJMRe1gLivTYA/exec";
+var GET_URL="https://script.google.com/macros/s/AKfycby9PJB7nbvVEt3ucVVwYh7PLpvlV72Fm02Bvvf_juxcrMCGmonSpo3GWvJMRe1gLivTYA/exec";
 
 var STAFF={
-  "Deva":      {pin:"5385",role:"Admin"},
-  "Duwaraka":  {pin:"2783",role:"Admin"},
-  "Suresh":    {pin:"1111",role:"Manager"},
-  "Kajal":     {pin:"2222",role:"Manager"},
-  "Fahmida":   {pin:"3333",role:"Manager"},
-  "Mamta":     {pin:"4444",role:"Manager"},
-  "Shaswanth": {pin:"5555",role:"Manager"},
-  "Deepak":    {pin:"0000",role:"Store Manager"},
-  "Ravi":      {pin:"1100",role:"Store Manager"}
+  // Full edit access
+  "Deva":      {pin:"5385",role:"Admin",       canEdit:true},
+  "Duwaraka":  {pin:"2783",role:"Admin",       canEdit:true},
+  "Deepak":    {pin:"0000",role:"Store Manager",canEdit:true},
+  "Ravi":      {pin:"1100",role:"Store Manager",canEdit:true},
+  // View only
+  "Suresh":    {pin:"1111",role:"Manager",     canEdit:false},
+  "Kajal":     {pin:"2222",role:"Manager",     canEdit:false},
+  "Fahmida":   {pin:"3333",role:"Manager",     canEdit:false},
+  "Mamta":     {pin:"4444",role:"Manager",     canEdit:false},
+  "Shaswanth": {pin:"5555",role:"Manager",     canEdit:false},
+  "Vinodh":    {pin:"1234",role:"Chef",        canEdit:false},
+  "Michael":   {pin:"2345",role:"Chef",        canEdit:false},
+  "Anand":     {pin:"3456",role:"Chef",        canEdit:false},
+  "Ramar":     {pin:"4567",role:"Chef",        canEdit:false},
+  "Thaneesh":  {pin:"5678",role:"Chef",        canEdit:false},
+  "Sandip":    {pin:"6789",role:"Chef",        canEdit:false},
+  "Monica":    {pin:"7890",role:"Chef",        canEdit:false}
 };
 
 var CATS=["Grocery","Vegetables","Supermarket","Packaging"];
@@ -170,26 +183,7 @@ var CU=null, activeRest="Harrisdale A2B";
 // item state: {status, qty, originalQty, unit, reason}
 var STATE={};
 
-// Demo today's orders — in production fetched from Google Sheet via doGet
-var TODAY_ORDERS=[
-  {store:"Harrisdale A2B",category:"Grocery",   item:"Maida",          unit:"kg",  qty:10, loggedBy:"Vinodh (Chef)"},
-  {store:"Harrisdale A2B",category:"Grocery",   item:"Oil",            unit:"box", qty:2,  loggedBy:"Vinodh (Chef)"},
-  {store:"Harrisdale A2B",category:"Grocery",   item:"Paneer",         unit:"box", qty:4,  loggedBy:"Anand (Chef)"},
-  {store:"Harrisdale A2B",category:"Grocery",   item:"Idli Rice",      unit:"bag", qty:6,  loggedBy:"Anand (Chef)"},
-  {store:"Harrisdale A2B",category:"Vegetables",item:"Brown Onion",    unit:"kg",  qty:25, loggedBy:"Ramar (Chef)"},
-  {store:"Harrisdale A2B",category:"Vegetables",item:"Potato",         unit:"kg",  qty:20, loggedBy:"Ramar (Chef)"},
-  {store:"Harrisdale A2B",category:"Vegetables",item:"Tomato",         unit:"box", qty:4,  loggedBy:"Ramar (Chef)"},
-  {store:"Harrisdale A2B",category:"Supermarket",item:"Full Cream Milk",unit:"ltr",qty:10, loggedBy:"Monica (Chef)"},
-  {store:"Harrisdale A2B",category:"Supermarket",item:"Coconut",       unit:"box", qty:3,  loggedBy:"Monica (Chef)"},
-  {store:"Harrisdale A2B",category:"Packaging", item:"Foil Cover",     unit:"pack",qty:5,  loggedBy:"Thaneesh (Chef)"},
-  {store:"Harrisdale A2B",category:"Packaging", item:"Dinner Napkins", unit:"box", qty:2,  loggedBy:"Thaneesh (Chef)"},
-  {store:"Yokine A2B",    category:"Grocery",   item:"Rice Basmati",   unit:"kg",  qty:15, loggedBy:"Sandip (Chef)"},
-  {store:"Yokine A2B",    category:"Grocery",   item:"Toor Dal",       unit:"bag", qty:3,  loggedBy:"Sandip (Chef)"},
-  {store:"Yokine A2B",    category:"Vegetables",item:"Red Onion",      unit:"kg",  qty:10, loggedBy:"Michael (Chef)"},
-  {store:"Yokine A2B",    category:"Vegetables",item:"Coriander",      unit:"box", qty:3,  loggedBy:"Michael (Chef)"},
-  {store:"Yokine A2B",    category:"Supermarket",item:"Cheese",        unit:"pack",qty:2,  loggedBy:"Michael (Chef)"},
-  {store:"Yokine A2B",    category:"Packaging", item:"Take Away Bags Big/Small",unit:"box",qty:3,loggedBy:"Sandip (Chef)"},
-];
+var TODAY_ORDERS=[];
 
 function show(id){document.querySelectorAll(".scr").forEach(function(s){s.className="scr";});document.getElementById(id).className="scr on";window.scrollTo(0,0);}
 
@@ -202,10 +196,14 @@ function doLogin(){
   if(pin.length<4){err.style.display="block";err.textContent="Please enter your 4-digit PIN";return;}
   var mk=null;
   Object.keys(STAFF).forEach(function(k){if(k.toLowerCase()===name.toLowerCase())mk=k;});
-  if(!mk||STAFF[mk].pin!==pin){err.style.display="block";err.textContent="Incorrect name or PIN — Managers and Admins only";document.getElementById("upin").value="";return;}
+  if(!mk||STAFF[mk].pin!==pin){err.style.display="block";err.textContent="Incorrect name or PIN. Please try again.";document.getElementById("upin").value="";return;}
   err.style.display="none";
   CU={name:mk,role:STAFF[mk].role};
   document.getElementById("btn-logout").style.display="block";
+  // Show/hide edit elements based on canEdit
+  var canEdit=STAFF[mk].canEdit;
+  document.getElementById("btn-submit").style.display=canEdit?"block":"none";
+  document.getElementById("view-only-banner").style.display=canEdit?"none":"block";
   loadOrders();
   show("scr-orders");
 }
@@ -226,13 +224,25 @@ document.getElementById("btn-logout").addEventListener("click",function(){
 function loadOrders(){
   var today=new Date();
   document.getElementById("date-lbl").textContent="Today — "+today.toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-  document.getElementById("date-sub").textContent=TODAY_ORDERS.length+" items ordered across both restaurants";
-  // Init state
-  STATE={};
-  TODAY_ORDERS.forEach(function(order,i){
-    STATE[i]={status:"pending",qty:order.qty,originalQty:order.qty,unit:order.unit,reason:""};
+  document.getElementById("date-sub").textContent="Loading orders…";
+  document.getElementById("order-list").innerHTML='<div class="empty">Loading today's orders…</div>';
+
+  fetch(GET_URL)
+  .then(function(r){return r.json();})
+  .then(function(data){
+    if(!data.success){throw new Error(data.error||"Failed to load");}
+    TODAY_ORDERS=data.orders||[];
+    STATE={};
+    TODAY_ORDERS.forEach(function(order,i){
+      STATE[i]={status:"pending",qty:order.qty,originalQty:order.qty,unit:order.unit,reason:""};
+    });
+    document.getElementById("date-sub").textContent=TODAY_ORDERS.length+" items ordered today";
+    renderOrders();
+  })
+  .catch(function(err){
+    document.getElementById("date-sub").textContent="Error loading orders";
+    document.getElementById("order-list").innerHTML='<div class="empty">Could not load orders: '+err.message+'<br><br>Tap Refresh to try again.</div>';
   });
-  renderOrders();
 }
 
 // ── Restaurant tabs ───────────────────────────────────────────
@@ -247,6 +257,10 @@ document.querySelectorAll(".rtab").forEach(function(t){
 
 // ── Render orders ─────────────────────────────────────────────
 function renderOrders(){
+  // Apply view-only styling
+  var canEdit=CU&&STAFF[CU.name]&&STAFF[CU.name].canEdit;
+  document.getElementById("order-list").style.pointerEvents=canEdit?"auto":"none";
+  document.getElementById("order-list").style.opacity=canEdit?"1":"1";
   var filtered=TODAY_ORDERS.filter(function(o){return o.store===activeRest;});
   var html="";
   if(!filtered.length){html='<div class="empty">No orders logged today for '+activeRest+'</div>';}
@@ -286,6 +300,14 @@ function renderOrders(){
   }
   document.getElementById("order-list").innerHTML=html;
   updateCounts();
+  // Disable all interactive elements for view-only users
+  var canEdit=CU&&STAFF[CU.name]&&STAFF[CU.name].canEdit;
+  if(!canEdit){
+    document.getElementById("order-list").querySelectorAll("select,input,.qbtn").forEach(function(el){
+      el.disabled=true;el.style.opacity="0.7";el.style.pointerEvents="none";
+    });
+    return;
+  }
   // Wire events
   document.getElementById("order-list").querySelectorAll(".status-sel").forEach(function(sel){
     sel.addEventListener("change",function(){
