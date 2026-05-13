@@ -1,322 +1,290 @@
-// ============================================================
-//  A2B Order System — Google Apps Script (Meta WhatsApp API)
-//  Replace your entire existing Apps Script with this file
-// ============================================================
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2B Order Confirmation</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1A1916;font-size:15px}
+.app{max-width:460px;margin:0 auto;padding:12px 12px 80px}
+.topbar{display:flex;align-items:center;gap:10px;background:#1D9E75;border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.logo{width:36px;height:36px;background:#fff;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#1D9E75;flex-shrink:0}
+.ttl{color:#fff;flex:1}.ttl h1{font-size:15px;font-weight:700}.ttl p{font-size:11px;opacity:.75;margin-top:1px}
+.step{display:none}.step.on{display:block}
+.order-banner{background:#E1F5EE;border-radius:12px;padding:12px 14px;margin-bottom:14px;border:1px solid #A8DFC8}
+.ob-ref{font-size:11px;color:#085041;font-weight:700;letter-spacing:.04em;margin-bottom:2px}
+.ob-title{font-size:15px;font-weight:700;color:#085041;margin-bottom:2px}
+.ob-sub{font-size:12px;color:#1D9E75}
+.cat-hdr{padding:8px 14px;background:#185FA5;color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em;border-radius:10px 10px 0 0;margin-top:12px}
+.cat-hdr.veg{background:#1D9E75}.cat-hdr.sup{background:#993556}.cat-hdr.pac{background:#854F0B}
+.item-card{background:#fff;border:1px solid #E2E0D8;border-top:none;padding:12px 14px}
+.item-card:last-of-type{border-radius:0 0 10px 10px}
+.item-name{font-size:14px;font-weight:600;margin-bottom:2px}
+.item-orig{font-size:12px;color:#7A7870;margin-bottom:10px}
+.status-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px}
+.sbtn{padding:9px 6px;border-radius:10px;border:1.5px solid #E2E0D8;background:#fff;font-size:12px;font-weight:600;cursor:pointer;text-align:center;font-family:inherit;touch-action:manipulation;user-select:none;-webkit-user-select:none;color:#7A7870;-webkit-user-select:none;outline:none}
+.sbtn.on-confirmed{border-color:#1D9E75;background:#E1F5EE;color:#085041}
+.sbtn.on-modified{border-color:#F59E0B;background:#FEF3C7;color:#92400E}
 
-// ── CONFIGURATION ────────────────────────────────────────────
-const SHEET_ID   = "YOUR_GOOGLE_SHEET_ID_HERE";  // ← your Sheet ID
-const LOG_SHEET  = "Daily Log";
-const LOG_HEADERS = ["Date","Restaurant","Category","Item","Unit","Qty Used","Logged By","Day","Week No.","Notes"];
+.sbtn.on-unavailable{border-color:#C0392B;background:#FDECEA;color:#7B241C}
+.qty-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.qty-lbl{font-size:12px;color:#7A7870;min-width:80px}
+.qbtn{width:32px;height:32px;border-radius:8px;border:1px solid #E2E0D8;background:#F7F6F3;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#1A1916;touch-action:manipulation;user-select:none;flex-shrink:0;outline:none}
+.qin{width:64px;padding:6px 4px;border:1px solid #E2E0D8;border-radius:8px;font-size:14px;text-align:center;background:#F7F6F3;color:#1A1916;font-family:inherit}
+.qunit{font-size:12px;color:#7A7870}
+.reason-inp{width:100%;border:1px solid #E2E0D8;border-radius:8px;background:#F7F6F3;padding:8px 10px;font-size:13px;color:#1A1916;font-family:inherit;outline:none;margin-bottom:4px}
+.reason-inp:focus{border-color:#1D9E75}
+.sum-bar{position:fixed;bottom:0;left:0;right:0;background:#1A1916;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:50}
+.sum-counts{font-size:12px;color:rgba(255,255,255,.7)}
+.sum-counts span{margin-right:8px}
+.sub-btn{padding:10px 20px;border-radius:10px;border:none;background:#1D9E75;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation}
+.sub-btn:disabled{opacity:.5}
+.conf-box{background:#fff;border-radius:14px;border:1px solid #E2E0D8;padding:16px;margin-bottom:12px}
+.conf-box h3{font-size:15px;font-weight:700;margin-bottom:12px}
+.cfield{margin-bottom:10px}
+.cfield label{display:block;font-size:12px;color:#7A7870;margin-bottom:4px}
+.cfield input,.cfield select{width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:11px 12px;font-size:14px;color:#1A1916;font-family:inherit;outline:none}
+.cfield input:focus{border-color:#1D9E75}
+.bmain{width:100%;padding:15px;border-radius:12px;border:none;background:#1D9E75;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;margin-top:4px}
+.succ{background:#E1F5EE;border-radius:16px;padding:28px 20px;text-align:center;margin-bottom:14px}
+.tick{width:52px;height:52px;border-radius:50%;background:#1D9E75;margin:0 auto 14px;display:flex;align-items:center;justify-content:center}
+.tick::after{content:'';display:block;width:22px;height:13px;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(-45deg) translate(2px,-2px)}
+.succ h2{font-size:18px;font-weight:700;color:#085041;margin-bottom:4px}
+.succ p{font-size:14px;color:#1D9E75}
+.wa-wrap{background:#e5ddd5;border-radius:14px;padding:12px;margin-bottom:10px}
+.wa-msg{background:#dcf8c6;border-radius:10px 10px 3px 10px;padding:10px 12px;font-size:13px;line-height:1.55;color:#111;display:inline-block;max-width:100%;white-space:pre-wrap;word-break:break-word}
+.cpybtn{width:100%;padding:14px;border-radius:12px;border:1.5px solid #1D9E75;background:#fff;color:#1D9E75;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:8px;touch-action:manipulation}
+.cpdone{text-align:center;font-size:13px;color:#1D9E75;margin-bottom:8px;display:none}
+.err{background:#FDECEA;border-radius:10px;padding:10px 14px;font-size:13px;color:#C0392B;margin-top:10px;display:none}
+.spin{display:inline-block;width:15px;height:15px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="topbar">
+  <div class="logo">A2B</div>
+  <div class="ttl"><h1>Order Confirmation</h1><p>Review &amp; confirm delivery</p></div>
+</div>
 
-// Meta WhatsApp API
-const WA_TOKEN   = "YOUR_META_ACCESS_TOKEN_HERE"; // ← paste fresh token here
-const WA_PHONE_ID= "1125949567261755";
-const WA_API_URL = "https://graph.facebook.com/v19.0/" + WA_PHONE_ID + "/messages";
+<div class="step on" id="s1">
+  <div class="conf-box">
+    <h3>Who is confirming?</h3>
+    <div class="cfield"><label>Your name</label>
+      <input type="text" id="conf-name" placeholder="Tap to enter your name" autocorrect="off" autocapitalize="words" inputmode="text">
+    </div>
+    <div class="cfield"><label>Location</label>
+      <select id="conf-loc">
+        <option value="canning_vale">Canning Vale Warehouse</option>
+        <option value="harrisdale_kitchen">Harrisdale Kitchen</option>
+        <option value="yokine_kitchen">Yokine Kitchen</option>
+      </select>
+    </div>
+  </div>
+  <div class="err" id="s1-err">Please enter your name</div>
+  <button class="bmain" id="btn-start">View &amp; confirm order</button>
+</div>
 
-// Phone numbers — add all 5 when ready
-const PHONES = {
-  DEVA:                   "+61467722143",  // ✅ verified and working
-  DUWARAKA:               "+61XXXXXXXXX",  // ← add when ready
-  CANNING_VALE_WAREHOUSE: "+61XXXXXXXXX",  // ← add when ready
-  HARRISDALE_KITCHEN:     "+61XXXXXXXXX",  // ← add when ready
-  YOKINE_KITCHEN:         "+61XXXXXXXXX",  // ← add when ready
+<div class="step" id="s2">
+  <div class="order-banner" id="order-banner"></div>
+  <div id="order-items"></div>
+  <div style="height:60px"></div>
+  <div class="sum-bar">
+    <div class="sum-counts">
+      <span id="sc-ok">✅ 0</span>
+      <span id="sc-mod">✏️ 0</span>
+      
+      <span id="sc-no">❌ 0</span>
+    </div>
+    <button class="sub-btn" id="btn-submit">Send confirmation</button>
+  </div>
+  <div class="err" id="s2-err"></div>
+</div>
+
+<div class="step" id="s3">
+  <div class="succ"><div class="tick"></div><h2>Confirmation Sent ✓</h2><p id="done-txt"></p></div>
+  <p style="font-size:12px;color:#7A7870;margin-bottom:8px">Copy and send to your team on WhatsApp</p>
+  <div class="wa-wrap"><div class="wa-msg" id="wa-msg"></div></div>
+  <button class="cpybtn" id="btn-cpy">📋 Copy confirmation message</button>
+  <div class="cpdone" id="cpdone">✓ Copied!</div>
+</div>
+</div>
+
+<script>
+var SCRIPT="https://script.google.com/macros/s/AKfycby9PJB7nbvVEt3ucVVwYh7PLpvlV72Fm02Bvvf_juxcrMCGmonSpo3GWvJMRe1gLivTYA/exec";
+var params={};
+window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(m,k,v){params[k]=decodeURIComponent(v);});
+var orderId=params.order||("DEMO-"+new Date().toISOString().slice(0,10));
+var receiverParam=params.receiver||"canning_vale";
+
+// Demo order — in production fetched from Google Sheet via doGet
+var ORDER={
+  orderId:orderId,
+  date:new Date().toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),
+  items:[
+    {category:"Grocery",   item:"Maida",          unit:"kg",  qty:10,store:"Harrisdale A2B"},
+    {category:"Grocery",   item:"Oil",             unit:"box", qty:2, store:"Harrisdale A2B"},
+    {category:"Grocery",   item:"Toor Dal",        unit:"bag", qty:3, store:"Yokine A2B"},
+    {category:"Grocery",   item:"Rice Basmati",    unit:"kg",  qty:15,store:"Harrisdale A2B"},
+    {category:"Grocery",   item:"Paneer",          unit:"box", qty:4, store:"Yokine A2B"},
+    {category:"Grocery",   item:"Idli Rice",       unit:"bag", qty:6, store:"Harrisdale A2B"},
+    {category:"Packaging", item:"Foil Cover",      unit:"pack",qty:5, store:"Harrisdale A2B"},
+    {category:"Packaging", item:"Dinner Napkins",  unit:"box", qty:2, store:"Yokine A2B"},
+    {category:"Packaging", item:"Take Away Bags Big/Small",unit:"box",qty:3,store:"Harrisdale A2B"},
+    {category:"Vegetables",item:"Brown Onion",     unit:"kg",  qty:25,store:"Harrisdale A2B"},
+    {category:"Vegetables",item:"Potato",          unit:"kg",  qty:20,store:"Harrisdale A2B"},
+    {category:"Vegetables",item:"Tomato",          unit:"box", qty:4, store:"Harrisdale A2B"},
+    {category:"Supermarket",item:"Full Cream Milk",unit:"ltr", qty:10,store:"Harrisdale A2B"},
+    {category:"Supermarket",item:"Coconut",        unit:"box", qty:3, store:"Harrisdale A2B"},
+  ]
 };
 
-// Confirmation form URL
-const FORM_URL = "https://deva169.github.io/a2b-logger/order.html";
+var STATE={};
+ORDER.items.forEach(function(item,i){STATE[i]={status:'',qty:item.qty,originalQty:item.qty,reason:''};});
+var confirmerName='',confirmerLoc='';
+var LOC_NAMES={canning_vale:'Canning Vale Warehouse',harrisdale_kitchen:'Harrisdale Kitchen',yokine_kitchen:'Yokine Kitchen'};
+var CAT_COLORS={Grocery:'',Vegetables:'veg',Supermarket:'sup',Packaging:'pac'};
 
-// Category routing
-const ROUTING = {
-  CANNING_VALE_WAREHOUSE: ["Grocery","Packaging"],
-  HARRISDALE_KITCHEN:     ["Vegetables","Supermarket"],
-  YOKINE_KITCHEN:         ["Vegetables","Supermarket"],
-};
-
-// ── 1. SEND WHATSAPP VIA META API ────────────────────────────
-function sendWhatsApp(toPhone, message) {
-  if (!toPhone || toPhone.includes("XXXXXXXXX")) {
-    Logger.log("Phone not configured: " + toPhone);
-    return;
-  }
-  const payload = {
-    messaging_product: "whatsapp",
-    to: toPhone.replace(/\s/g,""),
-    type: "text",
-    text: { body: message }
-  };
-  const options = {
-    method: "post",
-    contentType: "application/json",
-    headers: { Authorization: "Bearer " + WA_TOKEN },
-    payload: JSON.stringify(payload),
-    muteHttpExceptions: true
-  };
-  const response = UrlFetchApp.fetch(WA_API_URL, options);
-  const result   = JSON.parse(response.getContentText());
-  Logger.log("WhatsApp to " + toPhone + ": " + (result.messages ? "SENT" : JSON.stringify(result.error)));
-  return result;
+function tap(el,fn){
+  var moved=false;
+  el.addEventListener('touchstart',function(){moved=false;},{passive:true});
+  el.addEventListener('touchmove',function(){moved=true;},{passive:true});
+  el.addEventListener('touchend',function(e){if(!moved){e.preventDefault();fn.call(el,e);}});
+  el.addEventListener('click',function(e){fn.call(el,e);});
 }
+function showStep(n){document.querySelectorAll('.step').forEach(function(s,i){s.className='step'+(i===n-1?' on':'');});window.scrollTo(0,0);}
 
-// ── 2. DAILY 6AM ORDER TRIGGER ───────────────────────────────
-// Set as Time-driven trigger: Daily, 6am–7am
-function sendDailyOrders() {
-  const ss    = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = ss.getSheetByName(LOG_SHEET);
-  const data  = sheet.getDataRange().getValues();
-  const headers = data[3];
-  const colIdx  = {};
-  headers.forEach((h,i) => colIdx[h] = i);
+// Step 1
+document.getElementById('conf-loc').value=receiverParam;
+tap(document.getElementById('btn-start'),function(){
+  confirmerName=document.getElementById('conf-name').value.trim();
+  confirmerLoc=document.getElementById('conf-loc').value;
+  if(!confirmerName){document.getElementById('s1-err').style.display='block';return;}
+  document.getElementById('s1-err').style.display='none';
+  buildOrder();showStep(2);
+});
 
-  const now   = new Date();
-  const since = new Date(now.getTime() - 24*60*60*1000);
+function buildOrder(){
+  var banner=document.getElementById('order-banner');
+  banner.innerHTML='<div class="ob-ref">ORDER REF: '+ORDER.orderId+'</div>'
+    +'<div class="ob-title">'+LOC_NAMES[confirmerLoc]+'</div>'
+    +'<div class="ob-sub">'+ORDER.date+' · Confirming as: <strong>'+confirmerName+'</strong></div>';
 
-  const entries = data.slice(4).filter(row => {
-    const d = new Date(row[colIdx["Date"]]);
-    return d >= since && d <= now && row[colIdx["Item"]];
-  }).map(row => ({
-    date:     Utilities.formatDate(new Date(row[colIdx["Date"]]), Session.getScriptTimeZone(), "dd/MM/yyyy"),
-    store:    row[colIdx["Restaurant"]],
-    category: row[colIdx["Category"]],
-    item:     row[colIdx["Item"]],
-    unit:     row[colIdx["Unit"]],
-    qty:      row[colIdx["Qty Used"]],
-    loggedBy: row[colIdx["Logged By"]],
-  }));
+  // Group by category
+  var cats={};
+  ORDER.items.forEach(function(item,i){if(!cats[item.category])cats[item.category]=[];cats[item.category].push({item:item,i:i});});
 
-  if (!entries.length) {
-    Logger.log("No entries in last 24 hours — no orders sent.");
-    return;
-  }
-
-  const orderId = "ORD-" + Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyyMMdd-HHmm");
-  saveOrderToSheet(ss, orderId, entries);
-
-  const dateStr = Utilities.formatDate(now, Session.getScriptTimeZone(), "dd MMM yyyy");
-
-  // Send to Canning Vale — Grocery + Packaging (both stores)
-  sendOrderToReceiver("Canning Vale Warehouse", PHONES.CANNING_VALE_WAREHOUSE,
-    ROUTING.CANNING_VALE_WAREHOUSE, null, orderId, dateStr, entries);
-
-  // Send to Harrisdale Kitchen — Veg + Supermarket (Harrisdale only)
-  sendOrderToReceiver("Harrisdale Kitchen", PHONES.HARRISDALE_KITCHEN,
-    ROUTING.HARRISDALE_KITCHEN, "Harrisdale A2B", orderId, dateStr, entries);
-
-  // Send to Yokine Kitchen — Veg + Supermarket (Yokine only)
-  sendOrderToReceiver("Yokine Kitchen", PHONES.YOKINE_KITCHEN,
-    ROUTING.YOKINE_KITCHEN, "Yokine A2B", orderId, dateStr, entries);
-
-  // Also send summary to Deva + Duwaraka
-  sendDailySummaryToAdmins(orderId, dateStr, entries);
-
-  Logger.log("Daily orders sent. Order ID: " + orderId);
-}
-
-// ── 3. BUILD AND SEND ORDER TO A RECEIVER ────────────────────
-function sendOrderToReceiver(receiverName, phone, cats, storeFilter, orderId, dateStr, entries) {
-  const items = entries.filter(e =>
-    cats.includes(e.category) && (!storeFilter || e.store === storeFilter)
-  );
-  if (!items.length) return;
-
-  let msg = "*A2B Daily Order — " + receiverName + "*\n";
-  msg += dateStr + " · Ref: " + orderId + "\n\n";
-
-  cats.forEach(cat => {
-    const catItems = items.filter(e => e.category === cat);
-    if (!catItems.length) return;
-    msg += "*" + cat.toUpperCase() + "*\n";
-    catItems.forEach(e => {
-      msg += "  • " + e.item + ": " + e.qty + " " + e.unit;
-      if (!storeFilter) msg += " (" + e.store + ")";
-      msg += "\n";
-    });
-    msg += "\n";
-  });
-
-  msg += "━━━━━━━━━━━━━━━━━━\n";
-  msg += "Please confirm availability:\n";
-  msg += FORM_URL + "?order=" + encodeURIComponent(orderId) + "&receiver=" + receiverName.toLowerCase().replace(/ /g,"_");
-
-  sendWhatsApp(phone, msg);
-}
-
-// ── 4. DAILY SUMMARY TO ADMINS ───────────────────────────────
-function sendDailySummaryToAdmins(orderId, dateStr, entries) {
-  let msg = "*A2B Daily Order Summary*\n" + dateStr + "\nRef: " + orderId + "\n\n";
-
-  const byStore = {};
-  entries.forEach(e => {
-    if (!byStore[e.store]) byStore[e.store] = {};
-    if (!byStore[e.store][e.category]) byStore[e.store][e.category] = [];
-    byStore[e.store][e.category].push(e);
-  });
-
-  Object.keys(byStore).forEach(store => {
-    msg += "*" + store + "*\n";
-    Object.keys(byStore[store]).forEach(cat => {
-      msg += "  " + cat + ": " + byStore[store][cat].length + " items\n";
+  var html='';
+  ['Grocery','Vegetables','Supermarket','Packaging'].forEach(function(cat){
+    if(!cats[cat]||!cats[cat].length)return;
+    html+='<div class="cat-hdr '+CAT_COLORS[cat]+'">'+cat.toUpperCase()+'</div>';
+    cats[cat].forEach(function(obj){
+      var item=obj.item,i=obj.i;
+      html+='<div class="item-card" id="ic-'+i+'">'
+        +'<div class="item-name">'+item.item+'</div>'
+        +'<div class="item-orig">Requested: '+item.qty+' '+item.unit+' · '+item.store+'</div>'
+        +'<div class="status-btns">'
+        +'<div class="sbtn" tabindex="-1" data-i="'+i+'" data-s="confirmed">✅ Available</div>'
+        +'<div class="sbtn" tabindex="-1" data-i="'+i+'" data-s="modified">✏️ Adjust qty</div>'
+        +'<div class="sbtn" tabindex="-1" data-i="'+i+'" data-s="unavailable">❌ Not available</div>'
+        +'</div>'
+        +'<div id="qr-'+i+'" style="display:none">'
+        +'<div class="qty-row"><span class="qty-lbl">Confirm qty:</span>'
+        +'<div class="qbtn" data-i="'+i+'" data-d="-1">−</div>'
+        +'<input class="qin" type="number" min="0" step="0.5" value="'+item.qty+'" data-i="'+i+'">'
+        +'<span class="qunit">'+item.unit+'</span>'
+        +'<div class="qbtn" data-i="'+i+'" data-d="1">+</div>'
+        +'</div></div>'
+        +'<div id="rr-'+i+'" style="display:none">'
+        +'<input class="reason-inp" type="text" placeholder="Reason / delivery date / notes…" data-i="'+i+'">'
+        +'</div>'
+        +'</div>';
     });
   });
+  document.getElementById('order-items').innerHTML=html;
 
-  msg += "\nTotal items: " + entries.length;
-  msg += "\n\nConfirmation form: " + FORM_URL;
-
-  sendWhatsApp(PHONES.DEVA, msg);
-  sendWhatsApp(PHONES.DUWARAKA, msg);
-}
-
-// ── 5. PROCESS CONFIRMATION FROM FORM ───────────────────────
-function processConfirmation(confirmData) {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  saveConfirmationToSheet(ss, confirmData);
-
-  const dateStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "dd MMM yyyy HH:mm");
-  const locNames = {
-    canning_vale_warehouse: "Canning Vale Warehouse",
-    harrisdale_kitchen:     "Harrisdale Kitchen",
-    yokine_kitchen:         "Yokine Kitchen"
-  };
-
-  let msg = "*A2B Order Confirmation Received*\n";
-  msg += "From: " + (locNames[confirmData.receiver] || confirmData.receiver) + "\n";
-  msg += "Confirmed by: *" + confirmData.confirmedBy + "*\n";
-  msg += "Time: " + dateStr + "\n";
-  msg += "Ref: " + confirmData.orderId + "\n";
-
-  const confirmed  = confirmData.items.filter(i => i.status === "confirmed");
-  const modified   = confirmData.items.filter(i => i.status === "modified");
-  const unavailable= confirmData.items.filter(i => i.status === "unavailable");
-
-  if (confirmed.length) {
-    msg += "\n✅ *AVAILABLE (" + confirmed.length + ")*\n";
-    confirmed.forEach(i => msg += "  • " + i.item + ": " + i.qty + " " + i.unit + "\n");
-  }
-  if (modified.length) {
-    msg += "\n✏️ *QTY ADJUSTED (" + modified.length + ")*\n";
-    modified.forEach(i => msg += "  • " + i.item + ": " + i.originalQty + " → " + i.qty + " " + i.unit + (i.reason ? " (" + i.reason + ")" : "") + "\n");
-  }
-  if (unavailable.length) {
-    msg += "\n❌ *NOT AVAILABLE (" + unavailable.length + ")*\n";
-    unavailable.forEach(i => msg += "  • " + i.item + (i.reason ? " — " + i.reason : "") + "\n");
-  }
-
-  // Send to Deva, Duwaraka
-  sendWhatsApp(PHONES.DEVA, msg);
-  sendWhatsApp(PHONES.DUWARAKA, msg);
-
-  return msg;
-}
-
-// ── 6. SAVE ORDER TO SHEET ───────────────────────────────────
-function saveOrderToSheet(ss, orderId, entries) {
-  let ordersSheet = ss.getSheetByName("Orders");
-  if (!ordersSheet) {
-    ordersSheet = ss.insertSheet("Orders");
-    ordersSheet.getRange(1,1,1,13).setValues([[
-      "Order ID","Date","Store","Category","Item","Unit",
-      "Qty Requested","Status","Confirmed Qty","Reason",
-      "Receiver","Confirmed By","Confirmed At"
-    ]]);
-    ordersSheet.getRange(1,1,1,13).setFontWeight("bold");
-  }
-  const now = new Date();
-  const rows = entries.map(e => [
-    orderId, now, e.store, e.category, e.item, e.unit,
-    e.qty, "Pending", "", "", "", "", ""
-  ]);
-  if (rows.length) ordersSheet.getRange(ordersSheet.getLastRow()+1,1,rows.length,13).setValues(rows);
-}
-
-// ── 7. SAVE CONFIRMATION TO SHEET ────────────────────────────
-function saveConfirmationToSheet(ss, confirmData) {
-  const ordersSheet = ss.getSheetByName("Orders");
-  if (!ordersSheet) return;
-  const data = ordersSheet.getDataRange().getValues();
-  const now  = new Date();
-  confirmData.items.forEach(ci => {
-    for (let r = 1; r < data.length; r++) {
-      if (data[r][0] === confirmData.orderId && data[r][4] === ci.item) {
-        ordersSheet.getRange(r+1,8,1,6).setValues([[
-          ci.status, ci.qty, ci.reason||"",
-          confirmData.receiver, confirmData.confirmedBy, now
-        ]]);
-        break;
-      }
-    }
+  document.querySelectorAll('.sbtn').forEach(function(btn){
+    tap(btn,function(){
+      document.activeElement && document.activeElement.blur();
+      var i=parseInt(this.getAttribute('data-i')),s=this.getAttribute('data-s');
+      STATE[i].status=s;
+      document.getElementById('ic-'+i).querySelectorAll('.sbtn').forEach(function(b){b.className='sbtn';});
+      this.className='sbtn on-'+s;
+      document.getElementById('qr-'+i).style.display=(s==='modified')?'block':'none';
+      document.getElementById('rr-'+i).style.display=(s==='modified'||s==='unavailable')?'block':'none';
+      updateSummary();
+    });
+  });
+  document.querySelectorAll('.qin').forEach(function(inp){
+    inp.addEventListener('input',function(){STATE[parseInt(this.getAttribute('data-i'))].qty=parseFloat(this.value)||0;});
+  });
+  document.querySelectorAll('.qbtn').forEach(function(btn){
+    tap(btn,function(){
+      document.activeElement && document.activeElement.blur();
+      var i=parseInt(this.getAttribute('data-i')),d=parseFloat(this.getAttribute('data-d'));
+      var inp=document.querySelector('.qin[data-i="'+i+'"]');
+      if(!inp)return;
+      var v=Math.max(0,Math.round(((parseFloat(inp.value)||0)+d)*10)/10);
+      inp.value=v;STATE[i].qty=v;
+    });
+  });
+  document.querySelectorAll('.reason-inp').forEach(function(inp){
+    inp.addEventListener('input',function(){STATE[parseInt(this.getAttribute('data-i'))].reason=this.value;});
   });
 }
 
-// ── 8. doPost — handles both log entries and confirmations ───
-function doPost(e) {
-  try {
-    const data = JSON.parse(e.postData.contents);
-
-    if (data.type === "confirmation") {
-      processConfirmation(data);
-      return ContentService
-        .createTextOutput(JSON.stringify({ success: true }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-
-    // Regular consumption log entry
-    const ss        = SpreadsheetApp.openById(SHEET_ID);
-    const logSheet  = ss.getSheetByName(LOG_SHEET);
-    // Parse date safely to avoid timezone shifting
-    const dateParts = data.date.split('-');
-    const entryDate = dateParts.length === 3
-      ? new Date(parseInt(dateParts[0]), parseInt(dateParts[1])-1, parseInt(dateParts[2]))
-      : new Date(data.date);
-    const dayName   = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][entryDate.getDay()];
-    const weekNo    = getWeekNumber(entryDate);
-    const results   = [];
-
-    for (const entry of data.entries) {
-      if (!entry.item || entry.qty === "" || entry.qty === null) continue;
-      const row = [
-        entryDate,
-        data.store || "",
-        String(entry.category||"").length > 1 ? entry.category : data.category||"",
-        entry.item || "",
-        entry.unit || "",
-        parseFloat(entry.qty) || 0,
-        data.loggedBy || "",
-        dayName,
-        weekNo,
-        data.notes || "",
-      ];
-      logSheet.appendRow(row);
-      logSheet.getRange(logSheet.getLastRow(),1).setNumberFormat("DD/MM/YYYY");
-      results.push({ item: entry.item, status: "saved" });
-    }
-
-    return ContentService
-      .createTextOutput(JSON.stringify({ success: true, saved: results.length }))
-      .setMimeType(ContentService.MimeType.JSON);
-
-  } catch (err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ success: false, error: err.message }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
+function updateSummary(){
+  var ok=0,mod=0,del=0,no=0;
+  Object.values(STATE).forEach(function(s){
+    if(s.status==='confirmed')ok++;
+    else if(s.status==='modified')mod++;
+    
+    else if(s.status==='unavailable')no++;
+  });
+  document.getElementById('sc-ok').textContent='✅ '+ok;
+  document.getElementById('sc-mod').textContent='✏️ '+mod;
+  
+  document.getElementById('sc-no').textContent='❌ '+no;
 }
 
-// ── 9. WEEK NUMBER HELPER ────────────────────────────────────
-function getWeekNumber(d) {
-  const date   = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  const dayNum = date.getUTCDay() || 7;
-  date.setUTCDate(date.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
-  return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+tap(document.getElementById('btn-submit'),function(){
+  var btn=document.getElementById('btn-submit'),err=document.getElementById('s2-err');
+  var pending=Object.values(STATE).filter(function(s){return !s.status;}).length;
+  if(pending){err.style.display='block';err.textContent='Please confirm all '+pending+' remaining item'+(pending>1?'s':'')+'.'  ;return;}
+  err.style.display='none';
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Sending…';
+  var items=ORDER.items.map(function(item,i){
+    return{item:item.item,unit:item.unit,category:item.category,store:item.store,
+      originalQty:STATE[i].originalQty,qty:STATE[i].qty,status:STATE[i].status,reason:STATE[i].reason||''};
+  });
+  fetch(SCRIPT,{method:'POST',mode:'no-cors',body:JSON.stringify({
+    type:'confirmation',orderId:ORDER.orderId,receiver:confirmerLoc,
+    confirmedBy:confirmerName,date:new Date().toISOString(),items:items
+  })}).then(function(){buildSuccess(items);showStep(3);})
+  .catch(function(e){btn.disabled=false;btn.innerHTML='Send confirmation';err.style.display='block';err.textContent='Error: '+e.message;});
+});
+
+function buildSuccess(items){
+  var ok=items.filter(function(i){return i.status==='confirmed';});
+  var mod=items.filter(function(i){return i.status==='modified';});
+  
+  var no=items.filter(function(i){return i.status==='unavailable';});
+  document.getElementById('done-txt').textContent=items.length+' items confirmed · '+confirmerName+' · '+LOC_NAMES[confirmerLoc];
+  var ds=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+' '+new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
+  var wa='*A2B Order Confirmation*\n'+LOC_NAMES[confirmerLoc]+'\nConfirmed by: *'+confirmerName+'*\n'+ds+'\nRef: '+ORDER.orderId+'\n';
+  if(ok.length){wa+='\n✅ *AVAILABLE ('+ok.length+')*\n';ok.forEach(function(i){wa+='  • '+i.item+': '+i.qty+' '+i.unit+'\n';});}
+  if(mod.length){wa+='\n✏️ *QTY ADJUSTED ('+mod.length+')*\n';mod.forEach(function(i){wa+='  • '+i.item+': '+i.originalQty+' → '+i.qty+' '+i.unit+(i.reason?' ('+i.reason+')':'')+'\n';});}
+  if(del.length){wa+='\n🚚 *ON DELIVERY ('+del.length+')*\n';del.forEach(function(i){wa+='  • '+i.item+': '+i.qty+' '+i.unit+(i.reason?' — '+i.reason:'')+'\n';});}
+  if(no.length){wa+='\n❌ *NOT AVAILABLE ('+no.length+')*\n';no.forEach(function(i){wa+='  • '+i.item+(i.reason?' — '+i.reason:'')+'\n';});}
+  document.getElementById('wa-msg').textContent=wa.trim();
 }
 
-// ── 10. TEST FUNCTIONS ───────────────────────────────────────
-function testWhatsAppDeva() {
-  const msg = "*A2B System Test*\nWhatsApp API is working correctly.\n\nConfirmation form: " + FORM_URL;
-  const result = sendWhatsApp(PHONES.DEVA, msg);
-  Logger.log(result && result.messages ? "SUCCESS" : "FAILED");
-}
-
-function testDailyOrders() {
-  Logger.log("Running daily order test...");
-  sendDailyOrders();
-}
+tap(document.getElementById('btn-cpy'),function(){
+  var txt=document.getElementById('wa-msg').textContent,done=document.getElementById('cpdone');
+  try{navigator.clipboard.writeText(txt).then(function(){done.style.display='block';setTimeout(function(){done.style.display='none';},2000);});}
+  catch(e){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done.style.display='block';setTimeout(function(){done.style.display='none';},2000);}
+});
+</script>
+</body>
+</html>
