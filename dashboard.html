@@ -24,6 +24,11 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .lbtn{width:100%;padding:15px;border-radius:12px;border:none;background:#085041;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px}
 /* Screens */
 .scr{display:none}.scr.on{display:block}
+/* Nav tabs */
+.nav-tabs{display:flex;border-radius:12px;overflow:hidden;border:1px solid #E2E0D8;margin-bottom:14px;background:#fff}
+.nav-tab{flex:1;padding:11px 8px;font-size:13px;font-weight:600;text-align:center;cursor:pointer;color:#7A7870;border-right:1px solid #E2E0D8;touch-action:manipulation;user-select:none}
+.nav-tab:last-child{border-right:none}
+.nav-tab.on{background:#085041;color:#fff}
 /* Period selector */
 .period-bar{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
 .period-bar::-webkit-scrollbar{display:none}
@@ -80,7 +85,6 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .trend-row{display:flex;align-items:flex-end;gap:4px;height:80px;padding:0 4px;margin-bottom:4px}
 .trend-bar{flex:1;background:#085041;border-radius:3px 3px 0 0;min-height:4px;transition:height .3s;cursor:pointer;position:relative}
 .trend-bar:hover{background:#1D9E75}
-.trend-bar.active{background:#F59E0B}
 .trend-labels{display:flex;gap:4px;padding:0 4px}
 .trend-lbl{flex:1;text-align:center;font-size:9px;color:#7A7870;overflow:hidden;text-overflow:ellipsis}
 /* Loading */
@@ -94,68 +98,100 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .ulogout{font-size:12px;color:#C0392B;cursor:pointer;border:1px solid #FDECEA;background:#FDECEA;border-radius:8px;padding:4px 10px;touch-action:manipulation}
 /* No data */
 .nodata{background:#fff;border-radius:12px;border:1px solid #E2E0D8;padding:30px;text-align:center;color:#7A7870;font-size:14px}
+/* History panel */
+.hist-card{background:#fff;border-radius:14px;border:1px solid #E2E0D8;overflow:hidden;margin-bottom:12px}
+.hist-hdr{background:#185FA5;color:#fff;padding:10px 14px;font-size:12px;font-weight:700;letter-spacing:.04em;display:flex;align-items:center;justify-content:space-between}
+.hist-date-big{font-size:13px;font-weight:700;color:#1A1916;margin-bottom:2px}
+.hist-meta{font-size:11px;color:#7A7870;margin-bottom:8px}
+.hist-row{padding:11px 14px;border-bottom:1px solid #E2E0D8}
+.hist-row:last-child{border-bottom:none}
+.hist-items{font-size:12px;color:#1A1916;line-height:1.7}
+.hist-item{display:flex;justify-content:space-between;padding:2px 0}
+.hist-item-name{color:#1A1916}
+.hist-item-val{font-weight:600;color:#085041}
+.hist-cat-lbl{font-size:10px;font-weight:700;color:#7A7870;letter-spacing:.05em;padding:6px 0 2px;text-transform:uppercase}
+.hist-pills{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.hpill{padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.hp-ok{background:#E1F5EE;color:#085041}
+.hp-adj{background:#FEF3C7;color:#92400E}
+.hp-no{background:#FDECEA;color:#7B241C}
+.spin-sm{display:inline-block;width:14px;height:14px;border:2px solid #E2E0D8;border-top-color:#085041;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:4px}
 </style>
 </head>
 <body>
 <div class="app">
 <div class="topbar">
-  <div class="logo">A2B</div>
-  <div class="ttl"><h1>A2B Dashboard</h1><p id="top-sub">Consumption Analytics</p></div>
-  <button class="rbtn" id="btn-refresh" style="display:none">↻</button>
+<div class="logo">A2B</div>
+<div class="ttl"><h1>A2B Dashboard</h1><p id="top-sub">Consumption Analytics</p></div>
+<button class="rbtn" id="btn-refresh" style="display:none">↻</button>
 </div>
 
 <!-- LOGIN -->
 <div class="scr on" id="scr-login">
-  <div class="lbox">
-    <h2>Dashboard Login</h2>
-    <p>Managers &amp; Admins only</p>
-    <div class="lf"><label>Your name</label><input type="text" id="uname" placeholder="e.g. Deva" autocomplete="off" autocorrect="off" autocapitalize="words"></div>
-    <div class="lf"><label>PIN</label><input type="password" id="upin" placeholder="4-digit PIN" inputmode="numeric" maxlength="4" autocomplete="off"></div>
-    <div class="lerr" id="lerr"></div>
-    <button class="lbtn" id="signin-btn">View Dashboard</button>
-  </div>
+<div class="lbox">
+<h2>Dashboard Login</h2>
+<p>Managers &amp; Admins only</p>
+<div class="lf"><label>Your name</label><input type="text" id="uname" placeholder="e.g. Deva" autocomplete="off" autocorrect="off" autocapitalize="words"></div>
+<div class="lf"><label>PIN</label><input type="password" id="upin" placeholder="4-digit PIN" inputmode="numeric" maxlength="4" autocomplete="off"></div>
+<div class="lerr" id="lerr"></div>
+<button class="lbtn" id="signin-btn">View Dashboard</button>
+</div>
 </div>
 
 <!-- DASHBOARD -->
 <div class="scr" id="scr-dash">
-  <div class="ubar">
-    <div><span class="uname" id="uname-lbl"></span><span class="urole" id="urole-lbl"></span></div>
-    <span class="ulogout" id="btn-logout">Sign out</span>
-  </div>
+<div class="ubar">
+<div><span class="uname" id="uname-lbl"></span><span class="urole" id="urole-lbl"></span></div>
+<span class="ulogout" id="btn-logout">Sign out</span>
+</div>
 
-  <!-- Period -->
-  <div class="period-bar">
-    <button class="pbtn on" data-period="week">This Week</button>
-    <button class="pbtn" data-period="month">This Month</button>
-    <button class="pbtn" data-period="all">All Time</button>
-  </div>
+<!-- Nav tabs -->
+<div class="nav-tabs">
+<div class="nav-tab on" id="ntab-analytics" data-nav="analytics">📊 Analytics</div>
+<div class="nav-tab" id="ntab-history" data-nav="history">🕐 Order History</div>
+</div>
 
-  <!-- Store tabs -->
-  <div class="stabs">
-    <div class="stab on" data-store="both">Both Restaurants</div>
-    <div class="stab" data-store="Harrisdale A2B">Harrisdale</div>
-    <div class="stab" data-store="Yokine A2B">Yokine</div>
-  </div>
+<!-- Analytics panel -->
+<div id="panel-analytics">
+<div class="period-bar">
+<button class="pbtn on" data-period="week">This Week</button>
+<button class="pbtn" data-period="month">This Month</button>
+<button class="pbtn" data-period="all">All Time</button>
+</div>
+<div class="stabs">
+<div class="stab on" data-store="both">Both Restaurants</div>
+<div class="stab" data-store="Harrisdale A2B">Harrisdale</div>
+<div class="stab" data-store="Yokine A2B">Yokine</div>
+</div>
+<div id="dash-content">
+<div class="loading"><div class="spin"></div><br>Loading data…</div>
+</div>
+</div>
 
-  <div id="dash-content">
-    <div class="loading"><div class="spin"></div><br>Loading data…</div>
-  </div>
+<!-- History panel -->
+<div id="panel-history" style="display:none">
+<div id="hist-content">
+<div class="loading"><div class="spin"></div><br>Loading order history…</div>
+</div>
+</div>
+
 </div>
 </div>
 
 <script>
+// FIX: Use plain GET without custom headers to avoid CORS preflight
 var GET_URL = "https://script.google.com/macros/s/AKfycbwiK21T5ho2vuqzDKoWuQyRu9U81Mlda3CDPmLI4SBCPzW1AfWEFHV-4Re9B4hFMlGNSA/exec";
 
 var STAFF = {
-  "Deva":      {pin:"5385",role:"Admin"},
-  "Duwaraka":  {pin:"2783",role:"Admin"},
-  "Suresh":    {pin:"1111",role:"Manager"},
-  "Kajal":     {pin:"2222",role:"Manager"},
-  "Fahmida":   {pin:"3333",role:"Manager"},
-  "Mamta":     {pin:"4444",role:"Manager"},
-  "Shaswanth": {pin:"5555",role:"Manager"},
-  "Deepak":    {pin:"0000",role:"Store Manager"},
-  "Ravi":      {pin:"1100",role:"Store Manager"}
+  "Deva":{pin:"5385",role:"Admin"},
+  "Duwaraka":{pin:"2783",role:"Admin"},
+  "Suresh":{pin:"1111",role:"Manager"},
+  "Kajal":{pin:"2222",role:"Manager"},
+  "Fahmida":{pin:"3333",role:"Manager"},
+  "Mamta":{pin:"4444",role:"Manager"},
+  "Shaswanth":{pin:"5555",role:"Manager"},
+  "Deepak":{pin:"0000",role:"Store Manager"},
+  "Ravi":{pin:"1100",role:"Store Manager"}
 };
 
 var CATS = ["Grocery","Vegetables","Supermarket","Packaging"];
@@ -163,15 +199,17 @@ var CAT_CLS = {Grocery:"ic-G",Vegetables:"ic-V",Supermarket:"ic-S",Packaging:"ic
 var CAT_SHORT = {Grocery:"Groc",Vegetables:"Veg",Supermarket:"Super",Packaging:"Pack"};
 
 var CU = null;
-var allData = []; // all Actuals rows
+var allData = [];
 var activePeriod = "week";
 var activeStore = "both";
+var activeNav = "analytics";
+var histLoaded = false;
 
 // ── Login ─────────────────────────────────────────────────────
 function doLogin(){
   var name = document.getElementById("uname").value.trim();
-  var pin  = document.getElementById("upin").value.trim();
-  var err  = document.getElementById("lerr");
+  var pin = document.getElementById("upin").value.trim();
+  var err = document.getElementById("lerr");
   if(!name){err.style.display="block";err.textContent="Please enter your name";return;}
   if(pin.length<4){err.style.display="block";err.textContent="Please enter your 4-digit PIN";return;}
   var mk = null;
@@ -183,23 +221,23 @@ function doLogin(){
   document.getElementById("urole-lbl").textContent = STAFF[mk].role;
   document.getElementById("btn-refresh").style.display = "block";
   document.getElementById("top-sub").textContent = "Welcome, " + mk;
+  histLoaded = false;
   show("scr-dash");
   loadData();
 }
+document.getElementById("uname").addEventListener("keydown",function(e){if(e.key==="Enter")document.getElementById("upin").focus();});
 document.getElementById("signin-btn").addEventListener("click", doLogin);
 document.getElementById("upin").addEventListener("input", function(){
   if(this.value.length===4){var n=document.getElementById("uname").value.trim();if(n)doLogin();}
 });
-
 document.getElementById("btn-logout").addEventListener("click", function(){
-  CU=null; allData=[];
+  CU=null; allData=[];histLoaded=false;
   document.getElementById("uname").value="";
   document.getElementById("upin").value="";
   document.getElementById("lerr").style.display="none";
   document.getElementById("btn-refresh").style.display="none";
   show("scr-login");
 });
-
 document.getElementById("btn-refresh").addEventListener("click", loadData);
 
 function show(id){
@@ -207,6 +245,23 @@ function show(id){
   document.getElementById(id).className="scr on";
   window.scrollTo(0,0);
 }
+
+// ── Nav tabs ──────────────────────────────────────────────────
+document.querySelectorAll(".nav-tab").forEach(function(b){
+  b.addEventListener("click",function(){
+    activeNav = this.getAttribute("data-nav");
+    document.querySelectorAll(".nav-tab").forEach(function(x){x.classList.remove("on");});
+    this.classList.add("on");
+    if(activeNav==="analytics"){
+      document.getElementById("panel-analytics").style.display="block";
+      document.getElementById("panel-history").style.display="none";
+    } else {
+      document.getElementById("panel-analytics").style.display="none";
+      document.getElementById("panel-history").style.display="block";
+      if(!histLoaded) loadHistory();
+    }
+  });
+});
 
 // ── Period buttons ────────────────────────────────────────────
 document.querySelectorAll(".pbtn").forEach(function(b){
@@ -229,33 +284,43 @@ document.querySelectorAll(".stab").forEach(function(t){
 });
 
 // ── Load data from Apps Script ────────────────────────────────
+// FIX: Removed custom Content-Type header — caused CORS preflight failure.
+// Plain GET with ?sheet=Actuals is a simple request that doesn't need preflight.
 function loadData(){
   document.getElementById("dash-content").innerHTML = '<div class="loading"><div class="spin"></div><br>Loading data…</div>';
-  fetch(GET_URL + "?sheet=Actuals", {
-    method: "GET",
-    mode: "cors",
-    headers: {"Content-Type": "application/json"}
-  })
+  // Try fetching Actuals data
+  fetch(GET_URL + "?sheet=Actuals")
   .then(function(r){
     if(!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   })
   .then(function(data){
-    if(data.actuals && data.actuals.length){
-      allData = data.actuals.map(function(row){
-        // Fix date: Google Sheets may return date as string or number
-        var d = row.date;
+    // Handle both response shapes: {actuals:[...]} or {orders:[...]} or {success:true,data:[...]}
+    var rows = data.actuals || data.orders || data.data || data.rows || [];
+    if(rows.length){
+      allData = rows.map(function(row){
+        var d = row.date || row.Date || row[0];
         if(typeof d === 'number'){
           // Google Sheets serial date
-          var jsDate = new Date((d - 25569) * 86400 * 1000);
-          row.date = jsDate.toISOString();
+          row.date = new Date((d - 25569) * 86400 * 1000).toISOString();
         } else if(typeof d === 'string' && d.indexOf('/') > -1){
-          // DD/MM/YYYY format
           var parts = d.split('/');
           if(parts.length === 3){
             row.date = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0])).toISOString();
           }
+        } else if(d instanceof Date){
+          row.date = d.toISOString();
+        } else if(typeof d === 'string'){
+          row.date = d; // already ISO or parseable
         }
+        // Normalise field names from possible variations
+        row.store = row.store || row.Store || row.restaurant || row.Restaurant || "";
+        row.category = row.category || row.Category || "";
+        row.item = row.item || row.Item || "";
+        row.unit = row.unit || row.Unit || "";
+        row.qty = parseFloat(row.qty || row.Qty || row["Qty Used"] || row.quantity || 0) || 0;
+        row.loggedBy = row.loggedBy || row["Logged By"] || row.loggedby || "";
+        row.status = row.status || row.Status || "available";
         return row;
       });
     } else {
@@ -263,23 +328,112 @@ function loadData(){
     }
     if(!allData.length){
       document.getElementById("dash-content").innerHTML =
-        '<div class="nodata">No data found in Actuals sheet.<br>Make sure the sheet has data and try again.</div>';
+        '<div class="nodata">No data found in Actuals sheet.<br><br>Make sure the Apps Script <code>doGet</code> returns <code>{actuals:[...]}</code> when called with <code>?sheet=Actuals</code>.<br><br><button onclick="loadData()" style="margin-top:12px;padding:10px 16px;border-radius:8px;border:none;background:#085041;color:#fff;font-size:13px;cursor:pointer">↻ Try again</button></div>';
       return;
     }
     renderDash();
   })
   .catch(function(err){
-    // Try no-cors fallback with JSONP-style approach
+    // Show diagnostic error with suggested fix
     document.getElementById("dash-content").innerHTML =
-      '<div class="nodata">Loading error: '+err.message+'<br><br>The Apps Script may need redeployment.<br>Check that doGet is deployed as Anyone can access.</div>';
+      '<div class="nodata"><b>Could not load data</b><br><br>Error: '+err.message+'<br><br>Check that your Apps Script is deployed as <b>Anyone can access</b> and that the <code>doGet</code> function handles <code>?sheet=Actuals</code>.<br><br><button onclick="loadData()" style="margin-top:12px;padding:10px 16px;border-radius:8px;border:none;background:#085041;color:#fff;font-size:13px;cursor:pointer">↻ Retry</button></div>';
   });
+}
+
+// ── Load order history (last 10 orders logged) ────────────────
+function loadHistory(){
+  histLoaded = true;
+  document.getElementById("hist-content").innerHTML = '<div class="loading"><div class="spin"></div><br>Loading history…</div>';
+  fetch(GET_URL + "?action=history&limit=10")
+  .then(function(r){return r.json();})
+  .then(function(data){
+    renderHistory(data.history || data.orders || data.logs || []);
+  })
+  .catch(function(){
+    // Fall back to showing recent entries from already-loaded allData
+    if(allData.length){
+      renderHistoryFromData();
+    } else {
+      document.getElementById("hist-content").innerHTML =
+        '<div class="nodata">History not available yet.<br><br>Your last 10 orders will appear here once data is loaded.<br><br><button onclick="loadData();setTimeout(function(){histLoaded=false;loadHistory();},1500)" style="margin-top:12px;padding:10px 16px;border-radius:8px;border:none;background:#085041;color:#fff;font-size:13px;cursor:pointer">↻ Retry</button></div>';
+    }
+  });
+}
+
+// Fallback: derive history from already-loaded allData (last 10 unique dates)
+function renderHistoryFromData(){
+  // Group by date+store combo and take last 10
+  var groups = {};
+  allData.forEach(function(row){
+    var d = row.date ? row.date.split("T")[0] : "unknown";
+    var key = d + "||" + row.store;
+    if(!groups[key]){groups[key]={date:d,store:row.store,items:[]};}
+    groups[key].items.push(row);
+  });
+  var sorted = Object.values(groups).sort(function(a,b){return b.date.localeCompare(a.date);}).slice(0,10);
+  renderHistory(sorted.map(function(g){
+    return {
+      date: g.date,
+      store: g.store,
+      total: g.items.length,
+      available: g.items.filter(function(i){return i.status!=="unavailable";}).length,
+      unavailable: g.items.filter(function(i){return i.status==="unavailable";}).length,
+      items: g.items.map(function(i){return {item:i.item,qty:i.qty,unit:i.unit,category:i.category};})
+    };
+  }));
+}
+
+function renderHistory(history){
+  if(!history.length){
+    document.getElementById("hist-content").innerHTML =
+      '<div class="nodata">No order history found yet.<br>Last 10 orders will appear here.</div>';
+    return;
+  }
+  var CATS_ORDER = ["Grocery","Vegetables","Supermarket","Packaging"];
+  var html = '';
+  history.forEach(function(h, i){
+    var d = new Date(h.date||h.timestamp||"");
+    var dateStr = isNaN(d) ? (h.date||"Unknown") : d.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short",year:"numeric"});
+    var timeStr = h.timestamp ? d.toLocaleTimeString("en-AU",{hour:"2-digit",minute:"2-digit"}) : "";
+    html += '<div class="hist-card">';
+    html += '<div class="hist-hdr"><span>Order '+(history.length-i)+'</span><span>'+(timeStr||dateStr)+'</span></div>';
+    html += '<div class="hist-row">';
+    html += '<div class="hist-date-big">'+dateStr+'</div>';
+    if(h.store) html += '<div class="hist-meta">'+h.store+(h.loggedBy?' · '+h.loggedBy:'')+'</div>';
+    // Summary pills
+    html += '<div class="hist-pills">';
+    if(h.available!==undefined) html += '<span class="hpill hp-ok">✅ '+h.available+' available</span>';
+    if(h.adjusted) html += '<span class="hpill hp-adj">✏️ '+h.adjusted+' adjusted</span>';
+    if(h.unavailable) html += '<span class="hpill hp-no">❌ '+h.unavailable+' unavail.</span>';
+    if(h.total && h.available===undefined) html += '<span class="hpill hp-ok">'+h.total+' items</span>';
+    html += '</div>';
+    // Item breakdown if available
+    if(h.items && h.items.length){
+      var byCat = {};
+      h.items.forEach(function(item){
+        var cat = item.category||"Other";
+        if(!byCat[cat]) byCat[cat]=[];
+        byCat[cat].push(item);
+      });
+      html += '<div style="margin-top:8px">';
+      CATS_ORDER.forEach(function(cat){
+        if(!byCat[cat]) return;
+        html += '<div class="hist-cat-lbl">'+cat+'</div>';
+        byCat[cat].forEach(function(item){
+          html += '<div class="hist-item"><span class="hist-item-name">'+item.item+'</span><span class="hist-item-val">'+item.qty+' '+item.unit+'</span></div>';
+        });
+      });
+      html += '</div>';
+    }
+    html += '</div></div>';
+  });
+  document.getElementById("hist-content").innerHTML = html;
 }
 
 // ── Filter data by period and store ──────────────────────────
 function getFiltered(){
   var now = new Date();
   var from = new Date(0);
-
   if(activePeriod === "week"){
     var day = now.getDay() || 7;
     from = new Date(now);
@@ -288,11 +442,10 @@ function getFiltered(){
   } else if(activePeriod === "month"){
     from = new Date(now.getFullYear(), now.getMonth(), 1);
   }
-
   return allData.filter(function(row){
-    if(!row.date) return true; // include if no date (all time)
+    if(!row.date) return true;
     var d = new Date(row.date);
-    if(isNaN(d)) return true; // include if date unparseable
+    if(isNaN(d)) return true;
     if(from > new Date(0) && d < from) return false;
     if(activeStore !== "both" && row.store !== activeStore) return false;
     if(row.status === "unavailable") return false;
@@ -303,85 +456,52 @@ function getFiltered(){
 // ── Render dashboard ──────────────────────────────────────────
 function renderDash(){
   var data = getFiltered();
-
   if(!data.length){
     document.getElementById("dash-content").innerHTML =
       '<div class="nodata">No data for this period &amp; restaurant.<br>Try selecting a wider time range.</div>';
     return;
   }
-
-  // ── KPIs ──────────────────────────────────────────────────
   var totalItems = data.length;
-  var totalQty   = data.reduce(function(s,r){return s+(parseFloat(r.qty)||0);},0);
-
-  // Unique items
+  var totalQty = data.reduce(function(s,r){return s+(parseFloat(r.qty)||0);},0);
   var uniqueItems = {};
   data.forEach(function(r){uniqueItems[r.item]=true;});
   var uniqueCount = Object.keys(uniqueItems).length;
-
-  // Orders by day
   var byDay = {};
-  data.forEach(function(r){
-    var d = r.date ? r.date.split("T")[0] : "";
-    if(!byDay[d]) byDay[d] = 0;
-    byDay[d]++;
-  });
+  data.forEach(function(r){var d=r.date?r.date.split("T")[0]:"";if(!byDay[d])byDay[d]=0;byDay[d]++;});
   var activeDays = Object.keys(byDay).length;
-
-  // ── Category breakdown ────────────────────────────────────
   var byCat = {Grocery:0,Vegetables:0,Supermarket:0,Packaging:0};
   data.forEach(function(r){if(byCat[r.category]!==undefined)byCat[r.category]+=(parseFloat(r.qty)||0);});
-
-  // ── Top 10 items ──────────────────────────────────────────
   var itemTotals = {};
   data.forEach(function(r){
-    var key = r.item + "||" + r.category + "||" + r.unit;
-    if(!itemTotals[key]) itemTotals[key] = {item:r.item,category:r.category,unit:r.unit,qty:0};
+    var key = r.item+"||"+r.category+"||"+r.unit;
+    if(!itemTotals[key]) itemTotals[key]={item:r.item,category:r.category,unit:r.unit,qty:0};
     itemTotals[key].qty += parseFloat(r.qty)||0;
   });
   var topItems = Object.values(itemTotals).sort(function(a,b){return b.qty-a.qty;}).slice(0,10);
   var maxQty = topItems[0] ? topItems[0].qty : 1;
-
-  // ── Weekly trend ──────────────────────────────────────────
   var weekTotals = {};
   data.forEach(function(r){
     var d = new Date(r.date);
     var wk = getISOWeek(d);
-    var key = d.getFullYear() + "-W" + String(wk).padStart(2,"0");
-    if(!weekTotals[key]) weekTotals[key] = {label:"Wk"+wk,qty:0};
+    var key = d.getFullYear()+"-W"+String(wk).padStart(2,"0");
+    if(!weekTotals[key]) weekTotals[key]={label:"Wk"+wk,qty:0};
     weekTotals[key].qty += parseFloat(r.qty)||0;
   });
   var weeks = Object.keys(weekTotals).sort().slice(-8);
-  var maxWk = Math.max.apply(null, weeks.map(function(k){return weekTotals[k].qty;})) || 1;
-
-  // ── By logged user ────────────────────────────────────────
+  var maxWk = Math.max.apply(null,weeks.map(function(k){return weekTotals[k].qty;})) || 1;
   var byUser = {};
-  data.forEach(function(r){
-    var user = (r.loggedBy||"Unknown").split(" (")[0];
-    if(!byUser[user]) byUser[user] = 0;
-    byUser[user]++;
-  });
+  data.forEach(function(r){var user=(r.loggedBy||"Unknown").split(" (")[0];if(!byUser[user])byUser[user]=0;byUser[user]++;});
   var topUsers = Object.entries(byUser).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
-
-  // ── Period label ──────────────────────────────────────────
   var periodLabel = activePeriod==="week"?"This Week":activePeriod==="month"?"This Month":"All Time";
-  var storeLabel  = activeStore==="both"?"Both Restaurants":activeStore.replace(" A2B","");
-
-  // ── Render HTML ───────────────────────────────────────────
-  var html = "";
-
-  // Summary banner
+  var storeLabel = activeStore==="both"?"Both Restaurants":activeStore.replace(" A2B","");
+  var html = '';
   html += '<div style="font-size:12px;color:#7A7870;margin-bottom:12px">'+periodLabel+' · '+storeLabel+'</div>';
-
-  // KPI grid
   html += '<div class="kpi-grid">';
   html += '<div class="kpi kpi-grn"><div class="kpi-val">'+totalItems+'</div><div class="kpi-lbl">Total Entries</div><div class="kpi-sub">'+activeDays+' active days</div></div>';
   html += '<div class="kpi kpi-blue"><div class="kpi-val">'+uniqueCount+'</div><div class="kpi-lbl">Unique Items</div><div class="kpi-sub">across all categories</div></div>';
   html += '<div class="kpi kpi-amber"><div class="kpi-val">'+Math.round(totalQty).toLocaleString()+'</div><div class="kpi-lbl">Total Qty Used</div><div class="kpi-sub">all units combined</div></div>';
   html += '<div class="kpi kpi-grn"><div class="kpi-val">'+Math.round(totalItems/Math.max(activeDays,1))+'</div><div class="kpi-lbl">Items/Day Avg</div><div class="kpi-sub">entries per active day</div></div>';
   html += '</div>';
-
-  // Category breakdown
   html += '<div class="sec-hdr">Category Breakdown <span class="sec-sub">by qty used</span></div>';
   html += '<div class="cat-grid">';
   CATS.forEach(function(cat){
@@ -391,75 +511,56 @@ function renderDash(){
     html += '<div class="cat-unit">units used</div></div>';
   });
   html += '</div>';
-
-  // Weekly trend
-  if(weeks.length > 1){
+  if(weeks.length>1){
     html += '<div class="sec-hdr">Weekly Trend <span class="sec-sub">total qty by week</span></div>';
-    html += '<div class="bar-chart">';
-    html += '<div class="trend-row">';
+    html += '<div class="bar-chart"><div class="trend-row">';
     weeks.forEach(function(k){
       var h = Math.round((weekTotals[k].qty/maxWk)*70);
       html += '<div class="trend-bar" title="'+weekTotals[k].label+': '+Math.round(weekTotals[k].qty)+'" style="height:'+h+'px"></div>';
     });
-    html += '</div>';
-    html += '<div class="trend-labels">';
-    weeks.forEach(function(k){
-      html += '<div class="trend-lbl">'+weekTotals[k].label+'</div>';
-    });
+    html += '</div><div class="trend-labels">';
+    weeks.forEach(function(k){html += '<div class="trend-lbl">'+weekTotals[k].label+'</div>';});
     html += '</div></div>';
   }
-
-  // Top 10 items
   html += '<div class="sec-hdr">Top 10 Items <span class="sec-sub">by qty used</span></div>';
   html += '<div class="bar-chart">';
-  topItems.forEach(function(item,i){
+  topItems.forEach(function(item){
     var pct = Math.round((item.qty/maxQty)*100);
-    html += '<div class="bar-row">';
-    html += '<div class="bar-lbl" title="'+item.item+'">'+item.item+'</div>';
+    html += '<div class="bar-row"><div class="bar-lbl" title="'+item.item+'">'+item.item+'</div>';
     html += '<div class="bar-wrap"><div class="bar-fill" style="width:'+pct+'%"></div></div>';
-    html += '<div class="bar-val">'+Math.round(item.qty)+' '+item.unit+'</div>';
-    html += '</div>';
+    html += '<div class="bar-val">'+Math.round(item.qty)+' '+item.unit+'</div></div>';
   });
   html += '</div>';
-
-  // Top 10 as ranked list
   html += '<div class="sec-hdr">Item Rankings <span class="sec-sub">'+topItems.length+' most used</span></div>';
   html += '<div class="item-table">';
   topItems.forEach(function(item,i){
-    html += '<div class="item-row">';
-    html += '<div class="item-rank">'+(i+1)+'</div>';
+    html += '<div class="item-row"><div class="item-rank">'+(i+1)+'</div>';
     html += '<div class="item-name">'+item.item+'</div>';
     html += '<span class="item-cat '+CAT_CLS[item.category]+'">'+CAT_SHORT[item.category]+'</span>';
-    html += '<div class="item-val">'+Math.round(item.qty)+' '+item.unit+'</div>';
-    html += '</div>';
+    html += '<div class="item-val">'+Math.round(item.qty)+' '+item.unit+'</div></div>';
   });
   html += '</div>';
-
-  // Staff activity
   if(topUsers.length){
     html += '<div class="sec-hdr">Staff Activity <span class="sec-sub">entries logged</span></div>';
     var maxU = topUsers[0][1];
     html += '<div class="bar-chart">';
     topUsers.forEach(function(u){
       var pct = Math.round((u[1]/maxU)*100);
-      html += '<div class="bar-row">';
-      html += '<div class="bar-lbl">'+u[0]+'</div>';
+      html += '<div class="bar-row"><div class="bar-lbl">'+u[0]+'</div>';
       html += '<div class="bar-wrap"><div class="bar-fill" style="width:'+pct+'%;background:#185FA5"></div></div>';
-      html += '<div class="bar-val" style="color:#185FA5">'+u[1]+'</div>';
-      html += '</div>';
+      html += '<div class="bar-val" style="color:#185FA5">'+u[1]+'</div></div>';
     });
     html += '</div>';
   }
-
   document.getElementById("dash-content").innerHTML = html;
 }
 
 function getISOWeek(d){
-  var date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  var day  = date.getUTCDay() || 7;
-  date.setUTCDate(date.getUTCDate() + 4 - day);
-  var yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
-  return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+  var date=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  var day=date.getUTCDay()||7;
+  date.setUTCDate(date.getUTCDate()+4-day);
+  var yearStart=new Date(Date.UTC(date.getUTCFullYear(),0,1));
+  return Math.ceil((((date-yearStart)/86400000)+1)/7);
 }
 </script>
 </body>
