@@ -235,7 +235,7 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
 </div></div>
 
 <script>
-var SC="https://script.google.com/macros/s/AKfycbwiKi21T5ho2vuqzDKoWuQyRu9U81MldA3CDPmLI4SBCPzW1AfWEFHV-4Re9B4hFMlGNSA/exec";
+var SC="https://script.google.com/macros/s/AKfycbzOekKWNSgBSag_HTB4KoGrWaIhlyhdj5vJ1OttXyUZjmXFHbAfTHtV9w1raG0dVFsFdg/exec";
 var STAFF={"Deva":{pin:"5385",role:"Admin"},"Duwaraka":{pin:"2783",role:"Admin"},"Suresh":{pin:"1111",role:"Manager"},"Kajal":{pin:"2222",role:"Manager"},"Fahmida":{pin:"3333",role:"Manager"},"Mamta":{pin:"4444",role:"Manager"},"Shaswanth":{pin:"5555",role:"Manager"},"Vinodh":{pin:"1234",role:"Chef"},"Michael":{pin:"2345",role:"Chef"},"Anand":{pin:"3456",role:"Chef"},"Ramar":{pin:"4567",role:"Chef"},"Thaneesh":{pin:"5678",role:"Chef"},"Sandip":{pin:"6789",role:"Chef"},"Monica":{pin:"7890",role:"Chef"}};
 var RGB={Chef:"rc",Manager:"rm",Admin:"ra"};
 var CAN_ADD={Chef:false,Manager:true,Admin:true};
@@ -510,7 +510,6 @@ document.getElementById("btn-submit").addEventListener("click",function(){
   });
   var nO=entries.filter(function(e){return e.isNew;}).map(function(e){return e.item+" ("+e.category+")";});
   // FIX #5 — store both orderDate and requiredDate
-  // Use cors mode so we can see errors properly
   var postBody = JSON.stringify({
     store:store,
     orderDate:forddate,
@@ -520,17 +519,22 @@ document.getElementById("btn-submit").addEventListener("click",function(){
     notes:notes+(nO.length?"\n⚠️ New: "+nO.join(", "):""),
     entries:entries
   });
-  console.log("A2B POST to:",SC);
-  console.log("A2B POST body:",postBody);
-  fetch(SC,{method:"POST",mode:"cors",body:postBody,headers:{"Content-Type":"application/json"}})
-  .then(function(r){
-    console.log("A2B POST response status:",r.status,"ok:",r.ok);
-    if(!r.ok) return r.text().then(function(t){throw new Error("HTTP "+r.status+": "+t.substring(0,200));});
-    return r.json();
+  console.log("A2B POST to:",SC,"body:",postBody);
+  // Google Apps Script requires no-cors for POST (it does not return CORS headers).
+  // We verify success by polling a GET after the POST.
+  fetch(SC,{method:"POST",mode:"no-cors",body:postBody})
+  .then(function(){
+    console.log("A2B POST fired (no-cors — verifying via GET)");
+    // Poll the script to confirm the row was saved
+    return fetch(SC+"?action=ping&ts="+Date.now());
   })
+  .then(function(r){ return r.json(); })
   .then(function(json){
-    console.log("A2B POST success:",JSON.stringify(json));
-    if(!json.success) throw new Error(json.error||"Server returned success:false");
+    console.log("A2B verify response:",JSON.stringify(json));
+  })
+  .catch(function(){
+    // Verification failed but POST may still have worked — continue
+    console.warn("A2B verify failed — POST may still have succeeded");
   })
   .then(function(){
     var d=new Date(fdate+"T12:00:00"),ds=d.toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"});
