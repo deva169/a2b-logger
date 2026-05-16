@@ -156,13 +156,10 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
   <div class="card" style="margin-bottom:12px">
     <div class="crow"><span class="clbl">Restaurant</span><select id="fstore"><option>Harrisdale A2B</option><option>Yokine A2B</option></select></div>
     <div class="crow"><span class="clbl">Required Date</span><input type="date" id="fdate"></div>
-    <div class="crow" style="background:#F7F6F3;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 14px">
-      <div style="display:flex;width:100%;align-items:center">
-        <span class="clbl" style="color:#7A7870">Order Date</span>
-        <span id="forddate-display" style="font-size:14px;color:#7A7870;margin-left:auto;font-weight:500">—</span>
-        <input type="hidden" id="forddate">
-      </div>
-      <div style="font-size:11px;color:#AAA8A0" id="forddate-ts">Submitted: —</div>
+    <div class="crow" style="background:#F7F6F3">
+      <span class="clbl" style="color:#7A7870">Order Date</span>
+      <span id="forddate-display" style="font-size:13px;color:#7A7870;margin-left:auto">—</span>
+      <input type="hidden" id="forddate">
     </div>
   </div>
 
@@ -287,13 +284,8 @@ function updateOrderDate(){
   d.setDate(d.getDate()-1);
   var ordStr=d.toISOString().split('T')[0];
   document.getElementById('forddate').value=ordStr;
-  // Show human-readable date
   var disp=document.getElementById('forddate-display');
-  if(disp)disp.textContent=d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
-  // Show submission timestamp
-  var now=new Date();
-  var tsDisp=document.getElementById('forddate-ts');
-  if(tsDisp)tsDisp.textContent='Submitted: '+now.toLocaleDateString('en-AU',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+now.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',hour12:true});
+  if(disp)disp.textContent=d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
 }
 
 // FIX #4 — Restore session on page load (persist CU in sessionStorage)
@@ -584,41 +576,23 @@ document.getElementById("btn-copy").addEventListener("click",function(){
   catch(e){var ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done.style.display="block";setTimeout(function(){done.style.display="none";},2000);}
 });
 
-// ── Log again ──────────────────────────────────────────────────────────────────
-// Success screen button handlers
-// Wire success screen buttons
-(function(){
-  var ba=document.getElementById("btn-again");
-  var bn=document.getElementById("btn-newlogin");
-  if(ba){
-    ba.onclick=function(e){
-      e.preventDefault();
-      sel={};ac="Grocery";
-      setProg(2);
-      show("scr-items");
-      switchTab("Grocery");
-      upd();
-      setDefaultDates();
-      loadHistory();
-    };
-  }
-  if(bn){
-    bn.onclick=function(e){
-      e.preventDefault();
-      CU=null;sel={};
-      try{sessionStorage.removeItem('a2b_cu');}catch(ex){}
-      var un=document.getElementById("uname");
-      var up=document.getElementById("upin");
-      var le=document.getElementById("lerr");
-      if(un)un.value="";
-      if(up)up.value="";
-      if(le)le.style.display="none";
-      setProg(1);
-      show("scr-login");
-      if(un)setTimeout(function(){un.focus();},100);
-    };
-  }
-})();
+// ── Success screen buttons ────────────────────────────────────────────────────
+function goAgain(){
+  sel={};ac="Grocery";
+  setProg(2);show("scr-items");
+  switchTab("Grocery");upd();
+  setDefaultDates();loadHistory();
+}
+function goLoginAgain(){
+  CU=null;sel={};
+  try{sessionStorage.removeItem('a2b_cu');}catch(ex){}
+  document.getElementById("uname").value="";
+  document.getElementById("upin").value="";
+  document.getElementById("lerr").style.display="none";
+  setProg(1);show("scr-login");
+}
+document.getElementById("btn-again").onclick=goAgain;
+document.getElementById("btn-newlogin").onclick=goLoginAgain;
 
 // ── Modal ──────────────────────────────────────────────────────────────────────
 document.querySelectorAll(".uopt").forEach(function(u){u.addEventListener("click",function(){su=this.getAttribute("data-u");document.querySelectorAll(".uopt").forEach(function(x){x.className="uopt";});this.className="uopt on";});});
