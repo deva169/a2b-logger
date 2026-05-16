@@ -467,17 +467,20 @@ function loadHistory(){
   var panel=document.getElementById("hist-panel");
   panel.style.display="block";
   var store=document.getElementById("fstore").value;
-  var url=SC+"?type=history&user="+encodeURIComponent(CU.name)+"&store="+encodeURIComponent(store)+"&limit=10";
+  // Use correct action=history parameter
+  var url=SC+"?action=history&user="+encodeURIComponent(CU.name)+"&store="+encodeURIComponent(store)+"&limit=10";
   document.getElementById("hist-loading").style.display="block";
-  fetch(url,{mode:"no-cors"}).then(function(){
-    // no-cors means we can't read response — use a fallback
-  }).catch(function(){});
-  // Try with cors mode (works if script allows)
-  fetch(SC+"?type=history&user="+encodeURIComponent(CU.name)+"&store="+encodeURIComponent(store)+"&limit=10")
+  fetch(url)
     .then(function(r){return r.json();})
-    .then(function(data){renderHistory(data);})
+    .then(function(data){
+      if(data.success && data.history){
+        renderHistory(data.history);
+      } else {
+        document.getElementById("hist-loading").textContent="No orders found";
+      }
+    })
     .catch(function(){
-      document.getElementById("hist-loading").textContent="History unavailable (check script permissions)";
+      document.getElementById("hist-loading").textContent="History unavailable";
     });
 }
 function renderHistory(rows){
@@ -591,12 +594,12 @@ document.getElementById("btn-copy").addEventListener("click",function(){
     ba.onclick=function(e){
       e.preventDefault();
       sel={};ac="Grocery";
+      setProg(2);
+      show("scr-items");
       switchTab("Grocery");
       upd();
       setDefaultDates();
       loadHistory();
-      setProg(2);
-      show("scr-items");
     };
   }
   if(bn){
@@ -604,11 +607,15 @@ document.getElementById("btn-copy").addEventListener("click",function(){
       e.preventDefault();
       CU=null;sel={};
       try{sessionStorage.removeItem('a2b_cu');}catch(ex){}
-      document.getElementById("uname").value="";
-      document.getElementById("upin").value="";
-      document.getElementById("lerr").style.display="none";
+      var un=document.getElementById("uname");
+      var up=document.getElementById("upin");
+      var le=document.getElementById("lerr");
+      if(un)un.value="";
+      if(up)up.value="";
+      if(le)le.style.display="none";
       setProg(1);
       show("scr-login");
+      if(un)setTimeout(function(){un.focus();},100);
     };
   }
 })();
