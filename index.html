@@ -510,15 +510,28 @@ document.getElementById("btn-submit").addEventListener("click",function(){
   });
   var nO=entries.filter(function(e){return e.isNew;}).map(function(e){return e.item+" ("+e.category+")";});
   // FIX #5 — store both orderDate and requiredDate
-  fetch(SC,{method:"POST",mode:"no-cors",body:JSON.stringify({
+  // Use cors mode so we can see errors properly
+  var postBody = JSON.stringify({
     store:store,
-    orderDate:forddate,      // FIX #5: explicit order date
-    requiredDate:fdate,      // FIX #5: explicit required/delivery date
-    date:fdate,              // keep legacy field
+    orderDate:forddate,
+    requiredDate:fdate,
+    date:fdate,
     loggedBy:CU.name+" ("+CU.role+")",
     notes:notes+(nO.length?"\n⚠️ New: "+nO.join(", "):""),
     entries:entries
-  })})
+  });
+  console.log("A2B POST to:",SC);
+  console.log("A2B POST body:",postBody);
+  fetch(SC,{method:"POST",mode:"cors",body:postBody,headers:{"Content-Type":"application/json"}})
+  .then(function(r){
+    console.log("A2B POST response status:",r.status,"ok:",r.ok);
+    if(!r.ok) return r.text().then(function(t){throw new Error("HTTP "+r.status+": "+t.substring(0,200));});
+    return r.json();
+  })
+  .then(function(json){
+    console.log("A2B POST success:",JSON.stringify(json));
+    if(!json.success) throw new Error(json.error||"Server returned success:false");
+  })
   .then(function(){
     var d=new Date(fdate+"T12:00:00"),ds=d.toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"});
     document.getElementById("done-txt").textContent=entries.length+" items · "+CU.name+" · "+ds;
