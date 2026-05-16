@@ -155,8 +155,8 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
   <div class="ubar"><div><span class="ubn" id="ubn"></span><span class="rbadge" id="urole"></span></div><span class="logout" id="btn-logout">Sign out</span></div>
   <div class="card" style="margin-bottom:12px">
     <div class="crow"><span class="clbl">Restaurant</span><select id="fstore"><option>Harrisdale A2B</option><option>Yokine A2B</option></select></div>
-    <div class="crow"><span class="clbl">Order Date</span><input type="date" id="forddate"></div>
     <div class="crow"><span class="clbl">Required Date</span><input type="date" id="fdate"></div>
+    <div class="crow" style="background:#F7F6F3"><span class="clbl" style="color:#7A7870">Order Date</span><span id="forddate-display" style="font-size:14px;color:#7A7870;margin-left:auto">—</span><input type="hidden" id="forddate"></div>
   </div>
 
   <!-- FIX #2 — Order History Panel -->
@@ -197,8 +197,8 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
   <div style="margin-bottom:10px"><div style="font-size:14px;font-weight:600;margin-bottom:2px">Review &amp; submit</div><div style="font-size:12px;color:#7A7870" id="rv-sub"></div></div>
   <div class="card" style="margin-bottom:12px">
     <div class="rrow"><span class="rlbl">Restaurant</span><span class="rval" id="rv-store"></span></div>
-    <div class="rrow"><span class="rlbl">Order Date</span><span class="rval" id="rv-orddate"></span></div>
     <div class="rrow"><span class="rlbl">Required Date</span><span class="rval" id="rv-date"></span></div>
+    <div class="rrow"><span class="rlbl">Order Date</span><span class="rval" id="rv-orddate" style="color:#7A7870"></span></div>
     <div class="rrow"><span class="rlbl">Logged by</span><span class="rval" id="rv-who"></span></div>
   </div>
   <div class="card" id="rv-items" style="margin-bottom:12px"></div>
@@ -263,11 +263,23 @@ function setDefaultDates(){
   var fmt=function(d){return d.toISOString().split('T')[0];};
   var todayStr=fmt(today);
   var tomorrowStr=fmt(tomorrow);
-  document.getElementById('forddate').value=todayStr;
-  document.getElementById('forddate').min=todayStr;
+  // Required Date defaults to tomorrow
   document.getElementById('fdate').value=tomorrowStr;
   document.getElementById('fdate').min=todayStr;
+  // Order Date = Required Date - 1 (auto-calculated, shown read-only)
+  updateOrderDate();
   updateLbl();
+}
+function updateOrderDate(){
+  var req=document.getElementById('fdate').value;
+  if(!req)return;
+  var d=new Date(req+'T12:00:00');
+  d.setDate(d.getDate()-1);
+  var ordStr=d.toISOString().split('T')[0];
+  document.getElementById('forddate').value=ordStr;
+  // Show human-readable in the display span
+  var disp=document.getElementById('forddate-display');
+  if(disp)disp.textContent=d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
 }
 
 // FIX #4 — Restore session on page load (persist CU in sessionStorage)
@@ -425,15 +437,8 @@ function switchTab(c){
 document.querySelectorAll(".tab").forEach(function(t){t.addEventListener("click",function(){switchTab(this.getAttribute("data-cat"));});});
 document.getElementById("srch").addEventListener("input",renderItems);
 document.getElementById("fstore").addEventListener("change",function(){updateLbl();loadHistory();});
-document.getElementById("forddate").addEventListener("change",function(){
-  // Keep required date >= order date
-  var ord=this.value;
-  var req=document.getElementById("fdate");
-  if(req.value<ord)req.value=ord;
-  req.min=ord;
-  updateLbl();
-});
-document.getElementById("fdate").addEventListener("change",updateLbl);
+// forddate is auto-calculated from fdate — no listener needed
+document.getElementById("fdate").addEventListener("change",function(){updateOrderDate();updateLbl();});
 
 // ── FIX #2 — Order History ─────────────────────────────────────────────────────
 var _histOpen=false;
