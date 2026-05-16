@@ -225,7 +225,10 @@ textarea{width:100%;border:1px solid #E2E0D8;border-radius:12px;background:#fff;
   <div class="wawrap"><div class="wamsg" id="watxt"></div></div>
   <button class="cpybtn" id="btn-copy">📋 Copy WhatsApp message</button>
   <div class="cpdone" id="cpdone">✓ Copied!</div>
-  <div class="btnrow mt8"><button class="bmain" id="btn-again">Log again</button></div>
+  <div class="btnrow mt8">
+    <button class="bmain" id="btn-again">Log another order</button>
+    <button class="bmain blue" id="btn-newlogin">Log in again</button>
+  </div>
 </div>
 
 <!-- ADD ITEM MODAL -->
@@ -581,6 +584,14 @@ document.getElementById("btn-copy").addEventListener("click",function(){
 // ── Log again ──────────────────────────────────────────────────────────────────
 document.getElementById("btn-again").addEventListener("click",function(){
   sel={};ac="Grocery";switchTab("Grocery");upd();setDefaultDates();loadHistory();setProg(2);show("scr-items");
+});
+document.getElementById("btn-newlogin").addEventListener("click",function(){
+  CU=null;sel={};
+  try{sessionStorage.removeItem('a2b_cu');}catch(e){}
+  document.getElementById("uname").value="";
+  document.getElementById("upin").value="";
+  document.getElementById("lerr").style.display="none";
+  setProg(1);show("scr-login");
 });
 
 // ── Modal ──────────────────────────────────────────────────────────────────────
