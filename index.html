@@ -582,16 +582,19 @@ document.getElementById("btn-copy").addEventListener("click",function(){
 });
 
 // ── Log again ──────────────────────────────────────────────────────────────────
-document.getElementById("btn-again").addEventListener("click",function(){
-  sel={};ac="Grocery";switchTab("Grocery");upd();setDefaultDates();loadHistory();setProg(2);show("scr-items");
-});
-document.getElementById("btn-newlogin").addEventListener("click",function(){
-  CU=null;sel={};
-  try{sessionStorage.removeItem('a2b_cu');}catch(e){}
-  document.getElementById("uname").value="";
-  document.getElementById("upin").value="";
-  document.getElementById("lerr").style.display="none";
-  setProg(1);show("scr-login");
+document.body.addEventListener("click",function(e){
+  var id=e.target.id||(e.target.closest('[id]')&&e.target.closest('[id]').id)||"";
+  if(id==="btn-again"){
+    sel={};ac="Grocery";switchTab("Grocery");upd();setDefaultDates();loadHistory();setProg(2);show("scr-items");
+  }
+  if(id==="btn-newlogin"){
+    CU=null;sel={};
+    try{sessionStorage.removeItem('a2b_cu');}catch(e){}
+    document.getElementById("uname").value="";
+    document.getElementById("upin").value="";
+    document.getElementById("lerr").style.display="none";
+    setProg(1);show("scr-login");
+  }
 });
 
 // ── Modal ──────────────────────────────────────────────────────────────────────
