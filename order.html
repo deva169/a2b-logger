@@ -62,6 +62,16 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .wa-msg{background:#dcf8c6;border-radius:10px 10px 3px 10px;padding:10px 12px;font-size:13px;line-height:1.55;color:#111;display:inline-block;max-width:100%;white-space:pre-wrap;word-break:break-word}
 .cpybtn{width:100%;padding:14px;border-radius:12px;border:1.5px solid #1D9E75;background:#fff;color:#1D9E75;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:8px;touch-action:manipulation}
 .cpdone{text-align:center;font-size:13px;color:#1D9E75;margin-bottom:8px;display:none}
+.dash-actions{display:flex;gap:8px;margin:10px 0 14px}
+.dash-actions .cpybtn{margin-bottom:0;flex:1;padding:12px 10px}
+.dash-card{background:#fff;border:1px solid #E2E0D8;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.dash-h{display:flex;align-items:center;justify-content:space-between;background:#F7F6F3;border-bottom:1px solid #E2E0D8;padding:10px 12px;font-size:12px;font-weight:700;color:#1A1916}
+.dash-h span:last-child{color:#7A7870;font-weight:600}
+.dash-row{padding:10px 12px;border-bottom:1px solid #E2E0D8;font-size:12px;line-height:1.4}
+.dash-row:last-child{border-bottom:none}
+.dash-main{display:flex;justify-content:space-between;gap:8px;font-weight:600}
+.dash-meta{color:#7A7870;margin-top:2px}
+.dash-empty{padding:12px;color:#7A7870;font-size:12px}
 .err{background:#FDECEC;border-radius:10px;padding:10px 14px;font-size:13px;color:#C0392B;margin-top:10px;display:none}
 .spin{display:inline-block;width:15px;height:15px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes sp{to{transform:rotate(360deg)}}
@@ -111,6 +121,18 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
   <div class="wa-wrap"><div class="wa-msg" id="wa-msg"></div></div>
   <button class="cpybtn" id="btn-cpy">📋 Copy confirmation message</button>
   <div class="cpdone" id="cpdone">✓ Copied!</div>
+  <div class="dash-actions">
+    <button class="cpybtn" id="btn-back-orders">Back to app</button>
+    <button class="cpybtn" id="btn-signout">Sign out</button>
+  </div>
+  <div class="dash-card">
+    <div class="dash-h"><span>Pending approval</span><span id="pending-count">0</span></div>
+    <div id="pending-list"><div class="dash-empty">Loading pending orders...</div></div>
+  </div>
+  <div class="dash-card">
+    <div class="dash-h"><span>Last 20 accepted</span><span id="accepted-count">0</span></div>
+    <div id="accepted-list"><div class="dash-empty">Loading accepted orders...</div></div>
+  </div>
 </div>
 </div>
 
@@ -340,7 +362,7 @@ document.getElementById('btn-submit').onclick=function(){
     var requestedQty=STATE[i].originalQty;
     return{item:item.item,unit:item.unit,category:item.category,store:item.store,
       originalQty:requestedQty,requestedQty:requestedQty,qty:confirmedQty,actualQty:confirmedQty,
-      difference:requestedQty-confirmedQty,status:STATE[i].status,actualStatus:getActualStatus(STATE[i].status),
+      difference:confirmedQty-requestedQty,status:STATE[i].status,actualStatus:getActualStatus(STATE[i].status),
       reason:STATE[i].reason||'',loggedBy:item.loggedBy||ORDER.loggedBy||loggedByParam||'',day:reqDay,weekNo:reqWeekNo};
   });
   // FIX #5 — submit both orderDate and requiredDate
@@ -358,7 +380,7 @@ document.getElementById('btn-submit').onclick=function(){
     location:LOC_NAMES[confirmerLoc],
     confirmedAt:new Date().toISOString(),
     items:items
-  })}).then(function(){buildSuccess(items,ds,dOrd);showStep(3);})
+  })}).then(function(){buildSuccess(items,ds,dOrd);showStep(3);loadManagerDashboard();})
     .catch(function(e){btn.disabled=false;btn.innerHTML='Send confirmation';err.style.display='block';err.textContent='Error: '+e.message;});
 };
 
@@ -382,6 +404,46 @@ document.getElementById('btn-cpy').onclick=function(){
   var txt=document.getElementById('wa-msg').textContent,done=document.getElementById('cpdone');
   try{navigator.clipboard.writeText(txt).then(function(){done.style.display='block';setTimeout(function(){done.style.display='none';},2000);});}
   catch(e){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done.style.display='block';setTimeout(function(){done.style.display='none';},2000);}
+};
+
+function renderDashList(id,rows,emptyText){
+  var el=document.getElementById(id);
+  if(!rows||!rows.length){el.innerHTML='<div class="dash-empty">'+emptyText+'</div>';return;}
+  el.innerHTML=rows.map(function(r){
+    var qty=(r.qtyRequested!=null&&r.qtyActual!=null)?('Req '+r.qtyRequested+' / Act '+r.qtyActual+' '+(r.unit||'')):'';
+    return '<div class="dash-row">'
+      +'<div class="dash-main"><span>'+((r.item||'Order')+'</span><span>'+(r.status||''))+'</span></div>'
+      +'<div class="dash-meta">'+[r.date,r.restaurant||r.store,r.category,qty].filter(Boolean).join(' · ')+'</div>'
+      +(r.reason?'<div class="dash-meta">'+r.reason+'</div>':'')
+      +'</div>';
+  }).join('');
+}
+function loadManagerDashboard(){
+  document.getElementById('pending-list').innerHTML='<div class="dash-empty">Loading pending orders...</div>';
+  document.getElementById('accepted-list').innerHTML='<div class="dash-empty">Loading accepted orders...</div>';
+  fetch(SCRIPT+'?action=managerDashboard&limit=20&location='+encodeURIComponent(LOC_NAMES[confirmerLoc]||''))
+    .then(function(r){return r.json();})
+    .then(function(data){
+      var pending=data.pending||[],accepted=data.accepted||[];
+      document.getElementById('pending-count').textContent=pending.length;
+      document.getElementById('accepted-count').textContent=accepted.length;
+      renderDashList('pending-list',pending,'No pending orders.');
+      renderDashList('accepted-list',accepted,'No accepted orders yet.');
+    })
+    .catch(function(){
+      renderDashList('pending-list',[],'Unable to load pending orders.');
+      renderDashList('accepted-list',[],'Unable to load accepted orders.');
+    });
+}
+document.getElementById('btn-back-orders').onclick=function(){
+  buildOrder();showStep(2);
+};
+document.getElementById('btn-signout').onclick=function(){
+  confirmerName='';confirmerLoc='';
+  try{sessionStorage.removeItem('a2b_confirm_session');}catch(e){}
+  document.getElementById('conf-name').value='';
+  document.getElementById('conf-pin').value='';
+  showStep(1);
 };
 
 restoreManagerSession();
