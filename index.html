@@ -261,6 +261,51 @@ var NI={Grocery:[],Vegetables:[],Supermarket:[],Packaging:[],Sweets:[],Others:[]
 var CATS=["Grocery","Vegetables","Supermarket","Packaging","Sweets","Others"];
 var TIDS={Grocery:"G",Vegetables:"V",Supermarket:"S",Packaging:"P",Sweets:"W",Others:"O"};
 var sel={},ac="Grocery",su="kg",CU=null;
+var LOCAL_ITEMS_KEY="a2b_logger_custom_items_v1";
+var _masterLoadStarted=false;
+
+function normItemName(v){return String(v||"").trim().toLowerCase();}
+function itemExists(cat,nm){
+  var key=normItemName(nm);
+  if(!key||!NI[cat])return true;
+  return ALL[cat].concat(NI[cat]).some(function(r){return normItemName(r[0])===key;});
+}
+function addDynamicItem(cat,nm,unit){
+  if(!NI[cat]||!nm||itemExists(cat,nm))return false;
+  NI[cat].push([String(nm).trim(),unit||"nos",true]);
+  return true;
+}
+function saveLocalItems(){
+  try{localStorage.setItem(LOCAL_ITEMS_KEY,JSON.stringify(NI));}catch(e){}
+}
+function loadLocalItems(){
+  try{
+    var saved=JSON.parse(localStorage.getItem(LOCAL_ITEMS_KEY)||"{}");
+    CATS.forEach(function(cat){
+      (saved[cat]||[]).forEach(function(r){addDynamicItem(cat,r[0],r[1]);});
+    });
+  }catch(e){}
+}
+function loadMasterFromOrders(){
+  if(_masterLoadStarted)return;
+  _masterLoadStarted=true;
+  fetch(SC)
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!data||!data.orders)return;
+      var changed=false;
+      data.orders.forEach(function(o){
+        if(o.category&&o.item)changed=addDynamicItem(o.category,o.item,o.unit)||changed;
+      });
+      if(changed){saveLocalItems();upd();if(document.getElementById("scr-items").className.indexOf("on")>=0)renderItems();}
+    })
+    .catch(function(){});
+}
+function resetSubmitButton(){
+  var btn=document.getElementById("btn-submit"),err=document.getElementById("errbox");
+  if(btn){btn.disabled=false;btn.innerHTML="Submit to Google Sheet";}
+  if(err){err.style.display="none";err.textContent="";}
+}
 
 // FIX #1 — Default dates: orderDate=today, requiredDate=tomorrow
 function setDefaultDates(){
@@ -302,6 +347,8 @@ function restoreSession(){
       rb.textContent=CU.role;rb.className='rbadge '+RGB[CU.role];
       ac="Grocery";switchTab("Grocery");upd();
       setDefaultDates();
+      resetSubmitButton();
+      loadMasterFromOrders();
       loadHistory();
       setProgP(2);show("scr-items");
       return true;
@@ -332,11 +379,13 @@ function doLogin(){
   err.style.display="none";
   CU={name:mk,role:STAFF[mk].role};
   saveSession(); // FIX #4
+  resetSubmitButton();
   document.getElementById("ubn").textContent=mk;
   var rb=document.getElementById("urole");rb.textContent=CU.role;rb.className="rbadge "+RGB[CU.role];
   ac="Grocery";switchTab("Grocery");upd();
   setDefaultDates(); // FIX #1
   updateOrderDate(); // show timestamp on login
+  loadMasterFromOrders();
   loadHistory(); // FIX #2
   setProgP(2);show("scr-items");
   setTimeout(function(){
@@ -461,7 +510,14 @@ function loadHistory(){
   var store=document.getElementById("fstore").value;
   // Use correct action=history parameter
   var url=SC+"?action=history&user="+encodeURIComponent(CU.name)+"&store="+encodeURIComponent(store)+"&limit=10";
-  document.getElementById("hist-loading").style.display="block";
+  var body=document.getElementById("hist-body");
+  var loading=document.getElementById("hist-loading");
+  if(!loading){
+    body.innerHTML='<div class="hist-hdr"><span>Order Date</span><span>Req. Date</span><span>Items</span></div><div class="hist-loading" id="hist-loading">Loading history...</div>';
+    loading=document.getElementById("hist-loading");
+  }
+  loading.style.display="block";
+  loading.textContent="Loading history...";
   fetch(url)
     .then(function(r){return r.json();})
     .then(function(data){
@@ -511,6 +567,7 @@ function toggleHistDetail(i){
 // ── Review ─────────────────────────────────────────────────────────────────────
 document.getElementById("btn-review").addEventListener("click",function(){
   if(!Object.keys(sel).length){alert("Please select at least one item");return;}
+  resetSubmitButton();
   var store=document.getElementById("fstore").value;
   var forddate=document.getElementById("forddate").value;
   var fdate=document.getElementById("fdate").value;
@@ -537,6 +594,7 @@ document.getElementById("btn-back2").addEventListener("click",function(){setProg
 // ── Submit ─────────────────────────────────────────────────────────────────────
 document.getElementById("btn-submit").addEventListener("click",function(){
   var btn=this,err=document.getElementById("errbox");
+  if(btn.disabled)return;
   btn.disabled=true;btn.innerHTML="<span class='spin'></span>Saving\u2026";
   var store=document.getElementById("fstore").value;
   var forddate=document.getElementById("forddate").value; // FIX #1: order date
@@ -574,6 +632,9 @@ document.getElementById("btn-submit").addEventListener("click",function(){
     CATS.forEach(function(cat){var ce=entries.filter(function(e){return e.category===cat;});if(ce.length){wa+="\n*"+cat+"*\n";ce.forEach(function(e){wa+="\u2022 "+e.item+": "+e.qty+" "+e.unit+(e.isNew?" (NEW)":"")+"\n";});}});
     if(notes)wa+="\nNote: "+notes;
     document.getElementById("watxt").textContent=wa.trim();
+    entries.forEach(function(e){if(e.isNew)addDynamicItem(e.category,e.item,e.unit);});
+    saveLocalItems();
+    resetSubmitButton();
     // Save session so user stays logged in
     saveSession(); // FIX #4
     show("scr-done");
@@ -591,12 +652,14 @@ document.getElementById("btn-copy").addEventListener("click",function(){
 // ── Success screen buttons ────────────────────────────────────────────────────
 function goAgain(){
   sel={};ac="Grocery";
+  resetSubmitButton();
   setProg(2);show("scr-items");
   switchTab("Grocery");upd();
   setDefaultDates();loadHistory();
 }
 function goLoginAgain(){
   CU=null;sel={};
+  resetSubmitButton();
   try{sessionStorage.removeItem('a2b_cu');}catch(ex){}
   document.getElementById("uname").value="";
   document.getElementById("upin").value="";
@@ -612,12 +675,16 @@ document.getElementById("btn-mcancel").addEventListener("click",function(){docum
 document.getElementById("btn-madd").addEventListener("click",function(){
   var nm=document.getElementById("mname").value.trim(),cat=document.getElementById("mcat").value;
   if(!nm){document.getElementById("merr").style.display="block";return;}
-  var e=[nm,su,true];NI[cat].push(e);ALL[cat].push(e);sel[nm]={cat:cat,unit:su,qty:"",isNew:true};
+  addDynamicItem(cat,nm,su);
+  saveLocalItems();
+  sel[nm]={cat:cat,unit:su,qty:"",isNew:true};
   document.getElementById("modal").className="mbg";
   if(cat!==ac)switchTab(cat);else renderItems();upd();
 });
 
 // ── FIX #4 — Restore session on page load ─────────────────────────────────────
+loadLocalItems();
+loadMasterFromOrders();
 if(!restoreSession()){
   setProg(1);show("scr-login");
 }
