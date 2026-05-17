@@ -480,10 +480,32 @@ function renderHistory(rows){
   var hdr='<div class="hist-hdr"><span>Order Date</span><span>Req. Date</span><span>Items</span></div>';
   if(!rows||!rows.length){body.innerHTML=hdr+'<div class="hist-loading">No orders found</div>';return;}
   var html=hdr;
-  rows.slice(0,10).forEach(function(r){
-    html+='<div class="hist-row"><span class="hdate">'+(r.orderDate||r.date||"—")+'</span><span class="hstore">'+(r.requiredDate||r.reqDate||"—")+'</span><span class="hitems">'+(r.itemsSummary||r.items||"—")+'</span></div>';
+  rows.slice(0,10).forEach(function(r,i){
+    var summary=r.itemsSummary||r.items||"—";
+    var itemsHtml="";
+    if(r.items&&r.items.length){
+      itemsHtml='<div class="hist-detail" id="hdet-'+i+'" style="display:none;padding:6px 14px 10px;border-top:1px solid #E2E0D8;background:#F7F6F3">';
+      r.items.forEach(function(it){
+        itemsHtml+='<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:12px">'
+          +'<span style="color:#1A1916">'+it.item+'</span>'
+          +'<span style="color:#7A7870">'+it.qty+' '+it.unit+'</span>'
+          +'</div>';
+      });
+      itemsHtml+='</div>';
+    }
+    html+='<div class="hist-row" onclick="toggleHistDetail('+i+')" style="cursor:pointer">'
+      +'<span class="hdate">'+(r.orderDate||r.date||"—")+'</span>'
+      +'<span class="hstore">'+(r.requiredDate||r.reqDate||"—")+'</span>'
+      +'<span class="hitems">'+summary+' <span style="color:#185FA5;font-size:10px">▼</span></span>'
+      +'</div>'
+      +itemsHtml;
   });
   body.innerHTML=html;
+}
+function toggleHistDetail(i){
+  var el=document.getElementById("hdet-"+i);
+  if(!el)return;
+  el.style.display=el.style.display==="none"?"block":"none";
 }
 
 // ── Review ─────────────────────────────────────────────────────────────────────
@@ -540,20 +562,10 @@ document.getElementById("btn-submit").addEventListener("click",function(){
   console.log("A2B POST to:",SC,"body:",postBody);
   // Google Apps Script requires no-cors for POST (it does not return CORS headers).
   // We verify success by polling a GET after the POST.
-  fetch(SC,{method:"POST",mode:"no-cors",body:postBody})
-  .then(function(){
-    console.log("A2B POST fired (no-cors — verifying via GET)");
-    // Poll the script to confirm the row was saved
-    return fetch(SC+"?action=ping&ts="+Date.now());
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(json){
-    console.log("A2B verify response:",JSON.stringify(json));
-  })
-  .catch(function(){
-    // Verification failed but POST may still have worked — continue
-    console.warn("A2B verify failed — POST may still have succeeded");
-  })
+  // POST with timeout — no-cors means we can't read response but it still saves
+  var postPromise = fetch(SC,{method:"POST",mode:"no-cors",body:postBody});
+  var timeoutPromise = new Promise(function(resolve){ setTimeout(resolve, 8000); });
+  Promise.race([postPromise, timeoutPromise])
   .then(function(){
     var d=new Date(fdate+"T12:00:00"),ds=d.toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"});
     document.getElementById("done-txt").textContent=entries.length+" items · "+CU.name+" · "+ds;
