@@ -169,17 +169,15 @@ function tap(el,fn){
 function showStep(n){document.querySelectorAll('.step').forEach(function(s,i){s.className='step'+(i===n-1?' on':'');});window.scrollTo(0,0);}
 
 document.getElementById('conf-loc').value=receiverParam;
-tap(document.getElementById('btn-start'),function(){
+function doManagerLogin(){
   var name=document.getElementById('conf-name').value.trim();
   var pin=document.getElementById('conf-pin').value.trim();
   var err=document.getElementById('s1-err');
-  // Find matching staff (case-insensitive)
   var matchKey=null;
   Object.keys(STAFF).forEach(function(k){
     if(k.toLowerCase()===name.toLowerCase()) matchKey=k;
   });
-  // Validate — must be Manager or Admin
-  if(!matchKey || STAFF[matchKey].pin!==pin){
+  if(!matchKey||STAFF[matchKey].pin!==pin){
     err.style.display='block';
     document.getElementById('conf-pin').value='';
     return;
@@ -188,13 +186,11 @@ tap(document.getElementById('btn-start'),function(){
   confirmerName=matchKey+' ('+STAFF[matchKey].role+')';
   confirmerLoc=document.getElementById('conf-loc').value;
   buildOrder();showStep(2);
-});
-// Auto-submit when 4-digit PIN entered and name is filled
+}
+document.getElementById('btn-start').onclick=doManagerLogin;
+document.getElementById('conf-name').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('conf-pin').focus();});
 document.getElementById('conf-pin').addEventListener('input',function(){
-  if(this.value.length===4){
-    var n=document.getElementById('conf-name').value.trim();
-    if(n) document.getElementById('btn-start').click();
-  }
+  if(this.value.length===4){var n=document.getElementById('conf-name').value.trim();if(n)doManagerLogin();}
 });
 
 function buildOrder(){
@@ -279,7 +275,7 @@ function updateSummary(){
   document.getElementById('sc-no').textContent='❌ '+no;
 }
 
-tap(document.getElementById('btn-submit'),function(){
+document.getElementById('btn-submit').onclick=function(){
   var btn=document.getElementById('btn-submit'),err=document.getElementById('s2-err');
   var pending=Object.values(STATE).filter(function(s){return !s.status;}).length;
   if(pending){err.style.display='block';err.textContent='Please confirm all '+pending+' remaining item'+(pending>1?'s:')+'.';return;}
@@ -323,7 +319,7 @@ function buildSuccess(items,ds,dOrd){
   document.getElementById('wa-msg').textContent=wa.trim();
 }
 
-tap(document.getElementById('btn-cpy'),function(){
+document.getElementById('btn-cpy').onclick=function(){
   var txt=document.getElementById('wa-msg').textContent,done=document.getElementById('cpdone');
   try{navigator.clipboard.writeText(txt).then(function(){done.style.display='block';setTimeout(function(){done.style.display='none';},2000);});}
   catch(e){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done.style.display='block';setTimeout(function(){done.style.display='none';},2000);}
