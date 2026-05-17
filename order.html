@@ -31,7 +31,12 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .item-name{font-size:14px;font-weight:600;margin-bottom:2px}
 .item-orig{font-size:12px;color:#7A7870;margin-bottom:10px}
 .status-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px}
-.sbtn{padding:9px 6px;border-radius:10px;border:1.5px solid #E2E0D8;background:#fff;font-size:12px;font-weight:600;cursor:pointer;text-align:center;font-family:inherit;touch-action:manipulation;user-select:none;color:#7A7870;outline:none}
+.sbtn{padding:9px 7px;border-radius:10px;border:1.5px solid #E2E0D8;background:#fff;font-size:12px;font-weight:700;cursor:pointer;text-align:left;font-family:inherit;touch-action:manipulation;user-select:none;color:#7A7870;outline:none;display:flex;align-items:center;gap:6px}
+.radio-dot{width:14px;height:14px;border-radius:50%;border:2px solid currentColor;flex-shrink:0;background:#fff}
+.sbtn.on-confirmed .radio-dot,.sbtn.on-modified .radio-dot,.sbtn.on-unavailable .radio-dot{box-shadow:inset 0 0 0 3px #fff;background:currentColor}
+.sbtn.status-green{border-color:#A8DFC8;color:#085041}
+.sbtn.status-yellow{border-color:#F59E0B;color:#924009}
+.sbtn.status-red{border-color:#C0392B;color:#7B2412}
 .sbtn.on-confirmed{border-color:#1D9E75;background:#E1F5EE;color:#085041}
 .sbtn.on-modified{border-color:#F59E0B;background:#FEF3C7;color:#924009}
 .sbtn.on-unavailable{border-color:#C0392B;background:#FDECEC;color:#7B2412}
@@ -141,20 +146,20 @@ var ORDER={
   orderDate:orderDate,
   requiredDate:requiredDate,
   items:[
-    {category:"Grocery",item:"Maida",qty:10,store:"Harrisdale A2B"},
-    {category:"Grocery",item:"Oil",qty:2,store:"Harrisdale A2B"},
-    {category:"Grocery",item:"Toor Dal",qty:3,store:"Harrisdale A2B"},
-    {category:"Grocery",item:"Rice Basmati",qty:15,store:"Harrisdale A2B"},
-    {category:"Grocery",item:"Paneer",qty:4,store:"Harrisdale A2B"},
-    {category:"Packaging",item:"Foil Cover",qty:5,store:"Harrisdale A2B"},
-    {category:"Packaging",item:"Dinner Napkins",qty:2,store:"Harrisdale A2B"},
-    {category:"Vegetables",item:"Brown Onion",qty:25,store:"Harrisdale A2B"},
-    {category:"Vegetables",item:"Tomato",qty:4,store:"Harrisdale A2B"},
-    {category:"Supermarket",item:"Coconut",qty:3,store:"Harrisdale A2B"}
+    {category:"Grocery",item:"Maida",unit:"kg",qty:10,store:"Harrisdale A2B"},
+    {category:"Grocery",item:"Oil",unit:"box",qty:2,store:"Harrisdale A2B"},
+    {category:"Grocery",item:"Toor Dal",unit:"bag",qty:3,store:"Harrisdale A2B"},
+    {category:"Grocery",item:"Rice Basmati",unit:"kg",qty:15,store:"Harrisdale A2B"},
+    {category:"Grocery",item:"Paneer",unit:"box",qty:4,store:"Harrisdale A2B"},
+    {category:"Packaging",item:"Foil Cover",unit:"pack",qty:5,store:"Harrisdale A2B"},
+    {category:"Packaging",item:"Dinner Napkins",unit:"box",qty:2,store:"Harrisdale A2B"},
+    {category:"Vegetables",item:"Brown Onion",unit:"kg",qty:25,store:"Harrisdale A2B"},
+    {category:"Vegetables",item:"Tomato",unit:"box",qty:4,store:"Harrisdale A2B"},
+    {category:"Supermarket",item:"Coconut",unit:"box",qty:3,store:"Harrisdale A2B"}
   ]
 };
 var STATE={};
-ORDER.items.forEach(function(item,i){STATE[i]={status:'',qty:item.qty,originalQty:item.qty,reason:''};});
+ORDER.items.forEach(function(item,i){item.unit=item.unit||"nos";STATE[i]={status:'',qty:item.qty,originalQty:item.qty,reason:''};});
 var confirmerName='',confirmerLoc='';
 var LOC_NAMES={canning_vale:'Canning Vale Warehouse',harrisdale_kitchen:'Harrisdale Kitchen',yokine_kitchen:'Yokine Kitchen'};
 var CAT_COLORS={Grocery:'',Vegetables:'veg',Supermarket:'sup',Packaging:'pac',Sweets:'swt',Others:'oth'};
@@ -215,9 +220,9 @@ function buildOrder(){
         +'<div class="item-name">'+item.item+'</div>'
         +'<div class="item-orig">Requested: '+item.qty+' '+item.unit+'</div>'
         +'<div class="status-btns">'
-          +'<div class="sbtn" tabindex="-1" data-i="'+i+'" data-s="confirmed">✅ Available</div>'
-          +'<div class="sbtn" tabindex="-1" data-i="'+i+'" data-s="modified">✏️ Adjust qty</div>'
-          +'<div class="sbtn" tabindex="-1" data-i="'+i+'" data-s="unavailable">❌ Not available</div>'
+          +'<div class="sbtn status-green" tabindex="-1" data-i="'+i+'" data-s="confirmed"><span class="radio-dot"></span>Green</div>'
+          +'<div class="sbtn status-yellow" tabindex="-1" data-i="'+i+'" data-s="modified"><span class="radio-dot"></span>Yellow</div>'
+          +'<div class="sbtn status-red" tabindex="-1" data-i="'+i+'" data-s="unavailable"><span class="radio-dot"></span>Red</div>'
         +'</div>'
         +'<div id="qr-'+i+'" style="display:none">'
           +'<div class="qty-row">'
@@ -228,8 +233,8 @@ function buildOrder(){
             +'<div class="qbtn" data-i="'+i+'" data-d="1">+</div>'
           +'</div>'
         +'</div>'
-        +'<div id="rr-'+i+'" style="display:none">'
-          +'<input class="reason-inp" type="text" placeholder="Reason / delivery date / notes…" data-i="'+i+'">'
+        +'<div id="rr-'+i+'">'
+          +'<input class="reason-inp" type="text" placeholder="Notes if required" data-i="'+i+'">'
         +'</div>'
         +'</div>';
     });
@@ -237,14 +242,14 @@ function buildOrder(){
   document.getElementById('order-items').innerHTML=html;
   // Wire status buttons
   document.querySelectorAll('.sbtn').forEach(function(btn){
+    btn.setAttribute('data-base-class',btn.className);
     tap(btn,function(){
       document.activeElement&&document.activeElement.blur();
       var i=parseInt(this.getAttribute('data-i')),s=this.getAttribute('data-s');
       STATE[i].status=s;
-      document.getElementById('ic-'+i).querySelectorAll('.sbtn').forEach(function(b){b.className='sbtn';});
-      this.className='sbtn on-'+s;
+      document.getElementById('ic-'+i).querySelectorAll('.sbtn').forEach(function(b){b.className=b.getAttribute('data-base-class');});
+      this.className=this.getAttribute('data-base-class')+' on-'+s;
       document.getElementById('qr-'+i).style.display=(s==='confirmed'||s==='modified')?'block':'none';
-      document.getElementById('rr-'+i).style.display=(s==='modified'||s==='unavailable')?'block':'none';
       updateSummary();
     });
   });
