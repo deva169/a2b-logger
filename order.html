@@ -71,6 +71,10 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .dash-row:last-child{border-bottom:none}
 .dash-row.clickable{cursor:pointer}
 .dash-row.clickable:active{background:#F7F6F3}
+.dash-row.pending-order{border-left:5px solid #C0392B;background:#FFF7F7}
+.dash-row.accepted-order{border-left:5px solid #1D9E75;background:#F6FFFB}
+.dash-row.pending-order .dash-main span:first-child{color:#C0392B;font-weight:800}
+.dash-row.accepted-order .dash-main span:first-child{color:#087456;font-weight:800}
 .dash-main{display:flex;justify-content:space-between;gap:8px;font-weight:600}
 .dash-meta{color:#7A7870;margin-top:2px}
 .dash-items{display:none;margin-top:8px;border-top:1px solid #E2E0D8;padding-top:8px}
@@ -130,6 +134,7 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 <div class="step" id="s2">
   <div class="review-actions">
     <button class="cpybtn" id="btn-review-back">Back</button>
+    <button class="cpybtn" id="btn-add-item">Add item</button>
     <button class="cpybtn" id="btn-review-signout">Sign out</button>
   </div>
   <div class="order-banner" id="order-banner"></div>
@@ -285,6 +290,17 @@ function deriveOrderDate(req){
   d.setDate(d.getDate()-1);
   return d.toISOString().split('T')[0];
 }
+function orderNo(r,idx){
+  if(r.orderId)return r.orderId;
+  var d=toIsoDate(r.date||r.requiredDate||requiredDate).replace(/-/g,'');
+  return 'ORD-'+d+'-'+String(idx+1).padStart(2,'0');
+}
+function resetSubmitButton(){
+  var btn=document.getElementById('btn-submit');
+  if(btn){btn.disabled=false;btn.innerHTML='Send confirmation';}
+  var err=document.getElementById('s2-err');
+  if(err){err.style.display='none';err.textContent='';}
+}
 
 document.getElementById('conf-loc').value=receiverParam;
 function doManagerLogin(){
@@ -319,6 +335,7 @@ function resetOrderState(){
     STATE[i]={status:'',qty:Number(item.qty)||0,originalQty:Number(item.qty)||0,reason:''};
   });
   updateSummary();
+  resetSubmitButton();
 }
 function openPendingOrder(idx){
   var order=DASH.pending[idx];
@@ -350,7 +367,30 @@ function openPendingOrder(idx){
   showStep('s2');
 }
 
+function addManagerItem(){
+  var name=prompt('Item name');
+  if(!name)return;
+  name=name.trim();
+  if(!name)return;
+  var category=(prompt('Category', 'Others')||'Others').trim()||'Others';
+  var unit=(prompt('Unit', 'nos')||'nos').trim()||'nos';
+  var qty=Number(prompt('Qty requested', '1')||'1');
+  if(!qty||qty<0)qty=1;
+  ORDER.items.push({
+    category:category,
+    item:name,
+    unit:unit,
+    qty:qty,
+    store:(ORDER.items[0]&&ORDER.items[0].store)||'',
+    loggedBy:ORDER.loggedBy||loggedByParam||'',
+    addedBy:confirmerName
+  });
+  resetOrderState();
+  buildOrder();
+}
+
 function buildOrder(){
+  resetSubmitButton();
   var banner=document.getElementById('order-banner');
   var dOrd=new Date(orderDate+"T12:00:00");
   var dReq=new Date(requiredDate+"T12:00:00");
@@ -359,6 +399,7 @@ function buildOrder(){
     +'<div class="ob-title">'+LOC_NAMES[confirmerLoc]+'</div>'
     +'<div class="ob-sub">📅 Ordered: '+dOrd.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'})
     +' &nbsp;→&nbsp; 🚚 Required: '+dReq.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'short'})+'</div>'
+    +'<div class="ob-sub">Placed by: <strong>'+(ORDER.loggedBy||loggedByParam||'Unknown')+'</strong></div>'
     +'<div class="ob-sub">Confirming as: <strong>'+confirmerName+'</strong></div>';
   var cats={};
   ORDER.items.forEach(function(item,i){if(!cats[item.category])cats[item.category]=[];cats[item.category].push({item:item,i:i});});
@@ -459,7 +500,8 @@ document.getElementById('btn-submit').onclick=function(){
     return{item:item.item,unit:item.unit,category:item.category,store:item.store,
       originalQty:requestedQty,requestedQty:requestedQty,qty:confirmedQty,actualQty:confirmedQty,
       difference:confirmedQty-requestedQty,status:STATE[i].status,actualStatus:getActualStatus(STATE[i].status),
-      reason:STATE[i].reason||'',loggedBy:item.loggedBy||ORDER.loggedBy||loggedByParam||'',day:reqDay,weekNo:reqWeekNo};
+      reason:STATE[i].reason||'',loggedBy:item.loggedBy||ORDER.loggedBy||loggedByParam||'',day:reqDay,weekNo:reqWeekNo,
+      addedBy:item.addedBy||''};
   });
   // FIX #5 — submit both orderDate and requiredDate
   fetch(SCRIPT,{method:'POST',mode:'no-cors',body:JSON.stringify({
@@ -509,15 +551,19 @@ function renderDashList(id,rows,emptyText){
   el.innerHTML=rows.map(function(r,idx){
     var items=r.items||[];
     var total=items.reduce(function(sum,it){return sum+(Number(it.qtyRequested!=null?it.qtyRequested:it.qty)||0);},0);
+    var no=orderNo(r,idx);
     var detail=items.map(function(it){
       var qty=it.qtyActual!=null
         ? ('Req '+it.qtyRequested+' / Act '+it.qtyActual+' '+(it.unit||''))
         : ((it.qtyRequested!=null?it.qtyRequested:it.qty)+' '+(it.unit||''));
       return '<div class="dash-item"><span>'+[it.category,it.item].filter(Boolean).join(' - ')+'</span><span>'+qty+'</span></div>';
     }).join('');
-    return '<div class="dash-row clickable" data-kind="'+(isPending?'pending':'accepted')+'" data-i="'+idx+'">'
-      +'<div class="dash-main"><span>'+displayDate(r.date||r.requiredDate)+' · '+(r.restaurant||r.store||'')+'</span><span>'+items.length+' items</span></div>'
-      +'<div class="dash-meta">'+['Ordered by '+(r.loggedBy||'Unknown'),r.confirmedBy?('Confirmed by '+r.confirmedBy):'',r.confirmedAt?('Confirmed '+displayDateTime(r.confirmedAt)):'',total?('Requested '+total):''].filter(Boolean).join(' · ')+'</div>'
+    return '<div class="dash-row clickable '+(isPending?'pending-order':'accepted-order')+'" data-kind="'+(isPending?'pending':'accepted')+'" data-i="'+idx+'">'
+      +'<div class="dash-main"><span>'+no+' - '+(isPending?'PENDING':'APPROVED')+'</span><span>'+items.length+' items</span></div>'
+      +'<div class="dash-meta">'+(isPending
+        ? ['Placed by '+(r.loggedBy||'Unknown'),'Required '+displayDate(r.date||r.requiredDate),r.restaurant||r.store||'',total?('Requested '+total):''].filter(Boolean).join(' - ')
+        : ['Approved by '+(r.confirmedBy||'Unknown'),'Required '+displayDate(r.date||r.requiredDate),r.confirmedAt?('Approved '+displayDateTime(r.confirmedAt)):'',r.restaurant||r.store||''].filter(Boolean).join(' - ')
+      )+'</div>'
       +(r.notes?'<div class="dash-meta">'+r.notes+'</div>':'')
       +'<div class="dash-items">'+(detail||'<div class="dash-empty">No items found.</div>')+'</div>'
       +'</div>';
@@ -578,6 +624,7 @@ function loadManagerDashboard(){
     });
 }
 function showDashboard(){
+  resetSubmitButton();
   document.getElementById('dash-sub').textContent=confirmerName+' · '+(LOC_NAMES[confirmerLoc]||'');
   showStep('sDash');
   loadManagerDashboard();
@@ -597,8 +644,14 @@ document.getElementById('btn-dash-signout').onclick=signOut;
 document.getElementById('btn-review-signout').onclick=signOut;
 document.getElementById('btn-refresh').onclick=loadManagerDashboard;
 document.getElementById('btn-review-back').onclick=showDashboard;
+document.getElementById('btn-add-item').onclick=addManagerItem;
 
 restoreManagerSession();
 </script>
 </body>
 </html>
+
+
+
+
+
