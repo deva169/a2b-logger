@@ -69,9 +69,16 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .dash-h span:last-child{color:#7A7870;font-weight:600}
 .dash-row{padding:10px 12px;border-bottom:1px solid #E2E0D8;font-size:12px;line-height:1.4}
 .dash-row:last-child{border-bottom:none}
+.dash-row.clickable{cursor:pointer}
+.dash-row.clickable:active{background:#F7F6F3}
 .dash-main{display:flex;justify-content:space-between;gap:8px;font-weight:600}
 .dash-meta{color:#7A7870;margin-top:2px}
+.dash-items{display:none;margin-top:8px;border-top:1px solid #E2E0D8;padding-top:8px}
+.dash-row.open .dash-items{display:block}
+.dash-item{display:flex;justify-content:space-between;gap:8px;padding:4px 0;color:#1A1916}
 .dash-empty{padding:12px;color:#7A7870;font-size:12px}
+.review-actions{display:flex;gap:8px;margin-bottom:12px}
+.review-actions .cpybtn{margin-bottom:0;padding:11px 10px}
 .err{background:#FDECEC;border-radius:10px;padding:10px 14px;font-size:13px;color:#C0392B;margin-top:10px;display:none}
 .spin{display:inline-block;width:15px;height:15px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes sp{to{transform:rotate(360deg)}}
@@ -100,7 +107,31 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
   </div>
 </div>
 
+<div class="step" id="sDash">
+  <div class="order-banner">
+    <div class="ob-ref">MANAGER DASHBOARD</div>
+    <div class="ob-title" id="dash-title">Pending &amp; confirmed orders</div>
+    <div class="ob-sub" id="dash-sub"></div>
+  </div>
+  <div class="dash-actions">
+    <button class="cpybtn" id="btn-refresh">Refresh</button>
+    <button class="cpybtn" id="btn-dash-signout">Sign out</button>
+  </div>
+  <div class="dash-card">
+    <div class="dash-h"><span>Pending orders</span><span id="pending-count-main">0</span></div>
+    <div id="pending-list-main"><div class="dash-empty">Loading pending orders...</div></div>
+  </div>
+  <div class="dash-card">
+    <div class="dash-h"><span>Last 20 confirmed orders</span><span id="accepted-count-main">0</span></div>
+    <div id="accepted-list-main"><div class="dash-empty">Loading confirmed orders...</div></div>
+  </div>
+</div>
+
 <div class="step" id="s2">
+  <div class="review-actions">
+    <button class="cpybtn" id="btn-review-back">Back</button>
+    <button class="cpybtn" id="btn-review-signout">Sign out</button>
+  </div>
   <div class="order-banner" id="order-banner"></div>
   <div id="order-items"></div>
   <div style="height:60px"></div>
@@ -184,7 +215,7 @@ var ORDER={
 };
 var STATE={};
 ORDER.items.forEach(function(item,i){item.unit=item.unit||"nos";STATE[i]={status:'',qty:item.qty,originalQty:item.qty,reason:''};});
-var confirmerName='',confirmerLoc='';
+var confirmerName='',confirmerLoc='',DASH={pending:[],accepted:[]};
 var LOC_NAMES={canning_vale:'Canning Vale Warehouse',harrisdale_kitchen:'Harrisdale Kitchen',yokine_kitchen:'Yokine Kitchen'};
 var CAT_COLORS={Grocery:'',Vegetables:'veg',Supermarket:'sup',Packaging:'pac',Sweets:'swt',Others:'oth'};
 
@@ -201,7 +232,7 @@ function restoreManagerSession(){
     confirmerName=v.name;
     confirmerLoc=v.loc;
     document.getElementById('conf-loc').value=confirmerLoc;
-    buildOrder();showStep(2);
+    showDashboard();
     return true;
   }catch(e){return false;}
 }
@@ -226,7 +257,34 @@ function tap(el,fn){
   el.addEventListener('touchend',function(e){if(!moved){e.preventDefault();fn.call(el,e);}});
   el.addEventListener('click',function(e){fn.call(el,e);});
 }
-function showStep(n){document.querySelectorAll('.step').forEach(function(s,i){s.className='step'+(i===n-1?' on':'');});window.scrollTo(0,0);}
+function showStep(target){
+  var id=typeof target==='number'?('s'+target):target;
+  document.querySelectorAll('.step').forEach(function(s){s.className='step'+(s.id===id?' on':'');});
+  window.scrollTo(0,0);
+}
+function toIsoDate(v){
+  if(!v)return new Date().toISOString().split('T')[0];
+  var s=String(v).trim();
+  var m=s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if(m)return m[3]+'-'+m[2]+'-'+m[1];
+  return s.split('T')[0];
+}
+function displayDate(v){
+  var d=new Date(toIsoDate(v)+'T12:00:00');
+  if(isNaN(d.getTime()))return v||'';
+  return d.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+}
+function displayDateTime(v){
+  if(!v)return '';
+  var d=new Date(v);
+  if(isNaN(d.getTime()))return displayDate(v);
+  return d.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
+}
+function deriveOrderDate(req){
+  var d=new Date(toIsoDate(req)+'T12:00:00');
+  d.setDate(d.getDate()-1);
+  return d.toISOString().split('T')[0];
+}
 
 document.getElementById('conf-loc').value=receiverParam;
 function doManagerLogin(){
@@ -246,13 +304,51 @@ function doManagerLogin(){
   confirmerName=matchKey+' ('+STAFF[matchKey].role+')';
   confirmerLoc=document.getElementById('conf-loc').value;
   saveManagerSession();
-  buildOrder();showStep(2);
+  showDashboard();
 }
 document.getElementById('btn-start').onclick=doManagerLogin;
 document.getElementById('conf-name').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('conf-pin').focus();});
 document.getElementById('conf-pin').addEventListener('input',function(){
   if(this.value.length===4){var n=document.getElementById('conf-name').value.trim();if(n)doManagerLogin();}
 });
+
+function resetOrderState(){
+  STATE={};
+  ORDER.items.forEach(function(item,i){
+    item.unit=item.unit||'nos';
+    STATE[i]={status:'',qty:Number(item.qty)||0,originalQty:Number(item.qty)||0,reason:''};
+  });
+  updateSummary();
+}
+function openPendingOrder(idx){
+  var order=DASH.pending[idx];
+  if(!order)return;
+  var req=toIsoDate(order.date||order.requiredDate);
+  requiredDate=req;
+  orderDate=toIsoDate(order.orderDate||deriveOrderDate(req));
+  orderId=order.orderId||('ORDER-'+req+'-'+idx);
+  loggedByParam=order.loggedBy||'';
+  ORDER={
+    orderId:orderId,
+    date:req,
+    orderDate:orderDate,
+    requiredDate:req,
+    loggedBy:loggedByParam,
+    items:(order.items||[]).map(function(it){
+      return {
+        category:it.category||'',
+        item:it.item||'',
+        unit:it.unit||'',
+        qty:Number(it.qtyRequested!=null?it.qtyRequested:it.qty)||0,
+        store:it.restaurant||it.store||order.restaurant||order.store||'',
+        loggedBy:it.loggedBy||order.loggedBy||''
+      };
+    })
+  };
+  resetOrderState();
+  buildOrder();
+  showStep('s2');
+}
 
 function buildOrder(){
   var banner=document.getElementById('order-banner');
@@ -380,7 +476,7 @@ document.getElementById('btn-submit').onclick=function(){
     location:LOC_NAMES[confirmerLoc],
     confirmedAt:new Date().toISOString(),
     items:items
-  })}).then(function(){buildSuccess(items,ds,dOrd);showStep(3);loadManagerDashboard();})
+  })}).then(function(){buildSuccess(items,ds,dOrd);showStep('s3');loadManagerDashboard();})
     .catch(function(e){btn.disabled=false;btn.innerHTML='Send confirmation';err.style.display='block';err.textContent='Error: '+e.message;});
 };
 
@@ -409,42 +505,98 @@ document.getElementById('btn-cpy').onclick=function(){
 function renderDashList(id,rows,emptyText){
   var el=document.getElementById(id);
   if(!rows||!rows.length){el.innerHTML='<div class="dash-empty">'+emptyText+'</div>';return;}
-  el.innerHTML=rows.map(function(r){
-    var qty=(r.qtyRequested!=null&&r.qtyActual!=null)?('Req '+r.qtyRequested+' / Act '+r.qtyActual+' '+(r.unit||'')):'';
-    return '<div class="dash-row">'
-      +'<div class="dash-main"><span>'+((r.item||'Order')+'</span><span>'+(r.status||''))+'</span></div>'
-      +'<div class="dash-meta">'+[r.date,r.restaurant||r.store,r.category,qty].filter(Boolean).join(' · ')+'</div>'
-      +(r.reason?'<div class="dash-meta">'+r.reason+'</div>':'')
+  var isPending=id.indexOf('pending')===0;
+  el.innerHTML=rows.map(function(r,idx){
+    var items=r.items||[];
+    var total=items.reduce(function(sum,it){return sum+(Number(it.qtyRequested!=null?it.qtyRequested:it.qty)||0);},0);
+    var detail=items.map(function(it){
+      var qty=it.qtyActual!=null
+        ? ('Req '+it.qtyRequested+' / Act '+it.qtyActual+' '+(it.unit||''))
+        : ((it.qtyRequested!=null?it.qtyRequested:it.qty)+' '+(it.unit||''));
+      return '<div class="dash-item"><span>'+[it.category,it.item].filter(Boolean).join(' - ')+'</span><span>'+qty+'</span></div>';
+    }).join('');
+    return '<div class="dash-row clickable" data-kind="'+(isPending?'pending':'accepted')+'" data-i="'+idx+'">'
+      +'<div class="dash-main"><span>'+displayDate(r.date||r.requiredDate)+' · '+(r.restaurant||r.store||'')+'</span><span>'+items.length+' items</span></div>'
+      +'<div class="dash-meta">'+['Ordered by '+(r.loggedBy||'Unknown'),r.confirmedBy?('Confirmed by '+r.confirmedBy):'',r.confirmedAt?('Confirmed '+displayDateTime(r.confirmedAt)):'',total?('Requested '+total):''].filter(Boolean).join(' · ')+'</div>'
+      +(r.notes?'<div class="dash-meta">'+r.notes+'</div>':'')
+      +'<div class="dash-items">'+(detail||'<div class="dash-empty">No items found.</div>')+'</div>'
       +'</div>';
   }).join('');
+  el.querySelectorAll('.dash-row.clickable').forEach(function(row){
+    row.onclick=function(){
+      var kind=this.getAttribute('data-kind'),idx=parseInt(this.getAttribute('data-i'));
+      if(kind==='pending'){openPendingOrder(idx);return;}
+      this.className=this.className.indexOf(' open')>=0?this.className.replace(' open',''):this.className+' open';
+    };
+  });
+}
+function groupRows(rows,kind){
+  if(!rows||!rows.length)return [];
+  if(rows[0]&&rows[0].items)return rows.slice(0,kind==='accepted'?20:rows.length);
+  var groups={};
+  rows.forEach(function(r){
+    var key=[r.orderId||'',r.date||r.requiredDate||'',r.restaurant||r.store||'',r.loggedBy||'',kind==='accepted'?(r.confirmedBy||''):'',kind==='accepted'?(r.confirmedAt||''):'' ].join('|');
+    if(!groups[key]){
+      groups[key]={
+        orderId:r.orderId||'',
+        date:r.date||r.requiredDate||'',
+        orderDate:r.orderDate||'',
+        restaurant:r.restaurant||r.store||'',
+        loggedBy:r.loggedBy||'',
+        confirmedBy:r.confirmedBy||'',
+        confirmedAt:r.confirmedAt||'',
+        notes:r.notes||r.reason||'',
+        items:[]
+      };
+    }
+    groups[key].items.push(r);
+  });
+  return Object.values(groups).slice(0,kind==='accepted'?20:999);
 }
 function loadManagerDashboard(){
-  document.getElementById('pending-list').innerHTML='<div class="dash-empty">Loading pending orders...</div>';
-  document.getElementById('accepted-list').innerHTML='<div class="dash-empty">Loading accepted orders...</div>';
+  ['pending-list','pending-list-main'].forEach(function(id){document.getElementById(id).innerHTML='<div class="dash-empty">Loading pending orders...</div>';});
+  ['accepted-list','accepted-list-main'].forEach(function(id){document.getElementById(id).innerHTML='<div class="dash-empty">Loading confirmed orders...</div>';});
   fetch(SCRIPT+'?action=managerDashboard&limit=20&location='+encodeURIComponent(LOC_NAMES[confirmerLoc]||''))
     .then(function(r){return r.json();})
     .then(function(data){
-      var pending=data.pending||[],accepted=data.accepted||[];
-      document.getElementById('pending-count').textContent=pending.length;
-      document.getElementById('accepted-count').textContent=accepted.length;
-      renderDashList('pending-list',pending,'No pending orders.');
-      renderDashList('accepted-list',accepted,'No accepted orders yet.');
+      DASH.pending=groupRows(data.pending||[],'pending');
+      DASH.accepted=groupRows(data.accepted||[],'accepted');
+      document.getElementById('pending-count').textContent=DASH.pending.length;
+      document.getElementById('accepted-count').textContent=DASH.accepted.length;
+      document.getElementById('pending-count-main').textContent=DASH.pending.length;
+      document.getElementById('accepted-count-main').textContent=DASH.accepted.length;
+      renderDashList('pending-list',DASH.pending,'No pending orders.');
+      renderDashList('accepted-list',DASH.accepted,'No confirmed orders yet.');
+      renderDashList('pending-list-main',DASH.pending,'No pending orders.');
+      renderDashList('accepted-list-main',DASH.accepted,'No confirmed orders yet.');
     })
     .catch(function(){
       renderDashList('pending-list',[],'Unable to load pending orders.');
-      renderDashList('accepted-list',[],'Unable to load accepted orders.');
+      renderDashList('accepted-list',[],'Unable to load confirmed orders.');
+      renderDashList('pending-list-main',[],'Unable to load pending orders.');
+      renderDashList('accepted-list-main',[],'Unable to load confirmed orders.');
     });
 }
+function showDashboard(){
+  document.getElementById('dash-sub').textContent=confirmerName+' · '+(LOC_NAMES[confirmerLoc]||'');
+  showStep('sDash');
+  loadManagerDashboard();
+}
 document.getElementById('btn-back-orders').onclick=function(){
-  buildOrder();showStep(2);
+  showDashboard();
 };
-document.getElementById('btn-signout').onclick=function(){
+function signOut(){
   confirmerName='';confirmerLoc='';
   try{sessionStorage.removeItem('a2b_confirm_session');}catch(e){}
   document.getElementById('conf-name').value='';
   document.getElementById('conf-pin').value='';
-  showStep(1);
-};
+  showStep('s1');
+}
+document.getElementById('btn-signout').onclick=signOut;
+document.getElementById('btn-dash-signout').onclick=signOut;
+document.getElementById('btn-review-signout').onclick=signOut;
+document.getElementById('btn-refresh').onclick=loadManagerDashboard;
+document.getElementById('btn-review-back').onclick=showDashboard;
 
 restoreManagerSession();
 </script>
