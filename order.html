@@ -278,7 +278,7 @@ function updateSummary(){
 document.getElementById('btn-submit').onclick=function(){
   var btn=document.getElementById('btn-submit'),err=document.getElementById('s2-err');
   var pending=Object.values(STATE).filter(function(s){return !s.status;}).length;
-  if(pending){err.style.display='block';err.textContent='Please confirm all '+pending+' remaining item'+(pending>1?'s:')+'.';return;}
+  if(pending){err.style.display='block';err.textContent='Please confirm all '+pending+' remaining item'+(pending>1?'s':'')+'.';return;}
   err.style.display='none';
   btn.disabled=true;btn.innerHTML='<span class="spin"></span>Sending…';
   var dOrd=new Date(orderDate+"T12:00:00");
@@ -301,7 +301,7 @@ document.getElementById('btn-submit').onclick=function(){
     items:items
   })}).then(function(){buildSuccess(items,ds,dOrd);showStep(3);})
     .catch(function(e){btn.disabled=false;btn.innerHTML='Send confirmation';err.style.display='block';err.textContent='Error: '+e.message;});
-});
+};
 
 function buildSuccess(items,ds,dOrd){
   document.getElementById('done-txt').textContent=items.length+' items · '+confirmerName+' · '+ds;
@@ -323,7 +323,7 @@ document.getElementById('btn-cpy').onclick=function(){
   var txt=document.getElementById('wa-msg').textContent,done=document.getElementById('cpdone');
   try{navigator.clipboard.writeText(txt).then(function(){done.style.display='block';setTimeout(function(){done.style.display='none';},2000);});}
   catch(e){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done.style.display='block';setTimeout(function(){done.style.display='none';},2000);}
-});
+};
 </script>
 </body>
 </html>
