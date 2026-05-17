@@ -9,6 +9,13 @@
 body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1A1916;font-size:15px}
 .app{max-width:460px;margin:0 auto;padding:12px 12px 80px}
 .topbar{display:flex;align-items:center;gap:10px;background:#1D9E75;border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.lbox{background:#fff;border-radius:16px;border:1px solid #E2E0D8;padding:24px 20px;margin-bottom:12px}
+.lbox h2{font-size:17px;font-weight:700;margin-bottom:4px;text-align:center}
+.lbox p{font-size:13px;color:#7A7870;margin-bottom:20px;text-align:center}
+.lf{margin-bottom:12px}
+.lf label{display:block;font-size:12px;color:#7A7870;margin-bottom:5px;font-weight:500}
+.lf input,.lf select{width:100%;border:1.5px solid #E2E0D8;border-radius:10px;background:#F7F6F3;padding:12px 14px;font-size:16px;color:#1A1916;font-family:inherit;outline:none}
+.lf input:focus,.lf select:focus{border-color:#1D9E75;background:#fff}
 .logo{width:36px;height:36px;background:#fff;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#1D9E75;flex-shrink:0}
 .ttl{color:#fff;flex:1}.ttl h1{font-size:15px;font-weight:700}.ttl p{font-size:11px;opacity:.75;margin-top:1px}
 .step{display:none}.step.on{display:block}
@@ -63,21 +70,19 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 </div>
 
 <div class="step on" id="s1">
-  <div class="conf-box" style="background:#F0F4FF;padding:16px">
-    <h3 style="font-size:15px;font-weight:700;margin-bottom:2px">Who is confirming?</h3>
-  </div>
-  <div class="item-card" style="border-radius:12px;border:1px solid #E2E0D8">
-    <label style="display:block;font-size:12px;color:#7A7870;margin-bottom:4px">Your name</label>
-    <input type="text" id="conf-name" placeholder="Tap to enter your name" autocorrect="off" autocapitalize="words" inputmode="text">
-    <label style="display:block;font-size:12px;color:#7A7870;margin-bottom:4px;margin-top:12px">Location</label>
-    <select id="conf-loc">
+  <div class="lbox">
+    <h2>A2B Order Confirmation</h2>
+    <p>Manager login required</p>
+    <div class="lf"><label>Your name</label><input type="text" id="conf-name" placeholder="e.g. Suresh" autocorrect="off" autocapitalize="words"></div>
+    <div class="lf"><label>PIN</label><input type="password" id="conf-pin" placeholder="4-digit PIN" inputmode="numeric" maxlength="4" autocomplete="off"></div>
+    <div class="lf"><label>Location</label><select id="conf-loc">
       <option value="canning_vale">Canning Vale Warehouse</option>
       <option value="harrisdale_kitchen">Harrisdale Kitchen</option>
       <option value="yokine_kitchen">Yokine Kitchen</option>
-    </select>
+    </select></div>
+    <div class="err" id="s1-err" style="display:none">Incorrect name or PIN — manager access only</div>
+    <button class="sub-btn" id="btn-start" style="width:100%;margin-top:12px">Sign in &amp; view order</button>
   </div>
-  <div class="err" id="s1-err">Please enter your name</div>
-  <button class="sub-btn" id="btn-start" style="width:100%;margin-top:12px">View &amp; confirm order</button>
 </div>
 
 <div class="step" id="s2">
@@ -106,6 +111,16 @@ body{background:#F7F6F3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 
 <script>
 var SCRIPT="https://script.google.com/macros/s/AKfycbzxE_aI_xSOmBDz6d96nVw3oDyspXnBQr-TvBdV7r3hL8iZuBKnOrOBesr55udH81mAqg/exec";
+// Manager + Admin staff only
+var STAFF={
+  "Deva":     {pin:"5385",role:"Admin"},
+  "Duwaraka": {pin:"2783",role:"Admin"},
+  "Suresh":   {pin:"1111",role:"Manager"},
+  "Kajal":    {pin:"2222",role:"Manager"},
+  "Fahmida":  {pin:"3333",role:"Manager"},
+  "Mamta":    {pin:"4444",role:"Manager"},
+  "Shaswanth":{pin:"5555",role:"Manager"}
+};
 var params={};
 window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(m,k,v){params[k]=decodeURIComponent(v);});
 var orderId=params.order||(("DEMO-"+new Date().toISOString().slice(0,10)));
@@ -155,11 +170,31 @@ function showStep(n){document.querySelectorAll('.step').forEach(function(s,i){s.
 
 document.getElementById('conf-loc').value=receiverParam;
 tap(document.getElementById('btn-start'),function(){
-  confirmerName=document.getElementById('conf-name').value.trim();
+  var name=document.getElementById('conf-name').value.trim();
+  var pin=document.getElementById('conf-pin').value.trim();
+  var err=document.getElementById('s1-err');
+  // Find matching staff (case-insensitive)
+  var matchKey=null;
+  Object.keys(STAFF).forEach(function(k){
+    if(k.toLowerCase()===name.toLowerCase()) matchKey=k;
+  });
+  // Validate — must be Manager or Admin
+  if(!matchKey || STAFF[matchKey].pin!==pin){
+    err.style.display='block';
+    document.getElementById('conf-pin').value='';
+    return;
+  }
+  err.style.display='none';
+  confirmerName=matchKey+' ('+STAFF[matchKey].role+')';
   confirmerLoc=document.getElementById('conf-loc').value;
-  if(!confirmerName){document.getElementById('s1-err').style.display='block';return;}
-  document.getElementById('s1-err').style.display='none';
   buildOrder();showStep(2);
+});
+// Auto-submit when 4-digit PIN entered and name is filled
+document.getElementById('conf-pin').addEventListener('input',function(){
+  if(this.value.length===4){
+    var n=document.getElementById('conf-name').value.trim();
+    if(n) document.getElementById('btn-start').click();
+  }
 });
 
 function buildOrder(){
